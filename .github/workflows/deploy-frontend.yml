@@ -1,0 +1,35 @@
+name: Build React App
+on:
+ workflow_dispatch:
+# Disable for now
+#  push:
+#    branches: [ main ]
+#    paths:
+#      - 'frontend/**'
+#  pull_request:
+#     branches: [ main ]
+#     paths:
+#       - 'frontend/**'
+jobs:
+ Build:
+    runs-on: ubuntu-latest
+    env:
+     working-directory: ./frontend
+
+    strategy:
+      matrix:
+        node: [20.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ${{ env.working-directory }}
+      - name: Build the project
+        run: npm run build
+        working-directory: ${{ env.working-directory }}
