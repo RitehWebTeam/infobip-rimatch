@@ -1,12 +1,9 @@
 name: Build frontend React App
 on:
   workflow_dispatch:
-  push:
-    branches: [ main ]
-    paths:
-      - 'frontend/**'
   pull_request:
     branches: [ main ]
+    types: closed
     paths:
       - 'frontend/**'
 env:
