@@ -1,15 +1,14 @@
 name: Build frontend React App
 on:
   workflow_dispatch:
-# Disable for now
-#  push:
-#    branches: [ main ]
-#    paths:
-#      - 'frontend/**'
-#  pull_request:
-#     branches: [ main ]
-#     paths:
-#       - 'frontend/**'
+  push:
+    branches: [ main ]
+    paths:
+      - 'frontend/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'frontend/**'
 env:
   working-directory: ./frontend
   AWS_REGION: eu-central-1
