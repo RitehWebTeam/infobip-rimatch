@@ -1,24 +1,27 @@
-name: Build React App
+name: Build frontend React App
 on:
- workflow_dispatch:
-# Disable for now
-#  push:
-#    branches: [ main ]
-#    paths:
-#      - 'frontend/**'
-#  pull_request:
-#     branches: [ main ]
-#     paths:
-#       - 'frontend/**'
+  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
+    types: closed
+    paths:
+      - 'frontend/**'
+env:
+  working-directory: ./frontend
+  AWS_REGION: eu-central-1
+  AWS_S3_BUCKET: rimatch-app
+  build-folder: ./dist
 jobs:
- Build:
+  Build:
     runs-on: ubuntu-latest
-    env:
-     working-directory: ./frontend
+
+    permissions:
+      id-token: write
+      contents: read
 
     strategy:
       matrix:
-        node: [20.x]
+        node-version: [20.x]
 
     steps:
       - name: Checkout
@@ -33,3 +36,14 @@ jobs:
       - name: Build the project
         run: npm run build
         working-directory: ${{ env.working-directory }}
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{secrets.IAM_ROLE_GITHUB}}
+          aws-region: ${{env.AWS_REGION}}
+
+      - name: Copy build files to S3 bucket
+        run: |
+          aws s3 sync --delete ${{ env.build-folder }} s3://${{ env.AWS_S3_BUCKET }}
+        working-directory: ${{env.working-directory}}
