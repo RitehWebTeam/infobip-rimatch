@@ -16,7 +16,7 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>This was changed with to test AWS</h1>
+      <h1>Will it work without CloudFront invalidation</h1>
       <div className="card">
         <button
           className=""

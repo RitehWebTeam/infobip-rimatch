@@ -13,7 +13,6 @@ env:
   working-directory: ./frontend
   AWS_REGION: eu-central-1
   AWS_S3_BUCKET: rimatch-app
-  CLOUDFRONT_DISTRIBUTION: E2Y5VDNJBL3620
   build-folder: ./dist
 jobs:
   Build:
@@ -51,9 +50,3 @@ jobs:
         run: |
           aws s3 sync --delete ${{ env.build-folder }} s3://${{ env.AWS_S3_BUCKET }}
         working-directory: ${{env.working-directory}}
-
-      - name: Invalidate CloudFront cache
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id ${{env.CLOUDFRONT_DISTRIBUTION}} \
-            --paths "/*"
