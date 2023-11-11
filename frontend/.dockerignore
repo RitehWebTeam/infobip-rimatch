@@ -1,0 +1,6 @@
+node_modules
+.aws
+dist
+README.md
+.vscode
+.idea

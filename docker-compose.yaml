@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  frontend-react:
+    build: ./frontend
+    container_name: frontend-react_c
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
