@@ -6,9 +6,10 @@ import "./App.css";
 function App(): React.ReactElement {
   const [count, setCount] = useState(0);
   const [message, setMessage] = useState("Lodaing...");
+  const backendUrl = import.meta.env.VITE_BACKEND_URL as string;
 
   useEffect(() => {
-    fetch('http://localhost:8080/').then(res =>res.json()).then(data => setMessage(data.message))
+    fetch(backendUrl).then(res =>res.json()).then(data => setMessage(data.message))
   }, [])
 
 
@@ -22,7 +23,7 @@ function App(): React.ReactElement {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Will it work without test invalidation</h1>
+      <h1>Backend url from ENV: {backendUrl}</h1>
       <div className="card">
         <button
           className=""

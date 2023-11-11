@@ -1,7 +1,9 @@
 version: '3.8'
 services:
   frontend-react:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
     container_name: frontend-react
     ports:
       - "5173:5173"
