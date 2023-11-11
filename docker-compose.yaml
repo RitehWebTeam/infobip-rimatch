@@ -9,10 +9,17 @@ services:
       - ./frontend:/app
       - /app/node_modules
   backend-spring:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
     container_name: spring-api
     volumes:
       - ./backend/src:/app/src
+    secrets:
+      - secrets.properties
     ports:
       - 8080:8080
       - 5005:5005
+secrets:
+  secrets.properties:
+    file: ./backend/secrets.properties
