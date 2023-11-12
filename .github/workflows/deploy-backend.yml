@@ -47,4 +47,4 @@ jobs:
       - name: Delete old container
         run: docker rm -f rimatch-backend-container
       - name: Run docker container
-        run: docker run -d -p 8080:8080 --name rimatch-backend-container dominikkovacevic/rimatch -e MONGO_URI='${{ secrets.MONGO_URI }}'
+        run: docker run -d -p 8080:8080 -e MONGO_URI="${{ secrets.MONGO_URI }}" --name rimatch-backend-container dominikkovacevic/rimatch
