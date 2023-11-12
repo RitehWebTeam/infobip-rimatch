@@ -1,4 +1,4 @@
-FROM eclipse-tamurin:17-jdk-alphine
+FROM eclipse-temurin:17-jdk-alphine
 WORKDIR /app
 COPY target/rimatch-backend-0.0.1-SNAPSHOT.jar rimatch-backend-0.0.1-SNAPSHOT.jar
 EXPOSE 8080
