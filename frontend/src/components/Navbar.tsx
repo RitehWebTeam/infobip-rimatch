@@ -8,7 +8,7 @@ const Navbar = () => {
     }
   return (
     <div>
-      <nav className="flex dark:bg-[#242424] items-center relative justify-between bg-white px-5 py-6 w-full border-b border-gray-700">
+      <nav className="flex dark:bg-[#1E1E1E] items-center relative justify-between bg-white px-5 py-6 w-full border-b border-gray-700">
         <div>
           <svg
             width="41"
