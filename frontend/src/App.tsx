@@ -1,45 +1,27 @@
+
 import React, { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+
 import "./App.css";
+import Navbar from "./components/Navbar";
+import MatchCard from "./components/MatchCard";
+
 
 function App(): React.ReactElement {
-  const [count, setCount] = useState(0);
   const [message, setMessage] = useState("Lodaing...");
   const backendUrl = import.meta.env.VITE_BACKEND_URL as string;
 
   useEffect(() => {
     fetch(backendUrl).then(res =>res.json()).then(data => setMessage(data.message))
   }, [])
-
-
   return (
-    <>
-      <div className="flex justify-between">
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Backend url from ENV: {backendUrl}</h1>
-      <div className="card">
-        <button
-          className=""
-          onClick={() => setCount((count) => count + 1)}
-        >
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
+    <div>
+      <Navbar/>
+      <MatchCard/>
+      <p >
         Message from backend: {message}
       </p>
-    </>
-  );
+    </div>
+  )
 }
 
 export default App;
