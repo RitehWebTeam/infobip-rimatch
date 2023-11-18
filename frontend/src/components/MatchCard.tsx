@@ -1,6 +1,5 @@
-import React from "react";
-import ClearIcon from '@mui/icons-material/Clear';
-import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from "@mui/icons-material/Clear";
+import CheckIcon from "@mui/icons-material/Check";
 const MatchCard = () => {
   return (
     <div>
@@ -30,10 +29,10 @@ const MatchCard = () => {
             </div>
             <div className="flex mt-20 flex-row justify-between w-full">
               <button className="btn hover:bg-green-600 bg-green-500 ml-4 mb-2 border-green-700 rounded-full w-24 h-24">
-                <CheckIcon fontSize="large"/>
+                <CheckIcon fontSize="large" />
               </button>
               <button className="btn bg-red-500 hover:bg-red-600 rounded-full mr-4 border-red-700 btn-circle w-24 h-24">
-               <ClearIcon fontSize="large"/>
+                <ClearIcon fontSize="large" />
               </button>
             </div>
           </div>

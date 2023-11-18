@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
-const Navbar = () => {
+const Navbar: React.FunctionComponent = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  console.log("Test");
+
   const handleOpenDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
