@@ -1,0 +1,5 @@
+FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
+COPY target/rimatch-backend-0.0.1-SNAPSHOT.jar rimatch-backend-0.0.1-SNAPSHOT.jar
+EXPOSE 8080
+CMD ["java","-jar","rimatch-backend-0.0.1-SNAPSHOT.jar"]
