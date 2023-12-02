@@ -29,8 +29,14 @@
     background-color: #696464; 
   }
 }
-
-
-
+#red-to-black {
+  position: relative;
+  clip: path(polygon(0 0, 100% 0, 100% 100%, 0% 100%, 0% 50%, 50% 0%));
+  background: radial-gradient(
+    farthest-corner at 40px 100px,
+    rgba(223, 68, 68, 0.616) 10%,
+    rgb(41, 32, 32) 40%)
+ 
+} 
 
 
