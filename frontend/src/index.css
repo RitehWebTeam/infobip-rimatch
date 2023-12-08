@@ -40,3 +40,37 @@
 } 
 
 
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow-y: hidden;
+  overflow-x: hidden; /* Enable horizontal scrolling */
+  scroll-behavior: smooth;
+}
+
+#all {
+  font-size: 0; /* remove white space */
+  height: 100%;
+ 
+  
+  white-space: nowrap;
+}
+
+.page {
+  font-size: 16px; /* reset font size */
+  height: 100vh;
+  width: 100vw;
+  display: inline-block;
+}
+
+.page:nth-child(1) {
+  background: pink;
+}
+
+.page:nth-child(2) {
+  background: lightgreen;
+}
+
+.page:nth-child(3) {
+  background: gold;
+}

@@ -50,7 +50,7 @@ const RegisterForm = () => {
               //Ovo je meni iz projekta radilo za slanje u bazu, slobodno promijeniti po potrebi
               onSubmit={(values, { setSubmitting }) => {
                 setTimeout(() => {
-                  alert(JSON.stringify(values, null, 6));
+                  alert(JSON.stringify(values, null, 6)); //TODO Ovo je za test samo
                   setSubmitting(false);
                 }, 400);
               }}
