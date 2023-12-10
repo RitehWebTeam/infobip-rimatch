@@ -1,17 +1,19 @@
-import { axios } from "@api/config/axios";
-import useAuth from "./useAuth";
+import { axiosPublic } from "@api/config/axios";
+// import useAuth from "./useAuth";
 
 const useRefreshToken = () => {
-  const { setAuth } = useAuth();
+  // const { setAuth } = useAuth();
 
   const refresh = async () => {
-    const response = await axios.post("/auth/refresh", {
+    const response = await axiosPublic.post("/auth/refresh", {
       withCredentials: true,
     });
-    setAuth((prev) => ({
-      ...prev!,
-      accessToken: response.data.accessToken,
-    }));
+
+    // TODO
+    // setAuth((prev) => ({
+    //   ...prev!,
+    //   accessToken: response.data.accessToken,
+    // }));
     return response.data.accessToken as string;
   };
   return refresh;

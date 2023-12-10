@@ -6,8 +6,11 @@ import {
   LogoutIcon,
   HamburgerMenuIcon,
 } from "../assets";
+import useLogout from "@/hooks/useLogout";
 
 const Navbar: React.FunctionComponent = () => {
+  const logout = useLogout();
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleOpenDropdown = () => {
@@ -19,7 +22,9 @@ const Navbar: React.FunctionComponent = () => {
         <div>
           <RiMatchLogo />
         </div>
-        <h1 className="text-red-500 text-5xl flex justify-center">RiMatch</h1>
+        <h1 className="text-red-500 text-5xl flex justify-center font-semibold">
+          RiMatch
+        </h1>
         <div className="flex gap-3 items-center">
           <p>Name</p>
 
@@ -42,7 +47,10 @@ const Navbar: React.FunctionComponent = () => {
                     </span>
                     <span> Preferences </span>
                   </li>
-                  <li className="px-3  py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-400">
+                  <li
+                    onClick={logout}
+                    className="px-3  py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-400"
+                  >
                     <span>
                       <LogoutIcon />
                     </span>

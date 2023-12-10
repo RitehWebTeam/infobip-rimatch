@@ -1,10 +1,15 @@
 import Axios from "axios";
 
-export const axios = Axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+const headers = {
+  "Content-Type": "application/json",
+};
+
+export const axiosPublic = Axios.create({
+  baseURL: import.meta.env.VITE_BACKEND_URL,
+  headers,
 });
 export const axiosPrivate = Axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  headers: { "Content-Type": "application/json" },
+  baseURL: import.meta.env.VITE_BACKEND_URL,
+  headers,
   withCredentials: true,
 });

@@ -1,6 +1,9 @@
 import { ErrorMessage, Field, Formik, Form } from "formik";
 import * as Yup from "yup";
 import { EmailAtIcon, LockIcon } from "../assets";
+import { useLocation, useNavigate } from "react-router-dom";
+import { loginRequest } from "@/api/auth";
+import useAuth from "@/hooks/useAuth";
 
 const LoginSchema = Yup.object({
   email: Yup.string().required("Required").email("Must be valid email"),
@@ -9,7 +12,29 @@ const LoginSchema = Yup.object({
     .required("Required"),
 });
 
+const initialValues = {
+  email: "",
+  password: "",
+};
+type LoginValues = typeof initialValues;
+
 const LoginForm = () => {
+  const { setAuth } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location?.state?.from?.pathname ?? "/";
+
+  const handleSubmit = async (values: LoginValues) => {
+    const result = await loginRequest(values.email, values.password);
+    setAuth({
+      user: {
+        email: values.email,
+      },
+      accessToken: result.token,
+    });
+    navigate(from, { replace: true });
+  };
+
   return (
     <div>
       {/*Crveni blok*/}
@@ -31,21 +56,11 @@ const LoginForm = () => {
 
         <div className="flex w-2/4 justify-center items-center bg-white">
           <Formik
-            //!Forma i validacija
-            initialValues={{
-              email: "",
-              password: "",
-            }}
+            initialValues={initialValues}
             validationSchema={LoginSchema}
-            //Ovo je meni iz projekta radilo za slanje u bazu, slobodno promijeniti po potrebi
-            onSubmit={(values, { setSubmitting }) => {
-              setTimeout(() => {
-                alert(JSON.stringify(values, null, 2));
-                setSubmitting(false);
-              }, 400);
-            }}
+            onSubmit={handleSubmit}
           >
-            {() => (
+            {({ isSubmitting }) => (
               <Form className="bg-white p-8">
                 <h1 className="text-gray-800 font-bold text-5xl mb-2">
                   Hello Again!
@@ -85,6 +100,7 @@ const LoginForm = () => {
                   className="text-red-500"
                 />
                 <button
+                  disabled={isSubmitting}
                   type="submit"
                   className="block w-full bg-red-600  transition duration-300 ease-in-out hover:bg-red-800 mt-4 py-3 rounded-2xl text-white font-semibold "
                 >

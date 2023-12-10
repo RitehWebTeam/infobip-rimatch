@@ -23,6 +23,7 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    @CrossOrigin
     @PostMapping("/signup")
     public ResponseEntity<?> signUpUser(@Valid @RequestBody RegisterDto registerdto) {
         User user;
@@ -37,6 +38,7 @@ public class AuthController {
         return ResponseEntity.ok(user);
     }
 
+    @CrossOrigin
     @PostMapping("/login")
     public ResponseEntity<Map<String,String>> signUpUser(@Valid @RequestBody LoginDto loginDto) {
         String token = userService.loginUser(loginDto);
