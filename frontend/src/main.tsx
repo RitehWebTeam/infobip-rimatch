@@ -14,7 +14,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <Root />,
     errorElement: <ErrorPage />,
-    children: [{ path: "/", element: <MatchCard /> }],
+    children: [{ index: true, element: <MatchCard /> }],
   },
   {
     path: "/login",
