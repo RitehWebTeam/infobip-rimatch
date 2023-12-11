@@ -66,7 +66,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(map);
         }
 
-        userService.finishUserSetup(user,setupDto);
+        user = userService.finishUserSetup(user,setupDto);
         return ResponseEntity.ok(user);
     }
 
