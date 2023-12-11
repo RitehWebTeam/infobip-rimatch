@@ -13,8 +13,8 @@ const LoginSchema = Yup.object({
 });
 
 const initialValues = {
-  email: "",
-  password: "",
+  email: "abozic389@gmail.com",
+  password: "Test01234",
 };
 type LoginValues = typeof initialValues;
 

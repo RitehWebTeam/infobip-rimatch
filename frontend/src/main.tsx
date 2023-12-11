@@ -7,7 +7,7 @@ import MatchCard from "./components/MatchCard.tsx";
 import ErrorPage from "./ErrorPage.tsx";
 import LoginForm from "./views/LoginForm.tsx";
 import RegisterForm from "./views/RegisterForm.tsx";
-import ProtectedRoutes from "./views/ProtectedRoutes.tsx";
+import ProtectedRoutes from "./routes/ProtectedRoutes.tsx";
 
 const router = createBrowserRouter([
   {

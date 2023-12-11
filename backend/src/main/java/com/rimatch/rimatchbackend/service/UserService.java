@@ -7,6 +7,8 @@ import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -15,9 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -52,18 +52,51 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Map<String,String> loginUser(LoginDto loginInfo){
-        Map<String, String> tokenPair = new HashMap<>();
-        Optional<User> userOptional = Optional.ofNullable(userRepository.findByEmail(loginInfo.getEmail()));
-        if(userOptional.isPresent()){
-            User user = userOptional.get();
-            if(passwordEncoder.matches(loginInfo.getPassword(), user.getHashedPassword())){
-                tokenPair.put("token",jwtUtils.generateAccessToken(user.getEmail()));
-                tokenPair.put("refresh", jwtUtils.generateRefreshToken(user.getEmail()));
-                return tokenPair;
-            }
+    public TokenPair loginUser(LoginDto loginInfo) {
+        return Optional.ofNullable(userRepository.findByEmail(loginInfo.getEmail()))
+            .filter(user -> passwordEncoder.matches(loginInfo.getPassword(), user.getHashedPassword()))
+            .map(user -> new TokenPair(
+                jwtUtils.generateAccessToken(user.getEmail()),
+                jwtUtils.generateRefreshToken(user.getEmail())
+            ))
+            .orElse(null);
+    }
+
+    public static class TokenPair {
+        private String token;
+        private String refreshToken;
+
+        public TokenPair(String token, String refreshToken) {
+            this.token = token;
+            this.refreshToken = refreshToken;
         }
-        return null;
+
+        public String getToken() {
+            return token;
+        }
+
+        public String getRefreshToken() {
+            return refreshToken;
+        }
+    }
+
+    public Cookie clearRefreshTokenCookie() {
+        return handleRefreshTokenCookie(null, true);
+    }
+
+    public Cookie setRefreshTokenCookie(String token) {
+        return handleRefreshTokenCookie(token, false);
+    }
+
+    private Cookie handleRefreshTokenCookie(String token, boolean clear) {
+        Cookie cookie = new Cookie("refreshToken", clear ? null : token);
+        cookie.setHttpOnly(true);
+        // This should be set if we setup HTTPS
+        // cookie.setSecure(true);
+        cookie.setMaxAge(clear ? 0 : (int) (JWTUtils.REFRESH_TOKEN_DURATION / 1000));
+        cookie.setPath("/");
+        cookie.setAttribute("SameSite", "lax");
+        return cookie;
     }
 
     public User finishUserSetup(User user, SetupDto setupDto){

@@ -12,6 +12,9 @@ public class JWTUtils {
 
     JwtParser jwtParser;
 
+    public static final int ACCESS_TOKEN_DURATION = 1000 * 60 * 60 * 24; // 1 day
+    public static final long REFRESH_TOKEN_DURATION = 30L * 24 * 60 * 60 * 1000; // 30 days
+
     public JWTUtils(@Value("${jwt.secret})") String secretKey){
         this.secretKey = secretKey;
         jwtParser = Jwts.parser().setSigningKey(this.secretKey).build();
@@ -24,7 +27,7 @@ public class JWTUtils {
                 .setSubject(username)
                 .claim("type", "access")
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 1 day
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_DURATION)) // 1 day
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
@@ -34,7 +37,7 @@ public class JWTUtils {
                 .setSubject(username)
                 .claim("type", "refresh")
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000)) // 30 days
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_DURATION)) // 30 days
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }

@@ -1,14 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
-import useLocalStorage from "./useLocalStorage";
+import { logoutRequest } from "@/api/auth";
 
 const useLogout = () => {
   const { setAuth } = useAuth();
   const navigate = useNavigate();
-  const [, setToken] = useLocalStorage<string>("token", "");
   const logout = async () => {
     setAuth(null);
-    setToken("");
+    logoutRequest();
     navigate("/login");
   };
 

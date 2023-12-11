@@ -1,9 +1,8 @@
-import useLocalStorage from "@/hooks/useLocalStorage";
 import { createContext, useState } from "react";
 
 interface StateContextType<T> {
   auth: T;
-  setAuth: React.Dispatch<React.SetStateAction<T>> | ((auth: T) => void);
+  setAuth: React.Dispatch<React.SetStateAction<T>>;
 }
 
 interface AuthObject {
@@ -20,18 +19,7 @@ interface AuthContextProps {
 }
 
 export const AuthProvider = ({ children }: AuthContextProps) => {
-  const [token, setToken] = useLocalStorage<string>("token", "");
-
-  const [auth, _setAuth] = useState<AuthObject | null>(() => {
-    return token ? ({ accessToken: token } as AuthObject) : null;
-  });
-
-  const setAuth = (auth: AuthObject | null) => {
-    if (auth) {
-      setToken(auth.accessToken);
-    }
-    _setAuth(auth);
-  };
+  const [auth, setAuth] = useState<AuthObject | null>(null);
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>
       {children}
