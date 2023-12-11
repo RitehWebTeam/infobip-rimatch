@@ -5,6 +5,8 @@ import com.rimatch.rimatchbackend.dto.SetupDto;
 import com.rimatch.rimatchbackend.util.JWTUtils;
 import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.repository.UserRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -13,7 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -48,12 +52,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public String loginUser(LoginDto loginInfo){
+    public Map<String,String> loginUser(LoginDto loginInfo){
+        Map<String, String> tokenPair = new HashMap<>();
         Optional<User> userOptional = Optional.ofNullable(userRepository.findByEmail(loginInfo.getEmail()));
         if(userOptional.isPresent()){
             User user = userOptional.get();
             if(passwordEncoder.matches(loginInfo.getPassword(), user.getHashedPassword())){
-                return jwtUtils.generateToken(user.getEmail());
+                tokenPair.put("token",jwtUtils.generateAccessToken(user.getEmail()));
+                tokenPair.put("refresh", jwtUtils.generateRefreshToken(user.getEmail()));
+                return tokenPair;
             }
         }
         return null;
@@ -76,6 +83,21 @@ public class UserService {
     public User getUserByToken(String token){
         token = token.substring(7);
         return userRepository.findByEmail(jwtUtils.extractUsername(token));
+    }
+
+    public String refreshAccessToken(String token)throws IllegalArgumentException,JwtException {
+        try {
+            Claims claims = jwtUtils.getAllClaims(token);
+            jwtUtils.validateToken(token);
+            if (!claims.get("type").equals("refresh")) {
+                throw new IllegalArgumentException();
+            }
+            String accessToken = jwtUtils.generateAccessToken(jwtUtils.extractUsername(token));
+            return accessToken;
+
+        } catch (JwtException | IllegalArgumentException ex){
+            throw ex;
+        }
     }
 
     public User getUserByEmail(String email){

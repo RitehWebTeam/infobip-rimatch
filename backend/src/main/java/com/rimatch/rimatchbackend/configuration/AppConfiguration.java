@@ -21,7 +21,7 @@ public class AppConfiguration {
         final FilterRegistrationBean<JwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
 
         registrationBean.setFilter(jwtAuthenticationFilter);
-        registrationBean.setUrlPatterns(Collections.singletonList("/users/*"));
+        registrationBean.setUrlPatterns(Collections.singletonList("/api/users/*"));
 
         return registrationBean;
 

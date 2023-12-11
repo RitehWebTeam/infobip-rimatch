@@ -3,9 +3,13 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 @Component
 public class JWTUtils {
     private  String secretKey;
+
     JwtParser jwtParser;
 
     public JWTUtils(@Value("${jwt.secret})") String secretKey){
@@ -13,23 +17,27 @@ public class JWTUtils {
         jwtParser = Jwts.parser().setSigningKey(this.secretKey).build();
     }
 
-    public String generateToken(String username) {
+    public String generateAccessToken(String username) {
+        Map<String,String> claims = new HashMap<>();
+        claims.put("type","access");
         return Jwts.builder()
                 .setSubject(username)
+                .claim("type", "access")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 1 day
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
-    /*public String generateRefreshToken(String username) {
+    public String generateRefreshToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("type", "refresh")
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 7 days
+                .setExpiration(new Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000)) // 30 days
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
-    }*/
+    }
 
     public boolean validateToken(String token) throws JwtException,IllegalArgumentException{
         try{
@@ -49,7 +57,7 @@ public class JWTUtils {
         return getAllClaims(token).getExpiration();
     }
 
-    public Claims getAllClaims(String token){
+    public Claims getAllClaims(String token) throws JwtException{
         Jws<Claims> jwt = null;
         try{
             jwt = jwtParser.parseSignedClaims(token);

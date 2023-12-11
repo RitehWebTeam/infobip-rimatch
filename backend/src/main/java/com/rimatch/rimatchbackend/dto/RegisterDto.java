@@ -2,7 +2,6 @@ package com.rimatch.rimatchbackend.dto;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.Getter;
-import org.springframework.data.mongodb.core.index.Indexed;
 
 @Getter
 @Data

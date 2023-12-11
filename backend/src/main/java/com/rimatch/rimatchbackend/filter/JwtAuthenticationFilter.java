@@ -1,19 +1,15 @@
 package com.rimatch.rimatchbackend.filter;
 
-
 import com.rimatch.rimatchbackend.util.JWTUtils;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -39,6 +35,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try{
             jwtUtils.validateToken(token);
+            Claims claims = jwtUtils.getAllClaims(token);
+
+            if(!claims.get("type").equals("access")){
+                throw new IllegalArgumentException();
+            }
+
             filterChain.doFilter(request,response);
         }catch (JwtException | IllegalArgumentException ex){
             response.setStatus(HttpStatus.UNAUTHORIZED.value());

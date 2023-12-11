@@ -1,6 +1,7 @@
 package com.rimatch.rimatchbackend.controller;
 
 import com.rimatch.rimatchbackend.dto.LoginDto;
+import com.rimatch.rimatchbackend.dto.RefreshDto;
 import com.rimatch.rimatchbackend.dto.RegisterDto;
 import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.service.UserService;
@@ -13,11 +14,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.InvalidParameterException;
+import java.sql.Ref;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("api/auth")
 public class AuthController {
 
     @Autowired
@@ -38,14 +40,26 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String,String>> signUpUser(@Valid @RequestBody LoginDto loginDto) {
-        String token = userService.loginUser(loginDto);
-        Map<String, String> response = new HashMap<>();
-        if(token != null){
-            response.put("token",token);
+        Map<String, String> response;
+        response = userService.loginUser(loginDto);
+        if(response != null){
             return ResponseEntity.ok(response);
         } else {
+            response = new HashMap<>();
             response.put("message","Invalid email or password");
             return ResponseEntity.status(401).body(response);
+        }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshDto refreshDto){
+        Map<String, String> response = new HashMap<>();
+        try{
+            response.put("token",userService.refreshAccessToken(refreshDto.getRefreshToken()));
+            return ResponseEntity.ok(response);
+        }catch (Exception ex){
+            response.put("message","Invalid refresh token!");
+            return ResponseEntity.status(403).body(response);
         }
     }
 
