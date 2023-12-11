@@ -33,7 +33,6 @@ public class AuthController {
             map.put("message",ex.getMessage());
             return ResponseEntity.status(400).body(map);
         }
-
         return ResponseEntity.ok(user);
     }
 
@@ -54,7 +53,6 @@ public class AuthController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String,String> handleValidationException(MethodArgumentNotValidException ex){
         Map<String,String> errors = new HashMap<>();
-
         ex.getBindingResult().getAllErrors().forEach((error) ->{
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();

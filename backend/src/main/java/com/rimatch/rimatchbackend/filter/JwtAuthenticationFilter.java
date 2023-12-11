@@ -2,6 +2,7 @@ package com.rimatch.rimatchbackend.filter;
 
 
 import com.rimatch.rimatchbackend.util.JWTUtils;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +27,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public JwtAuthenticationFilter(JWTUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
     }
-
+    /*
+    *   Middleware that checks request for auth header and validates it and forwards them to next in filter chain
+    * */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -33,14 +37,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         token = token.substring(7);
 
-        if(jwtUtils.validateToken(token)){
+        try{
+            jwtUtils.validateToken(token);
             filterChain.doFilter(request,response);
-        }else{
-            ResponseEntity<String> responseEntity = new ResponseEntity<>("Invalid token", HttpStatus.UNAUTHORIZED);
-            ((HttpServletResponse) response).setStatus(responseEntity.getStatusCodeValue());
-            response.getWriter().write(responseEntity.getBody());
+        }catch (JwtException | IllegalArgumentException ex){
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.getWriter().write("{\"message\":\"Invalid JWT token\"}");
         }
-
     }
 }
 

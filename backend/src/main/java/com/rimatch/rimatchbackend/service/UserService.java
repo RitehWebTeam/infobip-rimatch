@@ -18,18 +18,15 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-
     private final MongoTemplate mongoTemplate;
     @Autowired
     private UserRepository userRepository;
-
     /*
      * Should be implemented as @Bean in AppConfig but left like this for now
      */
     final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Autowired
     private JWTUtils jwtUtils;
-
     @Autowired
     public UserService(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
@@ -77,14 +74,11 @@ public class UserService {
     }
 
     public User getUserByToken(String token){
-
         token = token.substring(7);
-
         return userRepository.findByEmail(jwtUtils.extractUsername(token));
     }
 
     public User getUserByEmail(String email){
-
         return userRepository.findByEmail(email);
     }
 
@@ -98,9 +92,7 @@ public class UserService {
                         Aggregation.sample(1)
                 ),
                 "users", User.class).getMappedResults();
-
         return users.isEmpty() ? null : users.get(0);
     }
-
     // add more methods as per your requirements
 }

@@ -1,10 +1,7 @@
 package com.rimatch.rimatchbackend.util;
 import io.jsonwebtoken.*;
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import java.util.Date;
 @Component
 public class JWTUtils {
@@ -20,22 +17,27 @@ public class JWTUtils {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 1 day
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
-    public boolean validateToken(String token) throws JwtException{
+    /*public String generateRefreshToken(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 7 days
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }*/
 
-        boolean valid = false;
+    public boolean validateToken(String token) throws JwtException,IllegalArgumentException{
         try{
             jwtParser.parseSignedClaims(token);
-            valid = true;
-        }catch (JwtException ex){
+            return true;
+        }catch (JwtException | IllegalArgumentException ex){
             throw ex;
         }
-
-        return valid;
 
     }
 
