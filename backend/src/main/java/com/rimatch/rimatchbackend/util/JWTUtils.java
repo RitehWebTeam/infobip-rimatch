@@ -1,52 +1,60 @@
 package com.rimatch.rimatchbackend.util;
+
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.WeakKeyException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.crypto.SecretKey;
+
 @Component
 public class JWTUtils {
-    private  String secretKey;
 
-    JwtParser jwtParser;
+    private SecretKey secretKey;
+    private JwtParser jwtParser;
 
     public static final int ACCESS_TOKEN_DURATION = 1000 * 60 * 60 * 24; // 1 day
     public static final long REFRESH_TOKEN_DURATION = 30L * 24 * 60 * 60 * 1000; // 30 days
 
-    public JWTUtils(@Value("${jwt.secret})") String secretKey){
-        this.secretKey = secretKey;
-        jwtParser = Jwts.parser().setSigningKey(this.secretKey).build();
+    public JWTUtils(@Value("${jwt.secret})") String secret) throws WeakKeyException, UnsupportedEncodingException {
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes("UTF-8"));
+        jwtParser = Jwts.parser().verifyWith(this.secretKey).build();
     }
 
     public String generateAccessToken(String username) {
-        Map<String,String> claims = new HashMap<>();
-        claims.put("type","access");
+        Map<String, String> claims = new HashMap<>();
+        claims.put("type", "access");
         return Jwts.builder()
-                .setSubject(username)
+                .subject(username)
                 .claim("type", "access")
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_DURATION)) // 1 day
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_DURATION)) // 1 day
+                .signWith(secretKey)
                 .compact();
     }
 
     public String generateRefreshToken(String username) {
         return Jwts.builder()
-                .setSubject(username)
+                .subject(username)
                 .claim("type", "refresh")
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_DURATION)) // 30 days
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_DURATION)) // 30 days
+                .signWith(secretKey)
                 .compact();
     }
 
-    public boolean validateToken(String token) throws JwtException,IllegalArgumentException{
-        try{
+    public boolean validateToken(String token) throws JwtException, IllegalArgumentException {
+        try {
             jwtParser.parseSignedClaims(token);
             return true;
-        }catch (JwtException | IllegalArgumentException ex){
+        } catch (JwtException | IllegalArgumentException ex) {
             throw ex;
         }
 
@@ -60,15 +68,16 @@ public class JWTUtils {
         return getAllClaims(token).getExpiration();
     }
 
-    public Claims getAllClaims(String token) throws JwtException{
+    public Claims getAllClaims(String token) throws JwtException {
         Jws<Claims> jwt = null;
-        try{
+        try {
             jwt = jwtParser.parseSignedClaims(token);
             return jwt.getPayload();
-        }catch (JwtException ex){
+        } catch (JwtException ex) {
             throw ex;
         }
     }
+
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
