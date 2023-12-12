@@ -99,7 +99,7 @@ public class UserService {
                 : (int) (JWTUtils.TOKEN_DURATION.get(TokenType.REFRESH) / 1000);
         cookie.setMaxAge(maxAge);
         cookie.setPath("/");
-        cookie.setAttribute("SameSite", "lax");
+        cookie.setAttribute("SameSite", "None");
         return cookie;
     }
 
