@@ -3,6 +3,7 @@ import com.rimatch.rimatchbackend.dto.LoginDto;
 import com.rimatch.rimatchbackend.dto.RegisterDto;
 import com.rimatch.rimatchbackend.dto.SetupDto;
 import com.rimatch.rimatchbackend.util.JWTUtils;
+import com.rimatch.rimatchbackend.util.JWTUtils.TokenType;
 import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.repository.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -93,7 +94,10 @@ public class UserService {
         cookie.setHttpOnly(true);
         // This should be set if we setup HTTPS
         // cookie.setSecure(true);
-        cookie.setMaxAge(clear ? 0 : (int) (JWTUtils.REFRESH_TOKEN_DURATION / 1000));
+        final int maxAge = clear
+                ? 0
+                : (int) (JWTUtils.TOKEN_DURATION.get(TokenType.REFRESH) / 1000);
+        cookie.setMaxAge(maxAge);
         cookie.setPath("/");
         cookie.setAttribute("SameSite", "lax");
         return cookie;
@@ -115,18 +119,13 @@ public class UserService {
 
     public User getUserByToken(String token){
         token = token.substring(7);
-        return userRepository.findByEmail(jwtUtils.extractUsername(token));
+        return userRepository.findByEmail(jwtUtils.extractSubject(token, TokenType.ACCESS));
     }
 
     public String refreshAccessToken(String token)throws IllegalArgumentException,JwtException {
         try {
-            Claims claims = jwtUtils.getAllClaims(token);
-            jwtUtils.validateToken(token);
-            if (!claims.get("type").equals("refresh")) {
-                throw new IllegalArgumentException();
-            }
-            String accessToken = jwtUtils.generateAccessToken(jwtUtils.extractUsername(token));
-            return accessToken;
+            Claims claims = jwtUtils.validateToken(token, TokenType.REFRESH);
+            return jwtUtils.generateAccessToken(claims.getSubject());
 
         } catch (JwtException | IllegalArgumentException ex){
             throw ex;

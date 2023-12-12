@@ -1,8 +1,13 @@
 {"properties": [
   {
-    "name": "jwt.secret",
+    "name": "jwt.secret.access",
     "type": "java.lang.String",
-    "description": "Secret used when creating the JWT token"
+    "description": "Secret used when creating the access JWT token"
+  },
+  {
+    "name": "jwt.secret.refresh",
+    "type": "java.lang.String",
+    "description": "Secret used when creating the refresh JWT token"
   },
   {
     "name": "cors.allowed-origins",

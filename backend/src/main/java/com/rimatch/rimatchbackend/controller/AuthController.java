@@ -63,11 +63,11 @@ public class AuthController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<?> logout(@CookieValue(name = "refreshToken", required = false) String refreshToken, HttpServletResponse response) {
+    public ResponseEntity<Void> logout(@CookieValue(name = "refreshToken", required = false) String refreshToken, HttpServletResponse response) {
         if (refreshToken != null) {
             response.addCookie(userService.clearRefreshTokenCookie());
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("message", "Logged out successfully!"));
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

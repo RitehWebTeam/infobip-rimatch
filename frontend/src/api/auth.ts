@@ -44,7 +44,7 @@ export const refreshTokenRequest = async () => {
 };
 
 export const logoutRequest = async () => {
-  return axiosPublic.get<{ message: string }>("/auth/logout", {
+  return axiosPublic.get<void>("/auth/logout", {
     withCredentials: true,
   });
 };

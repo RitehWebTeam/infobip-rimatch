@@ -1,13 +1,13 @@
 package com.rimatch.rimatchbackend.filter;
 
 import com.rimatch.rimatchbackend.util.JWTUtils;
-import io.jsonwebtoken.Claims;
+import com.rimatch.rimatchbackend.util.JWTUtils.TokenType;
+
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,6 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JWTUtils jwtUtils;
 
-    @Autowired
     public JwtAuthenticationFilter(JWTUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
     }
@@ -34,13 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         token = token.substring(7);
 
         try{
-            jwtUtils.validateToken(token);
-            Claims claims = jwtUtils.getAllClaims(token);
-
-            if(!claims.get("type").equals("access")){
-                throw new IllegalArgumentException();
-            }
-
+            jwtUtils.validateToken(token, TokenType.ACCESS);
             filterChain.doFilter(request,response);
         }catch (JwtException | IllegalArgumentException ex){
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
