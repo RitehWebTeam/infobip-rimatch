@@ -31,8 +31,10 @@ const RegisterForm = () => {
       {" "}
       <div className=" min-h-screen flex items-stretch text-white ">
         <div className=" lg:w-full  h-screen flex items-center justify-center text-center md:px-16 px-0 z-0">
-          <div className="py-6 w-1/2 z-20">
-            <h1 className="text-white font-bold text-5xl mb-2">RiMatch</h1>
+          <div className="py-6 w-1/2 z-20 ">
+            <h1 className="text-white font-bold text-5xl mb-2 font-Pacifico">
+              RiMatch
+            </h1>
             <h1 className="text-lg font-normal text-gray-200 mb-7">
               Register your new account
             </h1>
@@ -58,14 +60,14 @@ const RegisterForm = () => {
               {(formik) => (
                 <Form
                   onSubmit={formik.handleSubmit}
-                  className="sm:w-2/3 w-full px-4 lg:px-0 mx-auto"
+                  className="sm:w-2/3 w-full px-4 lg: mx-auto  rounded-xl py-10 shadow-black drop-shadow-2xl"
                 >
                   {/*NAME*/}
                   <div className="flex bg-white items-center border-2 py-4 px-4 rounded-2xl ">
                     <BoyIcon color="action" fontSize="medium" />
 
                     <Field
-                      className="pl-2 text-black outline-none border-none bg-white w-full"
+                      className="pl-2 text-black outline-none border-none bg-white w-full "
                       type="text"
                       id="name"
                       placeholder="Name"
@@ -164,7 +166,7 @@ const RegisterForm = () => {
                   <div className="px-4 pb-2 pt-4">
                     <button
                       type="submit"
-                      className="block w-full bg-[#df4444]  transition duration-300 ease-in-out hover:bg-red-800 mt-4 py-3 rounded-2xl text-white font-semibold "
+                      className="block w-full bg-[#ec4a4a]  transition duration-300 ease-in-out hover:bg-red-800 mt-4 py-3 rounded-2xl text-white font-semibold "
                     >
                       Register
                     </button>
