@@ -1,7 +1,6 @@
 package com.rimatch.rimatchbackend.controller;
 
 import com.rimatch.rimatchbackend.dto.LoginDto;
-import com.rimatch.rimatchbackend.dto.RefreshDto;
 import com.rimatch.rimatchbackend.dto.RegisterDto;
 import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.service.UserService;
@@ -41,7 +40,6 @@ public class AuthController {
         return ResponseEntity.ok(user);
     }
 
-    @CrossOrigin(allowCredentials = "true", origins = "http://localhost:5173")
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
         TokenPair tokenPair = userService.loginUser(loginDto);
@@ -54,7 +52,6 @@ public class AuthController {
         return new ResponseEntity<>(Map.of("token", tokenPair.getToken()), HttpStatus.OK);
     }
 
-    @CrossOrigin(allowCredentials = "true", origins = "http://localhost:5173")
     @GetMapping("/refresh")
     public ResponseEntity<?> refreshToken(@CookieValue("refreshToken") String refreshToken) {
         try {
@@ -65,7 +62,6 @@ public class AuthController {
         }
     }
 
-    @CrossOrigin(allowCredentials = "true", origins = "http://localhost:5173")
     @GetMapping("/logout")
     public ResponseEntity<?> logout(@CookieValue(name = "refreshToken", required = false) String refreshToken, HttpServletResponse response) {
         if (refreshToken != null) {
