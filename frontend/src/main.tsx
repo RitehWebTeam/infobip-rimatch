@@ -8,6 +8,8 @@ import ErrorPage from "./ErrorPage.tsx";
 import LoginForm from "./views/LoginForm.tsx";
 import RegisterForm from "./views/RegisterForm.tsx";
 import ProtectedRoutes from "./routes/ProtectedRoutes.tsx";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const router = createBrowserRouter([
   {
@@ -28,10 +30,15 @@ const router = createBrowserRouter([
   },
 ]);
 
+const queryClient = new QueryClient();
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+    </QueryClientProvider>
   </React.StrictMode>
 );
