@@ -1,4 +1,8 @@
 package com.rimatch.rimatchbackend.dto;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.rimatch.rimatchbackend.util.converter.ToLowerCaseConverter;
+
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.Getter;
@@ -8,6 +12,7 @@ import lombok.Getter;
 public class RegisterDto {
     @NotNull(message = "Email field cannot be null!")
     @NotBlank(message = "Email field cannot be blank!")
+    @JsonDeserialize(converter = ToLowerCaseConverter.class)
     private String email;
 
     @NotNull(message = "First name field cannot be null!")
