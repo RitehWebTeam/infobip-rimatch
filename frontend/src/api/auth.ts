@@ -1,21 +1,10 @@
-import axios from "axios";
 import { axiosPublic } from "./config/axios";
+import { UseMutationOptions, useMutation } from "@tanstack/react-query";
+import { User } from "./users";
 
 interface TokenResponse {
   token: string;
 }
-
-export const loginRequest = async (email: string, password: string) => {
-  const response = await axiosPublic.post<TokenResponse>(
-    "/auth/login",
-    {
-      email,
-      password,
-    },
-    { withCredentials: true }
-  );
-  return response.data;
-};
 
 interface RegisterData {
   email: string;
@@ -26,25 +15,76 @@ interface RegisterData {
   age: number;
 }
 
-export const registerRequest = async (registerData: RegisterData) => {
-  const response = await axiosPublic.post("/auth/signup", registerData);
+interface LoginData {
+  email: string;
+  password: string;
+}
 
-  if (response.status !== axios.HttpStatusCode.Ok) {
-    throw new Error(response.data);
-  }
+const AuthService = {
+  useLogin: <T = TokenResponse>(
+    mutationOptions?: Omit<
+      UseMutationOptions<T, Error, LoginData>,
+      "mutationFn"
+    >
+  ) => {
+    return useMutation<T, Error, LoginData>({
+      mutationFn: async ({ email, password }) => {
+        const response = await axiosPublic.post<T>(
+          "/auth/login",
+          { email, password },
+          { withCredentials: true }
+        );
+        return response.data;
+      },
+      ...mutationOptions,
+    });
+  },
 
-  return response.data;
+  useRefreshToken: <T = TokenResponse>(
+    mutationOptions?: Omit<UseMutationOptions<T>, "mutationFn">
+  ) => {
+    return useMutation({
+      mutationFn: async () => {
+        const response = await axiosPublic.get<T>("/auth/refresh", {
+          withCredentials: true,
+        });
+        return response.data;
+      },
+      ...mutationOptions,
+    });
+  },
+
+  useRegister: <T = User>(
+    mutationOptions?: Omit<
+      UseMutationOptions<T, Error, RegisterData>,
+      "mutationFn"
+    >
+  ) => {
+    return useMutation({
+      mutationFn: async (registerData) => {
+        const response = await axiosPublic.post<T>(
+          "/auth/signup",
+          registerData
+        );
+        return response.data;
+      },
+      ...mutationOptions,
+    });
+  },
+
+  useLogout: <T = void>(
+    mutationOptions?: Omit<UseMutationOptions<T>, "mutationFn">
+  ) => {
+    return useMutation({
+      mutationFn: async () => {
+        const response = await axiosPublic.get<T>("/auth/logout", {
+          withCredentials: true,
+        });
+        return response.data;
+      },
+      ...mutationOptions,
+    });
+  },
 };
 
-export const refreshTokenRequest = async () => {
-  const response = await axiosPublic.get<TokenResponse>("/auth/refresh", {
-    withCredentials: true,
-  });
-  return response.data;
-};
-
-export const logoutRequest = async () => {
-  return axiosPublic.get<void>("/auth/logout", {
-    withCredentials: true,
-  });
-};
+export default AuthService;

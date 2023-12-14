@@ -1,8 +1,8 @@
 import { ErrorMessage, Field, Formik, Form } from "formik";
 import * as Yup from "yup";
 import { EmailAtIcon, LockIcon } from "../assets";
-import { useLocation, useNavigate } from "react-router-dom";
-import { loginRequest } from "@/api/auth";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import AuthService from "@/api/auth";
 import useAuth from "@/hooks/useAuth";
 
 const LoginSchema = Yup.object({
@@ -22,17 +22,21 @@ const LoginForm = () => {
   const { setAuth } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const { mutateAsync: login } = AuthService.useLogin();
   const from = location?.state?.from?.pathname ?? "/";
 
-  const handleSubmit = async (values: LoginValues) => {
-    const result = await loginRequest(values.email, values.password);
-    setAuth({
-      user: {
-        email: values.email,
+  const handleSubmit = (values: LoginValues) => {
+    return login(values, {
+      onSuccess: ({ token }) => {
+        setAuth({
+          user: {
+            email: values.email,
+          },
+          accessToken: token,
+        });
+        navigate(from, { replace: true });
       },
-      accessToken: result.token,
     });
-    navigate(from, { replace: true });
   };
 
   return (
@@ -106,9 +110,18 @@ const LoginForm = () => {
                 >
                   Login
                 </button>
-                <span className="text-base text-black ml-2 flex justify-center hover:text-gray-500 cursor-pointer">
+                <span className="text-base text-black ml-2 flex my-3 justify-center hover:text-gray-500 cursor-pointer">
                   Forgot Password ?
                 </span>
+                <p className="text-sm text-black w-full text-center py-3">
+                  Don&apos;t have an account?{" "}
+                  <Link
+                    to="/register"
+                    className="text-red-600 hover:text-red-800"
+                  >
+                    Sign up here
+                  </Link>
+                </p>
               </Form>
             )}
           </Formik>

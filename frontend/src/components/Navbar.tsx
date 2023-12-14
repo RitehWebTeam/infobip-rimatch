@@ -56,7 +56,7 @@ const Navbar: React.FunctionComponent = () => {
                     <span> Preferences </span>
                   </li>
                   <li
-                    onClick={logout}
+                    onClick={() => logout()}
                     className="px-3  py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-400"
                   >
                     <span>

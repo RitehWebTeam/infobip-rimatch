@@ -4,8 +4,8 @@ import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import BoyIcon from "@mui/icons-material/Boy";
 import PersonIcon from "@mui/icons-material/Person";
 import { EmailAtIcon, LockIcon } from "../assets";
-import { registerRequest } from "@/api/auth";
 import { useNavigate } from "react-router-dom";
+import AuthService from "@/api/auth";
 
 const RegisterSchema = Yup.object({
   email: Yup.string().required("Required").email("Must be a valid email"),
@@ -47,13 +47,17 @@ type RegisterValues = typeof initialValues;
 
 const RegisterForm = () => {
   const navigate = useNavigate();
+  const { mutateAsync: register } = AuthService.useRegister();
   const handleSubmit = async (values: RegisterValues) => {
-    await registerRequest({
-      ...values,
-      age: parseInt(values.age, 10),
-    });
-    console.log(values);
-    navigate("/login");
+    return register(
+      {
+        ...values,
+        age: parseInt(values.age, 10),
+      },
+      {
+        onSuccess: () => navigate("/login"),
+      }
+    );
   };
 
   return (
