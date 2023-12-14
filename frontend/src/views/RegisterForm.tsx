@@ -4,6 +4,8 @@ import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import BoyIcon from "@mui/icons-material/Boy";
 import PersonIcon from "@mui/icons-material/Person";
 import { EmailAtIcon, LockIcon } from "../assets";
+import { Link, useNavigate } from "react-router-dom";
+import AuthService from "@/api/auth";
 
 const RegisterSchema = Yup.object({
   email: Yup.string().required("Required").email("Must be a valid email"),
@@ -11,54 +13,82 @@ const RegisterSchema = Yup.object({
     .max(16, "Must be 16 characters or less")
     .min(8, "Password must be 8 characters or more")
     .required("Required"),
-  name: Yup.string()
+  firstName: Yup.string()
     .required("Required")
     .max(30, "Name be 30 characters or less")
     .min(2, "Name be longer then 2 characters"),
-  surname: Yup.string()
+  lastName: Yup.string()
     .required("Required")
     .max(30, "Surname be 30 characters or less")
     .min(2, "Surname be longer then 2 characters"),
+  gender: Yup.string().required("Required"),
+  age: Yup.number()
+    .required("Required")
+    .min(18, "You must be 18 or older")
+    .max(99, "You must be 99 or younger"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password")], "Passwords must match")
     .required("Required"),
   phoneNumber: Yup.number().required("Required"),
 });
 
+const initialValues = {
+  email: "",
+  password: "",
+  firstName: "",
+  lastName: "",
+  confirmPassword: "",
+  phoneNumber: "",
+  gender: "",
+  age: "",
+};
+
+type RegisterValues = typeof initialValues;
+
 const RegisterForm = () => {
+  const navigate = useNavigate();
+  const { mutateAsync: register } = AuthService.useRegister();
+  const handleSubmit = async (values: RegisterValues) => {
+    return register(
+      {
+        ...values,
+        age: parseInt(values.age, 10),
+      },
+      {
+        onSuccess: () => navigate("/login"),
+      }
+    );
+  };
+
   return (
     <div id="red-to-black">
       {" "}
       <div className=" min-h-screen flex items-stretch text-white ">
-        <div className=" lg:w-full  h-screen flex items-center justify-center text-center md:px-16 px-0 z-0">
+        <div className=" lg:w-full  h-full flex items-center justify-center text-center md:px-16 px-0 z-0">
           <div className="py-6 w-1/2 z-20">
             <h1 className="text-white font-bold text-5xl mb-2">RiMatch</h1>
-            <h1 className="text-lg font-normal text-gray-200 mb-7">
+            <h1 className="text-xl font-normal text-gray-200">
               Register your new account
             </h1>
+            <p className="text-sm mt-2 mb-5 text-gray-200">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="text-red-500 hover:text-red-700 font-bold"
+              >
+                Login here!
+              </Link>
+            </p>
             <Formik
-              //!Forma i validacija
-              initialValues={{
-                email: "",
-                password: "",
-                name: "",
-                surname: "",
-                confirmPassword: "",
-                phoneNumber: "",
-              }}
+              initialValues={initialValues}
               validationSchema={RegisterSchema}
-              //Ovo je meni iz projekta radilo za slanje u bazu, slobodno promijeniti po potrebi
-              onSubmit={(values, { setSubmitting }) => {
-                setTimeout(() => {
-                  alert(JSON.stringify(values, null, 6));
-                  setSubmitting(false);
-                }, 400);
-              }}
+              onSubmit={handleSubmit}
             >
-              {(formik) => (
+              {({ isSubmitting }) => (
                 <Form
-                  onSubmit={formik.handleSubmit}
+                  aria-autocomplete="none"
                   className="sm:w-2/3 w-full px-4 lg:px-0 mx-auto"
+                  autoComplete=""
                 >
                   {/*NAME*/}
                   <div className="flex bg-white items-center border-2 py-4 px-4 rounded-2xl ">
@@ -67,14 +97,14 @@ const RegisterForm = () => {
                     <Field
                       className="pl-2 text-black outline-none border-none bg-white w-full"
                       type="text"
-                      id="name"
+                      id="firstName"
                       placeholder="Name"
-                      name="name"
+                      name="firstName"
                     />
                   </div>
                   <ErrorMessage
                     component="div"
-                    name="name"
+                    name="firstName"
                     className="text-red-500"
                   />
                   {/*SURNAME*/}
@@ -84,14 +114,53 @@ const RegisterForm = () => {
                     <Field
                       className="pl-2 text-black bg-white outline-none border-none w-full"
                       type="text"
-                      id="surname"
+                      id="lastName"
                       placeholder="Surname"
-                      name="surname"
+                      name="lastName"
                     />
                   </div>
                   <ErrorMessage
                     component="div"
-                    name="surname"
+                    name="lastName"
+                    className="text-red-500"
+                  />
+                  {/*Gender*/}
+                  <div className="flex items-center border-2 py-4 px-4 bg-white rounded-2xl mt-6 ">
+                    <PersonIcon color="action" />
+
+                    <Field
+                      as="select"
+                      className="pl-2 text-black bg-white outline-none border-none w-full"
+                      id="gender"
+                      name="gender"
+                    >
+                      <option value="" disabled>
+                        Choose your gender
+                      </option>
+                      <option value="M">Male</option>
+                      <option value="F">Female</option>
+                    </Field>
+                  </div>
+                  <ErrorMessage
+                    component="div"
+                    name="gender"
+                    className="text-red-500"
+                  />
+                  {/*Age*/}
+                  <div className="flex items-center border-2 py-4 px-4 bg-white rounded-2xl mt-6 ">
+                    <PersonIcon color="action" />
+
+                    <Field
+                      className="pl-2 text-black bg-white outline-none border-none w-full"
+                      id="age"
+                      type="text"
+                      placeholder="Age"
+                      name="age"
+                    />
+                  </div>
+                  <ErrorMessage
+                    component="div"
+                    name="age"
                     className="text-red-500"
                   />
                   {/*EMAIL*/}
@@ -163,8 +232,9 @@ const RegisterForm = () => {
                   />
                   <div className="px-4 pb-2 pt-4">
                     <button
+                      disabled={isSubmitting}
                       type="submit"
-                      className="block w-full bg-[#df4444]  transition duration-300 ease-in-out hover:bg-red-800 mt-4 py-3 rounded-2xl text-white font-semibold "
+                      className="block w-full bg-[#df4444]  transition duration-300 ease-in-out hover:bg-red-800 mt-4 py-3 rounded-2xl text-white font-semibold"
                     >
                       Register
                     </button>
