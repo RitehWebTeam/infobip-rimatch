@@ -10,11 +10,12 @@ import RegisterForm from "./views/RegisterForm.tsx";
 import ProtectedRoutes from "./routes/ProtectedRoutes.tsx";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import Root from "./views/Root.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <ProtectedRoutes />,
+    element: <ProtectedRoutes layout={<Root />} />,
     errorElement: <ErrorPage />,
     children: [{ index: true, element: <MatchCard /> }],
   },

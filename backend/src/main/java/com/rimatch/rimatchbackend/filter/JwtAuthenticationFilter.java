@@ -22,24 +22,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public JwtAuthenticationFilter(JWTUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
     }
+
     /*
-    *   Middleware that checks request for auth header and validates it and forwards them to next in filter chain
-    * */
+     * Middleware that checks request for auth header and validates it and forwards
+     * them to next in filter chain
+     */
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         final HttpServletRequest httpRequest = (HttpServletRequest) request;
         String token = httpRequest.getHeader("Authorization");
 
-        token = token.substring(7);
-
-        try{
+        try {
+            if (token == null) {
+                throw new IllegalArgumentException();
+            }
+            token = token.substring(7);
             jwtUtils.validateToken(token, TokenType.ACCESS);
-            filterChain.doFilter(request,response);
-        }catch (JwtException | IllegalArgumentException ex){
+            filterChain.doFilter(request, response);
+        } catch (JwtException | IllegalArgumentException ex) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.getWriter().write("{\"message\":\"Invalid JWT token\"}");
         }
     }
 }
-

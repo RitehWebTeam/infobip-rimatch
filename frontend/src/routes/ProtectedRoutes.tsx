@@ -1,10 +1,14 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import useRefreshToken from "../hooks/useRefreshToken";
 import useAuth from "../hooks/useAuth";
-import Root from "@/views/Root";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import CurrentUserContextProvider from "@/context/CurrentUserProvider";
 
-const ProtectedRoutes = () => {
+interface ProtectedRoutesProps {
+  layout?: React.ReactNode;
+}
+
+const ProtectedRoutes = ({ layout = <Outlet /> }: ProtectedRoutesProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useRefreshToken();
   const location = useLocation();
@@ -34,7 +38,7 @@ const ProtectedRoutes = () => {
     <>
       {!isLoading ? (
         auth?.accessToken ? (
-          <Root />
+          <CurrentUserContextProvider>{layout}</CurrentUserContextProvider>
         ) : (
           <Navigate to="/login" state={{ from: location }} replace />
         )

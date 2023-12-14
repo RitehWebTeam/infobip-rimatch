@@ -5,13 +5,15 @@ import {
   HeartIcon,
   LogoutIcon,
   HamburgerMenuIcon,
-} from "../assets";
+} from "@/assets";
 import useLogout from "@/hooks/useLogout";
+import useCurrentUserContext from "@/hooks/useCurrentUser";
+import cx from "classnames";
 
 const Navbar: React.FunctionComponent = () => {
-  const logout = useLogout();
-
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const logout = useLogout();
+  const user = useCurrentUserContext();
 
   const handleOpenDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -26,11 +28,17 @@ const Navbar: React.FunctionComponent = () => {
           RiMatch
         </h1>
         <div className="flex gap-3 items-center">
-          <p>Name</p>
+          <p>{user.firstName}</p>
 
           <div
             onClick={handleOpenDropdown}
-            className="h-12 w-12 hover:ring-4 user cursor-pointer relative ring-blue-700/30 rounded-full bg-cover bg-center bg-[url('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80')]"
+            className={cx(
+              "h-12 w-12 hover:ring-4 user cursor-pointer relative ring-blue-700/30 rounded-full bg-cover bg-center",
+              {
+                "bg-[url(/Default_pfp.svg)]": !user.profileImageUrl,
+                [`bg-[url(${user.profileImageUrl})]`]: user.profileImageUrl,
+              }
+            )}
           >
             {isDropdownOpen && (
               <div className="drop-down  w-48 overflow-hidden bg-white rounded-md shadow absolute top-12 right-3">
