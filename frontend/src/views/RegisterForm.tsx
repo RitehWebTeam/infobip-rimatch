@@ -4,7 +4,7 @@ import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import BoyIcon from "@mui/icons-material/Boy";
 import PersonIcon from "@mui/icons-material/Person";
 import { EmailAtIcon, LockIcon } from "../assets";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthService from "@/api/auth";
 
 const RegisterSchema = Yup.object({
@@ -67,9 +67,18 @@ const RegisterForm = () => {
         <div className=" lg:w-full  h-full flex items-center justify-center text-center md:px-16 px-0 z-0">
           <div className="py-6 w-1/2 z-20">
             <h1 className="text-white font-bold text-5xl mb-2">RiMatch</h1>
-            <h1 className="text-lg font-normal text-gray-200 mb-7">
+            <h1 className="text-xl font-normal text-gray-200">
               Register your new account
             </h1>
+            <p className="text-sm mt-2 mb-5 text-gray-200">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="text-red-500 hover:text-red-700 font-bold"
+              >
+                Login here!
+              </Link>
+            </p>
             <Formik
               initialValues={initialValues}
               validationSchema={RegisterSchema}
