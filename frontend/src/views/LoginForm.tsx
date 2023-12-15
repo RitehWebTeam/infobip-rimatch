@@ -1,6 +1,9 @@
 import { ErrorMessage, Field, Formik, Form } from "formik";
 import * as Yup from "yup";
 import { EmailAtIcon, LockIcon } from "../assets";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import AuthService from "@/api/auth";
+import useAuth from "@/hooks/useAuth";
 
 const LoginSchema = Yup.object({
   email: Yup.string().required("Required").email("Must be valid email"),
@@ -9,27 +12,43 @@ const LoginSchema = Yup.object({
     .required("Required"),
 });
 
+const initialValues = {
+  email: "",
+  password: "",
+};
+type LoginValues = typeof initialValues;
+
 const LoginForm = () => {
+  const { setAuth } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { mutateAsync: login } = AuthService.useLogin();
+  const from = location?.state?.from?.pathname ?? "/";
+
+  const handleSubmit = (values: LoginValues) => {
+    return login(values, {
+      onSuccess: ({ token }) => {
+        setAuth({
+          user: {
+            email: values.email,
+          },
+          accessToken: token,
+        });
+        navigate(from, { replace: true });
+      },
+    });
+  };
+
   return (
     <div>
       <div className="h-screen flex" id="red-to-black">
         <div className="flex w-full justify-center items-center ">
           <Formik
-            //!Forma i validacija
-            initialValues={{
-              email: "",
-              password: "",
-            }}
+            initialValues={initialValues}
             validationSchema={LoginSchema}
-            //Ovo je meni iz projekta radilo za slanje u bazu, slobodno promijeniti po potrebi
-            onSubmit={(values, { setSubmitting }) => {
-              setTimeout(() => {
-                alert(JSON.stringify(values, null, 2));
-                setSubmitting(false);
-              }, 400);
-            }}
+            onSubmit={handleSubmit}
           >
-            {() => (
+            {({ isSubmitting }) => (
               <Form className="w-1/4 rounded-xl  shadow-black drop-shadow-2xl ">
                 <h1 className="text-white-800 text-center font-bold text-5xl mb-2 font-Pacifico">
                   RiMatch
@@ -69,14 +88,24 @@ const LoginForm = () => {
                   className="text-red-500"
                 />
                 <button
+                  disabled={isSubmitting}
                   type="submit"
                   className="block w-full bg-red-600  transition duration-300 ease-in-out hover:bg-red-800 mt-4 py-3 rounded-2xl text-white font-semibold "
                 >
                   Login
                 </button>
-                <span className="text-base text-white ml-2 flex justify-center hover:text-gray-500 cursor-pointer">
+                <span className="text-base text-white ml-2 flex my-3 justify-center hover:text-gray-500 cursor-pointer">
                   Forgot Password ?
                 </span>
+                <p className="text-sm text-black w-full text-center py-3">
+                  Don&apos;t have an account?{" "}
+                  <Link
+                    to="/register"
+                    className="text-red-600 hover:text-red-800 font-bold"
+                  >
+                    Sign up here!
+                  </Link>
+                </p>
               </Form>
             )}
           </Formik>
