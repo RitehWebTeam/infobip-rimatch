@@ -52,7 +52,11 @@ const Navbar: React.FunctionComponent = () => {
               </div>
             )}
           </div>
-          <div className="sm:hidden cursor-pointer" id="mobile-toggle">
+          <div
+            onClick={handleOpenDropdown}
+            className="sm:hidden cursor-pointer"
+            id="mobile-toggle"
+          >
             <HamburgerMenuIcon />
           </div>
         </div>

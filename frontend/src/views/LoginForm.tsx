@@ -12,24 +12,8 @@ const LoginSchema = Yup.object({
 const LoginForm = () => {
   return (
     <div>
-      {/*Crveni blok*/}
-      <div className="h-screen flex">
-        <div className="flex w-1/2 bg-gradient-to-bl from-red-600 to-red-900 i justify-around items-center">
-          <div>
-            <h1 className="text-white font-bold text-4xl font-sans">RiMatch</h1>
-            <p className="text-white mt-1">
-              The most popular platform for finding your soulmate
-            </p>
-            <button
-              type="submit"
-              className="block w-28 bg-white text-indigo-800 mt-4 py-2 rounded-2xl font-bold mb-2"
-            >
-              Read More
-            </button>
-          </div>
-        </div>
-
-        <div className="flex w-2/4 justify-center items-center bg-white">
+      <div className="h-screen flex" id="red-to-black">
+        <div className="flex w-full justify-center items-center ">
           <Formik
             //!Forma i validacija
             initialValues={{
@@ -46,14 +30,14 @@ const LoginForm = () => {
             }}
           >
             {() => (
-              <Form className="bg-white p-8">
-                <h1 className="text-gray-800 font-bold text-5xl mb-2">
-                  Hello Again!
+              <Form className="w-1/4 rounded-xl  shadow-black drop-shadow-2xl ">
+                <h1 className="text-white-800 text-center font-bold text-5xl mb-2 font-Pacifico">
+                  RiMatch
                 </h1>
-                <p className="text-lg font-normal text-gray-600 mb-7">
+                <p className="text-lg font-normal text-center text-white-600 mb-7">
                   Welcome Back
                 </p>
-                <div className="flex items-center border-2 py-3 px-4 rounded-2xl ">
+                <div className="flex items-center bg-white border-2 py-3 px-4 rounded-2xl mt-6 ">
                   <EmailAtIcon />
                   <Field
                     className="pl-2 text-black outline-none border-none bg-white w-full"
@@ -68,7 +52,7 @@ const LoginForm = () => {
                   name="email"
                   className="text-red-500"
                 />
-                <div className="flex items-center border-2 py-3 px-4 rounded-2xl mt-6 ">
+                <div className="flex items-center bg-white border-2 py-3 px-4 rounded-2xl mt-6 ">
                   <LockIcon />
 
                   <Field
@@ -90,7 +74,7 @@ const LoginForm = () => {
                 >
                   Login
                 </button>
-                <span className="text-base text-black ml-2 flex justify-center hover:text-gray-500 cursor-pointer">
+                <span className="text-base text-white ml-2 flex justify-center hover:text-gray-500 cursor-pointer">
                   Forgot Password ?
                 </span>
               </Form>

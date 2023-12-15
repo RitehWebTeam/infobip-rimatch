@@ -28,10 +28,10 @@ const MatchCard = () => {
               </p>
             </div>
             <div className="flex mt-20 flex-row justify-between w-full">
-              <button className="btn hover:bg-green-600 bg-green-500 ml-4 mb-2 border-green-700 rounded-full w-24 h-24">
+              <button className="btn hover:bg-green-600 bg-green-500 transition-color duration-300 ml-4 mb-2 border-green-700 rounded-full w-24 h-24 shadow-md shadow-black">
                 <CheckIcon fontSize="large" />
               </button>
-              <button className="btn bg-red-500 hover:bg-red-600 rounded-full mr-4 border-red-700 btn-circle w-24 h-24">
+              <button className="btn bg-red-500 hover:bg-red-600 transition-color duration-300 rounded-full mr-4 border-red-700 btn-circle w-24 h-24 shadow-md shadow-black">
                 <ClearIcon fontSize="large" />
               </button>
             </div>

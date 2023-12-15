@@ -7,6 +7,7 @@ export default {
     extend: {
       fontFamily: {
         Pacifico: ["Pacifico"],
+        Montserrat: ["Montserrat"],
       },
     },
   },
