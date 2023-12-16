@@ -23,6 +23,7 @@ const router = createBrowserRouter([
       { path: "/preferences", element: <Preferences /> },
     ],
   },
+
   {
     path: "/login",
     element: <LoginForm />,

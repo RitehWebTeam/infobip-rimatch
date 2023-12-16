@@ -26,19 +26,23 @@ const Preferences = () => {
       .min(18, "Age must be between 18 and 99"),
     userNumber: Yup.number()
       .required("Required")
-      .min(111111111,"Please input a valid phone number"),
+      .min(111111111, "Please input a valid phone number"),
+    userLocation: Yup.string()
+      .required("Required")
+      .min(3, "Location name must be longer then 2 character"),
+    userDescription: Yup.number().required("Required"),
   });
   return (
     <div id="all">
       <Formik
-        //!Forma i validacija
+        //!Forma i validacija ne znam kako cemo rijesiti dodavanje slike
         initialValues={{
-          userAge: "",
           minAge: "",
           maxAge: "",
-          userGender: "",
           preferredGender: "",
-          userNumber: "",
+          userPhoneNumber: "",
+          userDescription: "",
+          location: "",
         }}
         validationSchema={preferenceSchema}
         onSubmit={(values, { setSubmitting }) => {
@@ -53,7 +57,7 @@ const Preferences = () => {
         {(formikPreference) => (
           <Form onSubmit={formikPreference.handleSubmit}>
             <div id="page1" className="page">
-              {/*Gender select*/}
+              {/*Page 1 Gender select and number input*/}
               <div className="page flex flex-col items-center w-full ">
                 <div className="flex flex-col mt-4" data-aos="fade-right">
                   <div className="   mb-16">
@@ -76,10 +80,10 @@ const Preferences = () => {
                         placeholder="091 999 999"
                       />
                       <ErrorMessage
-                      component="div"
-                      name="userNumber"
-                      className="text-red-500"
-                    />
+                        component="div"
+                        name="userNumber"
+                        className="text-red-500"
+                      />
                     </div>
                   </div>
                   <div
@@ -116,7 +120,7 @@ const Preferences = () => {
                 </div>
               </div>
             </div>
-            {/*age select*/}
+            {/*Page 2 age select*/}
             <div>
               <div className="page" id="page2">
                 <div className="absolute top-0 mt-5 ">
@@ -124,26 +128,6 @@ const Preferences = () => {
                 </div>
 
                 <div className="flex  flex-col justify-center">
-                  <div data-aos="fade-right" className="flex flex-col">
-                    <label
-                      className="text-white text-3xl  font-Montserrat text-center"
-                      htmlFor="userAge"
-                    >
-                      Your Age
-                    </label>
-                    <Field
-                      type="number"
-                      id="userAge"
-                      placeholder="18 - 99"
-                      name="userAge"
-                      className="rounded-2xl px-5 py-2 bg-gray-200 text-black"
-                    />
-                    <ErrorMessage
-                      component="div"
-                      name="userAge"
-                      className="text-red-500"
-                    />
-                  </div>
                   <div
                     data-aos="fade-right"
                     data-aos-delay="100"
@@ -197,28 +181,87 @@ const Preferences = () => {
                   <MovmentButtons page="#page3" moveName="Next" />
                 </div>
               </div>
-              {/*upload picture*/}
+              {/*Page 3 Location and description*/}
               <div className="page  flex flex-col justify-center" id="page3">
                 <div className="absolute top-0 mt-5">
                   <MovmentButtons page="#page2" moveName="Previous" />
                 </div>
                 <div data-aos="fade-right" data-aos-once="false">
-                  <h1 className="flex text-white text-3xl font-Montserrat mb-5 ">
-                    Upload some pictures for your account
-                  </h1>
-                  <div className="flex justify-center w-full" >
-                  <Dropzone />
+                  <div data-aos="fade-right" className="flex flex-col mb-24">
+                    <label
+                      className="text-white text-3xl font-Montserrat text-center"
+                      htmlFor="maxAge"
+                    >
+                      Where are you from
+                    </label>
+                    <Field
+                      type="text"
+                      id="userLocation"
+                      placeholder="Please input your location"
+                      name="userLocation"
+                      className="rounded-2xl px-5 py-2 bg-gray-200 text-black"
+                    />
+                    <ErrorMessage
+                      component="div"
+                      name="userLocation"
+                      className="text-red-500"
+                    />
                   </div>
-                 
-                </div>
-                <div>
-                  <button
-                    className="mt-24 text-gray-300  bg-[#00000042] rounded-full mb-4 px-5 py-3 text-center hover:opacity-75 transition-opacity duration-300"
-                    type="submit"
+                  <div
+                    data-aos="fade-right"
+                    data-aos-delay="200"
+                    className="flex flex-col mb-24"
                   >
-                    Submit
-                  </button>
+                    <label
+                      className="text-white text-3xl font-Montserrat text-center"
+                      htmlFor="maxAge"
+                    >
+                      Tell us about yourself
+                    </label>
+                    <Field
+                      as="textarea"
+                      rows="4"
+                      cols="50"
+                      id="userDescription"
+                      placeholder="Description"
+                      name="userDescription"
+                      className="rounded-2xl px-5 py-2 bg-gray-200 text-black"
+                    />
+                    <ErrorMessage
+                      component="div"
+                      name="userDescription"
+                      className="text-red-500"
+                    />
+                  </div>
                 </div>
+                <div className="absolute bottom-0 mb-5">
+                  <MovmentButtons page="#page4" moveName="Next" />
+                </div>
+              </div>
+              {/*Page 4 Picture upload*/}
+              <div className="page  flex flex-col justify-center" id="page4">
+                <div className="absolute top-0 mt-5">
+                  <MovmentButtons page="#page3" moveName="Previous" />
+                </div>
+                <h1
+                  data-aos="fade-right"
+                  className="flex text-white text-3xl mt-10 font-Montserrat mb-5 "
+                >
+                  Upload some pictures for your account
+                </h1>
+                <div
+                  data-aos-delay="200"
+                  data-aos="fade-right"
+                  className="flex justify-center w-full"
+                >
+                  <Dropzone />
+                </div>
+                <button
+                  className=" absolute bottom-0 text-gray-300  bg-[#00000042] rounded-full mb-4 px-5 py-3 text-center hover:opacity-75 transition-opacity duration-300"
+                  type="submit"
+                >
+                  Submit
+                </button>
               </div>
             </div>
           </Form>

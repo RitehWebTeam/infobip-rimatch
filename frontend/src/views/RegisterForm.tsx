@@ -1,12 +1,12 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
+import MaleIcon from "@mui/icons-material/Male";
 import BoyIcon from "@mui/icons-material/Boy";
 import PersonIcon from "@mui/icons-material/Person";
 import { EmailAtIcon, LockIcon } from "../assets";
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "@/api/auth";
-
+import DateRangeIcon from "@mui/icons-material/DateRange";
 const RegisterSchema = Yup.object({
   email: Yup.string().required("Required").email("Must be a valid email"),
   password: Yup.string()
@@ -128,7 +128,7 @@ const RegisterForm = () => {
                   />
                   {/*Gender*/}
                   <div className="flex items-center border-2 py-4 px-4 bg-white rounded-2xl mt-6 ">
-                    <PersonIcon color="action" />
+                    <MaleIcon color="action" />
 
                     <Field
                       as="select"
@@ -150,7 +150,7 @@ const RegisterForm = () => {
                   />
                   {/*Age*/}
                   <div className="flex items-center border-2 py-4 px-4 bg-white rounded-2xl mt-6 ">
-                    <PersonIcon color="action" />
+                    <DateRangeIcon color="action" />
 
                     <Field
                       className="pl-2 text-black bg-white outline-none border-none w-full"
@@ -182,22 +182,7 @@ const RegisterForm = () => {
                     name="email"
                     className="text-red-500"
                   />
-                  {/*PHONE NUMBER*/}
-                  <div className="flex items-center border-2 py-4 px-4 bg-white rounded-2xl mt-6 ">
-                    <LocalPhoneIcon color="action" />
-                    <Field
-                      className="pl-2 text-black bg-white outline-none border-none w-full"
-                      type="tel"
-                      id="phoneNumber"
-                      placeholder="Phone Number"
-                      name="phoneNumber"
-                    />
-                  </div>
-                  <ErrorMessage
-                    component="div"
-                    name="phoneNumber"
-                    className="text-red-500"
-                  />
+
                   {/*PASSWORD*/}
                   <div className="flex items-center border-2 py-4 px-4 bg-white rounded-2xl mt-6 ">
                     <LockIcon />
