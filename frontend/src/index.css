@@ -41,19 +41,7 @@
     rgb(41, 32, 32) 40%)
  
 } 
-#red-to-black2 {
-  background-image: radial-gradient(circle at center, rgba(139, 0, 0, 1) 0%, rgb(204, 34, 34) 80%, rgb(231, 80, 80) 100%);
-  /* Adjust the colors and transparency values as needed */
-  
-  width: 100vw;
-  height: 100vh;
-  /* Set width and height as needed */
-}
 
-#red-to-black2{
-  background: rgb(211, 58, 58);
-  
-}
 
 html, body {
   height: 100%; 

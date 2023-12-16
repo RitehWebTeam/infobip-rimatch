@@ -24,6 +24,9 @@ const Preferences = () => {
       .required("Required")
       .max(99, "Age must be between 18 and 99")
       .min(18, "Age must be between 18 and 99"),
+    userNumber: Yup.number()
+      .required("Required")
+      .min(111111111,"Please input a valid phone number"),
   });
   return (
     <div id="all">
@@ -35,6 +38,7 @@ const Preferences = () => {
           maxAge: "",
           userGender: "",
           preferredGender: "",
+          userNumber: "",
         }}
         validationSchema={preferenceSchema}
         onSubmit={(values, { setSubmitting }) => {
@@ -61,20 +65,21 @@ const Preferences = () => {
                         className="text-white text-3xl text-center font-Montserrat mb-4 "
                         htmlFor="gender"
                       >
-                        Choose your gender
+                        Input you phone number
                       </label>
 
                       <Field
-                        as="select"
-                        name="userGender"
+                        type="number"
+                        name="userNumber"
+                        id="userNumber"
                         className="bg-gray-50 border  font-Montserrat border-gray-300 text-gray-900 text-m rounded-lg focus:ring-red-500 focus:border-red-500 w-full  p-2.5"
-                      >
-                        <option value="" disabled selected hidden>
-                          Choose a Gender
-                        </option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                      </Field>
+                        placeholder="091 999 999"
+                      />
+                      <ErrorMessage
+                      component="div"
+                      name="userNumber"
+                      className="text-red-500"
+                    />
                     </div>
                   </div>
                   <div
@@ -179,7 +184,7 @@ const Preferences = () => {
                       id="maxAge"
                       placeholder="18 - 99"
                       name="maxAge"
-                      className="rounded-2xl px-5 py-2 w-80 bg-gray-200 text-black"
+                      className="rounded-2xl px-5 py-2 bg-gray-200 text-black"
                     />
                     <ErrorMessage
                       component="div"
@@ -201,8 +206,10 @@ const Preferences = () => {
                   <h1 className="flex text-white text-3xl font-Montserrat mb-5 ">
                     Upload some pictures for your account
                   </h1>
-
+                  <div className="flex justify-center w-full" >
                   <Dropzone />
+                  </div>
+                 
                 </div>
                 <div>
                   <button
