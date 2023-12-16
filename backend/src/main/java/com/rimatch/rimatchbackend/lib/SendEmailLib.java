@@ -20,13 +20,19 @@ public class SendEmailLib {
   @Value("${infobip.base-url}")
   private String BASE_URL;
 
-  private static final String SENDER_EMAIL_ADDRESS = "RiMatchApp <legendrp13@gmail.com>";
+  // Sender email address must be verified on the infobip portal for your account
+  @Value("${infobip.sender-email}")
+  private String SENDER_EMAIL_ADDRESS;
+
+  private String getSenderEmail() {
+    return String.format("RiMatchApp <%s>", SENDER_EMAIL_ADDRESS);
+  }
 
   public void sendEmail(List<String> recepientEmailAddress, String subject, String text) throws ApiException {
     var sendEmailApi = initEmailApi();
     try {
       var emailResponse = sendEmailApi.sendEmail(recepientEmailAddress)
-          .from(SENDER_EMAIL_ADDRESS)
+          .from(getSenderEmail())
           .subject(subject)
           .text(text)
           .execute();
