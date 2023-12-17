@@ -1,13 +1,14 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import Dropzone from "../components/Dropzone";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import MovmentButtons from "../components/MovmentButtons";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import { PreferencesInitData, UsersService } from "@/api/users";
+import ScrollToFieldError from "@/components/ScrollToFieldError";
 
 const preferenceSchema = Yup.object({
   minAge: Yup.number()
@@ -30,6 +31,7 @@ const preferenceSchema = Yup.object({
     .required("Required")
     .min(3, "Location name must be longer than 2 characters"),
   userDescription: Yup.string().required("Required"),
+  preferredGender: Yup.string().required("Required"),
 });
 
 const initialValues = {
@@ -42,6 +44,15 @@ const initialValues = {
 };
 
 type PreferenceValues = typeof initialValues;
+
+const INPUT_PAGE_LOCATION: Record<keyof PreferenceValues, number> = {
+  userPhoneNumber: 1,
+  preferredGender: 1,
+  minAge: 2,
+  maxAge: 2,
+  userDescription: 3,
+  location: 3,
+};
 
 const mapPreferenceValues = (
   values: PreferenceValues
@@ -61,6 +72,10 @@ const Preferences = () => {
   const navigate = useNavigate();
   const { auth, setAuth } = useAuth();
   const { mutateAsync: initPreferences } = UsersService.useInitPreferences();
+  const inputRefs = useRef(
+    {} as Record<keyof PreferenceValues, HTMLInputElement>
+  );
+  const pageRefs = useRef({} as Record<number, HTMLDivElement>);
   useEffect(() => {
     // Hacky solution should change
     // If the user is active we redirect him to / which is ok
@@ -91,10 +106,15 @@ const Preferences = () => {
         initialValues={initialValues}
         validationSchema={preferenceSchema}
         onSubmit={handleSubmit}
+        initialErrors={initialValues}
       >
-        {({ isSubmitting, errors }) => (
+        {({ isSubmitting }) => (
           <Form>
-            <div id="page1" className="page">
+            <div
+              id="page1"
+              className="page"
+              ref={(el: HTMLDivElement) => (pageRefs.current["1"] = el)}
+            >
               {/*Page 1 Gender select and number input*/}
               <div className="page flex flex-col items-center w-full ">
                 <div className="flex flex-col mt-4" data-aos="fade-right">
@@ -116,6 +136,9 @@ const Preferences = () => {
                         id="userPhoneNumber"
                         className="bg-gray-50 border  font-Montserrat border-gray-300 text-gray-900 text-m rounded-lg focus:ring-red-500 focus:border-red-500 w-full  p-2.5"
                         placeholder="091 999 999"
+                        innerRef={(el: HTMLInputElement) =>
+                          (inputRefs.current.userPhoneNumber = el!)
+                        }
                       />
                       <ErrorMessage
                         component="div"
@@ -142,6 +165,9 @@ const Preferences = () => {
                         id="preferredGender"
                         as="select"
                         className="bg-gray-50 mt-4 border font-Montserrat border-gray-300 text-gray-900 text-m rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 "
+                        innerRef={(el: HTMLInputElement) =>
+                          (inputRefs.current.preferredGender = el!)
+                        }
                       >
                         <option value="" disabled hidden>
                           Choose a Gender
@@ -149,6 +175,11 @@ const Preferences = () => {
                         <option value="M">Male</option>
                         <option value="F">Female</option>
                       </Field>
+                      <ErrorMessage
+                        component="div"
+                        name="maxAge"
+                        className="text-red-500"
+                      />
                     </div>
                   </div>
                 </div>
@@ -160,7 +191,11 @@ const Preferences = () => {
             </div>
             {/*Page 2 age select*/}
             <div>
-              <div className="page" id="page2">
+              <div
+                className="page"
+                id="page2"
+                ref={(el: HTMLDivElement) => (pageRefs.current["2"] = el)}
+              >
                 <div className="absolute top-0 mt-5 ">
                   <MovmentButtons page="#page1" moveName="Previous" />
                 </div>
@@ -183,6 +218,9 @@ const Preferences = () => {
                       placeholder="18 - 99"
                       name="minAge"
                       className="rounded-2xl px-5 py-2 bg-gray-200 text-black"
+                      innerRef={(el: HTMLInputElement) =>
+                        (inputRefs.current.minAge = el!)
+                      }
                     />
                     <ErrorMessage
                       component="div"
@@ -207,6 +245,9 @@ const Preferences = () => {
                       placeholder="18 - 99"
                       name="maxAge"
                       className="rounded-2xl px-5 py-2 bg-gray-200 text-black"
+                      innerRef={(el: HTMLInputElement) =>
+                        (inputRefs.current.maxAge = el!)
+                      }
                     />
                     <ErrorMessage
                       component="div"
@@ -220,7 +261,11 @@ const Preferences = () => {
                 </div>
               </div>
               {/*Page 3 Location and description*/}
-              <div className="page  flex flex-col justify-center" id="page3">
+              <div
+                className="page  flex flex-col justify-center"
+                id="page3"
+                ref={(el: HTMLDivElement) => (pageRefs.current["3"] = el)}
+              >
                 <div className="absolute top-0 mt-5">
                   <MovmentButtons page="#page2" moveName="Previous" />
                 </div>
@@ -238,6 +283,9 @@ const Preferences = () => {
                       placeholder="Please input your location"
                       name="location"
                       className="rounded-2xl px-5 py-2 bg-gray-200 text-black"
+                      innerRef={(el: HTMLInputElement) =>
+                        (inputRefs.current.location = el!)
+                      }
                     />
                     <ErrorMessage
                       component="div"
@@ -264,6 +312,9 @@ const Preferences = () => {
                       placeholder="Description"
                       name="userDescription"
                       className="rounded-2xl px-5 py-2 bg-gray-200 text-black"
+                      innerRef={(el: HTMLInputElement) =>
+                        (inputRefs.current.userDescription = el!)
+                      }
                     />
                     <ErrorMessage
                       component="div"
@@ -277,7 +328,11 @@ const Preferences = () => {
                 </div>
               </div>
               {/*Page 4 Picture upload*/}
-              <div className="page  flex flex-col justify-center" id="page4">
+              <div
+                className="page  flex flex-col justify-center"
+                id="page4"
+                ref={(el: HTMLDivElement) => (pageRefs.current["4"] = el)}
+              >
                 <div className="absolute top-0 mt-5">
                   <MovmentButtons page="#page3" moveName="Previous" />
                 </div>
@@ -302,7 +357,10 @@ const Preferences = () => {
                   Submit
                 </button>
               </div>
-              <pre>{JSON.stringify(errors)}</pre>
+              <ScrollToFieldError
+                pageRefs={pageRefs}
+                inputPageLocation={INPUT_PAGE_LOCATION}
+              />
             </div>
           </Form>
         )}
