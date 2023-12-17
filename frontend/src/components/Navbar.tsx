@@ -24,7 +24,7 @@ const Navbar: React.FunctionComponent = () => {
         <div>
           <RiMatchLogo />
         </div>
-        <h1 className="text-red-500 text-5xl flex justify-center font-semibold">
+        <h1 className="text-red-500 text-5xl flex justify-center font-semibold font-Pacifico">
           RiMatch
         </h1>
         <div className="flex gap-3 items-center">
@@ -68,7 +68,11 @@ const Navbar: React.FunctionComponent = () => {
               </div>
             )}
           </div>
-          <div className="sm:hidden cursor-pointer" id="mobile-toggle">
+          <div
+            onClick={handleOpenDropdown}
+            className="sm:hidden cursor-pointer"
+            id="mobile-toggle"
+          >
             <HamburgerMenuIcon />
           </div>
         </div>

@@ -4,7 +4,7 @@ import com.rimatch.rimatchbackend.dto.LoginDto;
 import com.rimatch.rimatchbackend.dto.RegisterDto;
 import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.service.UserService;
-import com.rimatch.rimatchbackend.service.UserService.TokenPair;
+import com.rimatch.rimatchbackend.service.UserService.LoginResponse;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -42,21 +42,24 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
-        TokenPair tokenPair = userService.loginUser(loginDto);
+        LoginResponse loginResponseData = userService.loginUser(loginDto);
     
-        if (tokenPair == null) {
+        if (loginResponseData == null) {
             return new ResponseEntity<>(Map.of("message", "Invalid email or password"), HttpStatus.UNAUTHORIZED);
         }
     
-        response.addCookie(userService.setRefreshTokenCookie(tokenPair.getRefreshToken()));
-        return new ResponseEntity<>(Map.of("token", tokenPair.getToken()), HttpStatus.OK);
+        response.addCookie(userService.setRefreshTokenCookie(loginResponseData.getRefreshToken()));
+        return new ResponseEntity<>(
+            Map.of("token", loginResponseData.getToken(), "active", loginResponseData.isActive()),
+            HttpStatus.OK);
     }
 
     @GetMapping("/refresh")
     public ResponseEntity<?> refreshToken(@CookieValue("refreshToken") String refreshToken) {
         try {
             String token = userService.refreshAccessToken(refreshToken);
-            return ResponseEntity.ok(Map.of("token", token));
+            boolean active = userService.getUserByToken(token).isActive();
+            return ResponseEntity.ok(Map.of("token", token, "active", active));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", "Invalid refresh token!"));
         }

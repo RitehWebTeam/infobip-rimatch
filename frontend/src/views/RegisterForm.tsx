@@ -1,12 +1,12 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
+import MaleIcon from "@mui/icons-material/Male";
 import BoyIcon from "@mui/icons-material/Boy";
 import PersonIcon from "@mui/icons-material/Person";
 import { EmailAtIcon, LockIcon } from "../assets";
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "@/api/auth";
-
+import DateRangeIcon from "@mui/icons-material/DateRange";
 const RegisterSchema = Yup.object({
   email: Yup.string().required("Required").email("Must be a valid email"),
   password: Yup.string()
@@ -29,7 +29,6 @@ const RegisterSchema = Yup.object({
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password")], "Passwords must match")
     .required("Required"),
-  phoneNumber: Yup.number().required("Required"),
 });
 
 const initialValues = {
@@ -38,7 +37,6 @@ const initialValues = {
   firstName: "",
   lastName: "",
   confirmPassword: "",
-  phoneNumber: "",
   gender: "",
   age: "",
 };
@@ -65,12 +63,14 @@ const RegisterForm = () => {
       {" "}
       <div className=" min-h-screen flex items-stretch text-white ">
         <div className=" lg:w-full  h-full flex items-center justify-center text-center md:px-16 px-0 z-0">
-          <div className="py-6 w-1/2 z-20">
-            <h1 className="text-white font-bold text-5xl mb-2">RiMatch</h1>
+          <div className="py-6 w-1/2 z-20 ">
+            <h1 className="text-white font-bold text-5xl mb-2 font-Pacifico">
+              RiMatch
+            </h1>
             <h1 className="text-xl font-normal text-gray-200">
               Register your new account
             </h1>
-            <p className="text-sm mt-2 mb-5 text-gray-200">
+            <p className="text-sm mt-2 text-gray-200">
               Already have an account?{" "}
               <Link
                 to="/login"
@@ -87,7 +87,7 @@ const RegisterForm = () => {
               {({ isSubmitting }) => (
                 <Form
                   aria-autocomplete="none"
-                  className="sm:w-2/3 w-full px-4 lg:px-0 mx-auto"
+                  className="sm:w-2/3 w-full px-4 lg: mx-auto  rounded-xl py-10 shadow-black drop-shadow-2xl"
                   autoComplete=""
                 >
                   {/*NAME*/}
@@ -95,7 +95,7 @@ const RegisterForm = () => {
                     <BoyIcon color="action" fontSize="medium" />
 
                     <Field
-                      className="pl-2 text-black outline-none border-none bg-white w-full"
+                      className="pl-2 text-black outline-none border-none bg-white w-full "
                       type="text"
                       id="firstName"
                       placeholder="Name"
@@ -126,7 +126,7 @@ const RegisterForm = () => {
                   />
                   {/*Gender*/}
                   <div className="flex items-center border-2 py-4 px-4 bg-white rounded-2xl mt-6 ">
-                    <PersonIcon color="action" />
+                    <MaleIcon color="action" />
 
                     <Field
                       as="select"
@@ -148,7 +148,7 @@ const RegisterForm = () => {
                   />
                   {/*Age*/}
                   <div className="flex items-center border-2 py-4 px-4 bg-white rounded-2xl mt-6 ">
-                    <PersonIcon color="action" />
+                    <DateRangeIcon color="action" />
 
                     <Field
                       className="pl-2 text-black bg-white outline-none border-none w-full"
@@ -180,22 +180,7 @@ const RegisterForm = () => {
                     name="email"
                     className="text-red-500"
                   />
-                  {/*PHONE NUMBER*/}
-                  <div className="flex items-center border-2 py-4 px-4 bg-white rounded-2xl mt-6 ">
-                    <LocalPhoneIcon color="action" />
-                    <Field
-                      className="pl-2 text-black bg-white outline-none border-none w-full"
-                      type="tel"
-                      id="phoneNumber"
-                      placeholder="Phone Number"
-                      name="phoneNumber"
-                    />
-                  </div>
-                  <ErrorMessage
-                    component="div"
-                    name="phoneNumber"
-                    className="text-red-500"
-                  />
+
                   {/*PASSWORD*/}
                   <div className="flex items-center border-2 py-4 px-4 bg-white rounded-2xl mt-6 ">
                     <LockIcon />
@@ -230,11 +215,11 @@ const RegisterForm = () => {
                     name="confirmPassword"
                     className="text-red-500"
                   />
-                  <div className="px-4 pb-2 pt-4">
+                  <div className="mt-8">
                     <button
                       disabled={isSubmitting}
                       type="submit"
-                      className="block w-full bg-[#df4444]  transition duration-300 ease-in-out hover:bg-red-800 mt-4 py-3 rounded-2xl text-white font-semibold"
+                      className="block w-full bg-red-600  transition duration-300 ease-in-out hover:bg-red-800 mt-4 py-3 rounded-2xl text-white font-semibold"
                     >
                       Register
                     </button>

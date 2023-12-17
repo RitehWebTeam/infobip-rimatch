@@ -1,6 +1,10 @@
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-import { useQuery } from "@tanstack/react-query";
+import {
+  UseMutationOptions,
+  useMutation,
+  useQuery,
+} from "@tanstack/react-query";
 
 export interface User {
   id: string;
@@ -15,14 +19,24 @@ export interface User {
   profileImageUrl: string;
   phoneNumber: string;
   location: string;
-  preferences: {
-    ageGroupMin: number;
-    ageGroupMax: number;
-    partnerGender: string;
-  };
+  preferences: UserPreferences;
   lastSeen: string;
   createdAt: string;
   updatedAt: string;
+}
+
+interface UserPreferences {
+  ageGroupMin: number;
+  ageGroupMax: number;
+  partnerGender: string;
+}
+
+export interface PreferencesInitData {
+  description: string;
+  profileImageUrl: string;
+  phoneNumber: string;
+  location: string;
+  preferences: UserPreferences;
 }
 
 export const UsersService = {
@@ -34,6 +48,24 @@ export const UsersService = {
       queryFn: () => axios.get("/users/me").then((response) => response.data),
       staleTime: Infinity,
       enabled: !!auth?.accessToken,
+    });
+  },
+
+  useInitPreferences: <T = void>(
+    mutationOptions?: Omit<
+      UseMutationOptions<T, Error, PreferencesInitData>,
+      "mutationFn"
+    >
+  ) => {
+    const axios = useAxiosPrivate();
+    return useMutation<T, Error, PreferencesInitData>({
+      mutationFn: async (data) => {
+        const response = await axios.post<T>("/users/me/setup", data, {
+          withCredentials: true,
+        });
+        return response.data;
+      },
+      ...mutationOptions,
     });
   },
 };

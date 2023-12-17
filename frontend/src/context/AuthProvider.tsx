@@ -8,6 +8,7 @@ interface StateContextType<T> {
 interface AuthObject {
   user: Record<string, unknown>;
   accessToken: string;
+  active: boolean;
 }
 
 type AuthContextType = StateContextType<AuthObject | null>;

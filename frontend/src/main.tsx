@@ -11,6 +11,7 @@ import ProtectedRoutes from "./routes/ProtectedRoutes.tsx";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Root from "./views/Root.tsx";
+import Preferences from "./views/Preferences.tsx";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,11 @@ const router = createBrowserRouter([
     element: <ProtectedRoutes layout={<Root />} />,
     errorElement: <ErrorPage />,
     children: [{ index: true, element: <MatchCard /> }],
+  },
+  {
+    path: "/init/preferences",
+    element: <Preferences />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/login",
