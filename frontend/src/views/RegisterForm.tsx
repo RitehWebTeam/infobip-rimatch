@@ -29,7 +29,6 @@ const RegisterSchema = Yup.object({
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password")], "Passwords must match")
     .required("Required"),
-  phoneNumber: Yup.number().required("Required"),
 });
 
 const initialValues = {
@@ -38,7 +37,6 @@ const initialValues = {
   firstName: "",
   lastName: "",
   confirmPassword: "",
-  phoneNumber: "",
   gender: "",
   age: "",
 };
