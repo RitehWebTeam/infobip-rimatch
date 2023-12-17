@@ -10,6 +10,11 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 
 import jakarta.servlet.http.Cookie;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -53,32 +58,23 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public TokenPair loginUser(LoginDto loginInfo) {
+    public LoginResponse loginUser(LoginDto loginInfo) {
         return Optional.ofNullable(userRepository.findByEmail(loginInfo.getEmail()))
             .filter(user -> passwordEncoder.matches(loginInfo.getPassword(), user.getHashedPassword()))
-            .map(user -> new TokenPair(
+            .map(user -> new LoginResponse(
                 jwtUtils.generateAccessToken(user.getEmail()),
-                jwtUtils.generateRefreshToken(user.getEmail())
+                jwtUtils.generateRefreshToken(user.getEmail()),
+                user.isActive()
             ))
             .orElse(null);
     }
 
-    public static class TokenPair {
+    @Getter
+    @AllArgsConstructor
+    public static class LoginResponse {
         private String token;
         private String refreshToken;
-
-        public TokenPair(String token, String refreshToken) {
-            this.token = token;
-            this.refreshToken = refreshToken;
-        }
-
-        public String getToken() {
-            return token;
-        }
-
-        public String getRefreshToken() {
-            return refreshToken;
-        }
+        private boolean active;
     }
 
     public Cookie clearRefreshTokenCookie() {
@@ -118,7 +114,9 @@ public class UserService {
     }
 
     public User getUserByToken(String token){
-        token = token.substring(7);
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
         return userRepository.findByEmail(jwtUtils.extractSubject(token, TokenType.ACCESS));
     }
 
