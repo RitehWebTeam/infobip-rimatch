@@ -6,32 +6,46 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import MovmentButtons from "../components/MovmentButtons";
 import { useNavigate } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
+
+const preferenceSchema = Yup.object({
+  userAge: Yup.number()
+    .required("Required")
+    .max(99, "Age must be between 18 and 99")
+    .min(18, "Age must be between 18 and 99"),
+  minAge: Yup.number()
+    .required("Required")
+    .max(99, "Age must be between 18 and 99")
+    .min(18, "Age must be between 18 and 99"),
+  maxAge: Yup.number()
+    .required("Required")
+    .max(99, "Age must be between 18 and 99")
+    .min(18, "Age must be between 18 and 99"),
+  userNumber: Yup.number()
+    .required("Required")
+    .min(111111111, "Please input a valid phone number"),
+  userLocation: Yup.string()
+    .required("Required")
+    .min(3, "Location name must be longer then 2 character"),
+  userDescription: Yup.number().required("Required"),
+});
+
 const Preferences = () => {
+  const navigate = useNavigate();
+  const { auth } = useAuth();
+  useEffect(() => {
+    // Hacky solution should change
+    // If the user is active we redirect him to / which is ok
+    // If the user is not logged in we also redirect him to / which will either redirect him to /login or
+    // or it will refresh his token and return him here
+    if (auth?.active || !auth?.accessToken) {
+      navigate("/");
+    }
+  }, [auth?.active, auth?.accessToken, navigate]);
+
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
-  const navigate = useNavigate();
-  const preferenceSchema = Yup.object({
-    userAge: Yup.number()
-      .required("Required")
-      .max(99, "Age must be between 18 and 99")
-      .min(18, "Age must be between 18 and 99"),
-    minAge: Yup.number()
-      .required("Required")
-      .max(99, "Age must be between 18 and 99")
-      .min(18, "Age must be between 18 and 99"),
-    maxAge: Yup.number()
-      .required("Required")
-      .max(99, "Age must be between 18 and 99")
-      .min(18, "Age must be between 18 and 99"),
-    userNumber: Yup.number()
-      .required("Required")
-      .min(111111111, "Please input a valid phone number"),
-    userLocation: Yup.string()
-      .required("Required")
-      .min(3, "Location name must be longer then 2 character"),
-    userDescription: Yup.number().required("Required"),
-  });
   return (
     <div id="all">
       <Formik
@@ -105,7 +119,7 @@ const Preferences = () => {
                         as="select"
                         className="bg-gray-50 mt-4 border font-Montserrat border-gray-300 text-gray-900 text-m rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 "
                       >
-                        <option value="" disabled selected hidden>
+                        <option value="" disabled hidden>
                           Choose a Gender
                         </option>
                         <option value="male">Male</option>

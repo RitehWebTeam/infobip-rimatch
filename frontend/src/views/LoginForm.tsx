@@ -27,12 +27,13 @@ const LoginForm = () => {
 
   const handleSubmit = (values: LoginValues) => {
     return login(values, {
-      onSuccess: ({ token }) => {
+      onSuccess: ({ token, active }) => {
         setAuth({
           user: {
             email: values.email,
           },
           accessToken: token,
+          active,
         });
         navigate(from, { replace: true });
       },

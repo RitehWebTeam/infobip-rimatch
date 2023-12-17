@@ -18,12 +18,13 @@ const router = createBrowserRouter([
     path: "/",
     element: <ProtectedRoutes layout={<Root />} />,
     errorElement: <ErrorPage />,
-    children: [
-      { index: true, element: <MatchCard /> },
-      { path: "/preferences", element: <Preferences /> },
-    ],
+    children: [{ index: true, element: <MatchCard /> }],
   },
-
+  {
+    path: "/init/preferences",
+    element: <Preferences />,
+    errorElement: <ErrorPage />,
+  },
   {
     path: "/login",
     element: <LoginForm />,

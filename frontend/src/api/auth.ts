@@ -4,6 +4,7 @@ import { User } from "./users";
 
 interface TokenResponse {
   token: string;
+  active: boolean;
 }
 
 interface RegisterData {
