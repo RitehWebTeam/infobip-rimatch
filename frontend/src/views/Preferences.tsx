@@ -7,32 +7,60 @@ import "aos/dist/aos.css";
 import MovmentButtons from "../components/MovmentButtons";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
+import { PreferencesInitData, UsersService } from "@/api/users";
 
 const preferenceSchema = Yup.object({
-  userAge: Yup.number()
-    .required("Required")
-    .max(99, "Age must be between 18 and 99")
-    .min(18, "Age must be between 18 and 99"),
   minAge: Yup.number()
     .required("Required")
     .max(99, "Age must be between 18 and 99")
     .min(18, "Age must be between 18 and 99"),
   maxAge: Yup.number()
+    .when("minAge", ([minAge], schema) =>
+      minAge
+        ? schema.min(minAge, "Max age must be greater than min age")
+        : schema
+    )
     .required("Required")
     .max(99, "Age must be between 18 and 99")
     .min(18, "Age must be between 18 and 99"),
-  userNumber: Yup.number()
+  userPhoneNumber: Yup.number()
     .required("Required")
     .min(111111111, "Please input a valid phone number"),
-  userLocation: Yup.string()
+  location: Yup.string()
     .required("Required")
-    .min(3, "Location name must be longer then 2 character"),
-  userDescription: Yup.number().required("Required"),
+    .min(3, "Location name must be longer than 2 characters"),
+  userDescription: Yup.string().required("Required"),
+});
+
+const initialValues = {
+  minAge: "",
+  maxAge: "",
+  preferredGender: "",
+  userPhoneNumber: "",
+  userDescription: "",
+  location: "",
+};
+
+type PreferenceValues = typeof initialValues;
+
+const mapPreferenceValues = (
+  values: PreferenceValues
+): PreferencesInitData => ({
+  description: values.userDescription,
+  profileImageUrl: "",
+  phoneNumber: values.userPhoneNumber,
+  location: values.location,
+  preferences: {
+    ageGroupMin: parseInt(values.minAge, 10),
+    ageGroupMax: parseInt(values.maxAge, 10),
+    partnerGender: values.preferredGender,
+  },
 });
 
 const Preferences = () => {
   const navigate = useNavigate();
-  const { auth } = useAuth();
+  const { auth, setAuth } = useAuth();
+  const { mutateAsync: initPreferences } = UsersService.useInitPreferences();
   useEffect(() => {
     // Hacky solution should change
     // If the user is active we redirect him to / which is ok
@@ -46,30 +74,26 @@ const Preferences = () => {
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
+
+  const handleSubmit = async (values: PreferenceValues) => {
+    // TODO: Error handling
+    await initPreferences(mapPreferenceValues(values));
+    setAuth((prev) => ({
+      ...prev!,
+      active: true,
+    }));
+    navigate("/");
+  };
+
   return (
     <div id="all">
       <Formik
-        //!Forma i validacija ne znam kako cemo rijesiti dodavanje slike
-        initialValues={{
-          minAge: "",
-          maxAge: "",
-          preferredGender: "",
-          userPhoneNumber: "",
-          userDescription: "",
-          location: "",
-        }}
+        initialValues={initialValues}
         validationSchema={preferenceSchema}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 3)); //TODO Ovo je za test samo
-            console.log(values);
-            setSubmitting(false);
-            navigate("/");
-          }, 400);
-        }}
+        onSubmit={handleSubmit}
       >
-        {(formikPreference) => (
-          <Form onSubmit={formikPreference.handleSubmit}>
+        {({ isSubmitting, errors }) => (
+          <Form>
             <div id="page1" className="page">
               {/*Page 1 Gender select and number input*/}
               <div className="page flex flex-col items-center w-full ">
@@ -81,21 +105,21 @@ const Preferences = () => {
                     >
                       <label
                         className="text-white text-3xl text-center font-Montserrat mb-4 "
-                        htmlFor="gender"
+                        htmlFor="userPhoneNumber"
                       >
                         Input you phone number
                       </label>
 
                       <Field
                         type="number"
-                        name="userNumber"
-                        id="userNumber"
+                        name="userPhoneNumber"
+                        id="userPhoneNumber"
                         className="bg-gray-50 border  font-Montserrat border-gray-300 text-gray-900 text-m rounded-lg focus:ring-red-500 focus:border-red-500 w-full  p-2.5"
                         placeholder="091 999 999"
                       />
                       <ErrorMessage
                         component="div"
-                        name="userNumber"
+                        name="userPhoneNumber"
                         className="text-red-500"
                       />
                     </div>
@@ -108,7 +132,7 @@ const Preferences = () => {
                     <div className="relative ">
                       <label
                         className="text-white text-3xl text-center font-Montserrat"
-                        htmlFor="gender"
+                        htmlFor="preferredGender"
                       >
                         Choose your preferred gender
                       </label>
@@ -122,8 +146,8 @@ const Preferences = () => {
                         <option value="" disabled hidden>
                           Choose a Gender
                         </option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
                       </Field>
                     </div>
                   </div>
@@ -148,7 +172,7 @@ const Preferences = () => {
                     className="flex flex-col my-16"
                   >
                     <label
-                      className="text-white text-3xl font-Montserrat text-center"
+                      className="text-white text-3xl font-Montserrat text-center my-4"
                       htmlFor="minAge"
                     >
                       Minimum partner Age
@@ -172,7 +196,7 @@ const Preferences = () => {
                     className="flex flex-col "
                   >
                     <label
-                      className="text-white text-3xl font-Montserrat text-center"
+                      className="text-white text-3xl font-Montserrat text-center my-4"
                       htmlFor="maxAge"
                     >
                       Maximum partner age
@@ -203,21 +227,21 @@ const Preferences = () => {
                 <div data-aos="fade-right" data-aos-once="false">
                   <div data-aos="fade-right" className="flex flex-col mb-24">
                     <label
-                      className="text-white text-3xl font-Montserrat text-center"
-                      htmlFor="maxAge"
+                      className="text-white text-3xl font-Montserrat text-center mb-4"
+                      htmlFor="location"
                     >
                       Where are you from
                     </label>
                     <Field
                       type="text"
-                      id="userLocation"
+                      id="location"
                       placeholder="Please input your location"
-                      name="userLocation"
+                      name="location"
                       className="rounded-2xl px-5 py-2 bg-gray-200 text-black"
                     />
                     <ErrorMessage
                       component="div"
-                      name="userLocation"
+                      name="location"
                       className="text-red-500"
                     />
                   </div>
@@ -227,8 +251,8 @@ const Preferences = () => {
                     className="flex flex-col mb-24"
                   >
                     <label
-                      className="text-white text-3xl font-Montserrat text-center"
-                      htmlFor="maxAge"
+                      className="text-white text-3xl font-Montserrat text-center mb-4"
+                      htmlFor="userDescription"
                     >
                       Tell us about yourself
                     </label>
@@ -271,12 +295,14 @@ const Preferences = () => {
                   <Dropzone />
                 </div>
                 <button
+                  disabled={isSubmitting}
                   className=" absolute bottom-0 text-gray-300  bg-[#00000042] rounded-full mb-4 px-5 py-3 text-center hover:opacity-75 transition-opacity duration-300"
                   type="submit"
                 >
                   Submit
                 </button>
               </div>
+              <pre>{JSON.stringify(errors)}</pre>
             </div>
           </Form>
         )}

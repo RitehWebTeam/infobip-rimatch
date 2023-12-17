@@ -98,7 +98,7 @@ const LoginForm = () => {
                 <span className="text-base text-white ml-2 flex my-3 justify-center hover:text-gray-500 cursor-pointer">
                   Forgot Password ?
                 </span>
-                <p className="text-sm text-black w-full text-center py-3">
+                <p className="text-sm w-full text-center py-3">
                   Don&apos;t have an account?{" "}
                   <Link
                     to="/register"

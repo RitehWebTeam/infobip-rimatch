@@ -72,7 +72,7 @@ const RegisterForm = () => {
             <h1 className="text-xl font-normal text-gray-200">
               Register your new account
             </h1>
-            <p className="text-sm mt-2 mb-5 text-gray-200">
+            <p className="text-sm mt-2 text-gray-200">
               Already have an account?{" "}
               <Link
                 to="/login"
@@ -217,11 +217,11 @@ const RegisterForm = () => {
                     name="confirmPassword"
                     className="text-red-500"
                   />
-                  <div className="px-4 pb-2 pt-4">
+                  <div className="mt-8">
                     <button
                       disabled={isSubmitting}
                       type="submit"
-                      className="block w-full bg-[#ec4a4a]  transition duration-300 ease-in-out hover:bg-red-800 mt-4 py-3 rounded-2xl text-white font-semibold"
+                      className="block w-full bg-red-600  transition duration-300 ease-in-out hover:bg-red-800 mt-4 py-3 rounded-2xl text-white font-semibold"
                     >
                       Register
                     </button>
