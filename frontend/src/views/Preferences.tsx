@@ -32,6 +32,7 @@ const preferenceSchema = Yup.object({
     .min(3, "Location name must be longer than 2 characters"),
   userDescription: Yup.string().required("Required"),
   preferredGender: Yup.string().required("Required"),
+  profileImage: Yup.mixed().required("Required"),
 });
 
 const initialValues = {
@@ -41,9 +42,10 @@ const initialValues = {
   userPhoneNumber: "",
   userDescription: "",
   location: "",
+  profileImage: null,
 };
 
-type PreferenceValues = typeof initialValues;
+type PreferenceValues = typeof initialValues & { profileImage: File | null };
 
 const INPUT_PAGE_LOCATION: Record<keyof PreferenceValues, number> = {
   userPhoneNumber: 1,
@@ -52,13 +54,14 @@ const INPUT_PAGE_LOCATION: Record<keyof PreferenceValues, number> = {
   maxAge: 2,
   userDescription: 3,
   location: 3,
+  profileImage: 4,
 };
 
-const mapPreferenceValues = (
+const mapPreferenceValues = async (
   values: PreferenceValues
-): PreferencesInitData => ({
+): Promise<PreferencesInitData> => ({
   description: values.userDescription,
-  profileImageUrl: "",
+  profileImageUrl: await toBase64(values.profileImage!),
   phoneNumber: values.userPhoneNumber,
   location: values.location,
   preferences: {
@@ -67,6 +70,14 @@ const mapPreferenceValues = (
     partnerGender: values.preferredGender,
   },
 });
+
+const toBase64 = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+  });
 
 const Preferences = () => {
   const navigate = useNavigate();
@@ -92,7 +103,8 @@ const Preferences = () => {
 
   const handleSubmit = async (values: PreferenceValues) => {
     // TODO: Error handling
-    await initPreferences(mapPreferenceValues(values));
+    const mappedValues = await mapPreferenceValues(values);
+    await initPreferences(mappedValues);
     setAuth((prev) => ({
       ...prev!,
       active: true,
@@ -106,7 +118,6 @@ const Preferences = () => {
         initialValues={initialValues}
         validationSchema={preferenceSchema}
         onSubmit={handleSubmit}
-        initialErrors={initialValues}
       >
         {({ isSubmitting }) => (
           <Form>
@@ -329,29 +340,32 @@ const Preferences = () => {
               </div>
               {/*Page 4 Picture upload*/}
               <div
-                className="page  flex flex-col justify-center"
+                className="page flex flex-col justify-between"
                 id="page4"
                 ref={(el: HTMLDivElement) => (pageRefs.current["4"] = el)}
               >
-                <div className="absolute top-0 mt-5">
+                <div className="top-0 mt-5">
                   <MovmentButtons page="#page3" moveName="Previous" />
                 </div>
-                <h1
-                  data-aos="fade-right"
-                  className="flex text-white text-3xl mt-10 font-Montserrat mb-5 "
-                >
-                  Upload some pictures for your account
-                </h1>
                 <div
                   data-aos-delay="200"
                   data-aos="fade-right"
-                  className="flex justify-center w-full"
+                  className="flex flex-col items-center flex-grow-0"
                 >
-                  <Dropzone />
+                  <h1
+                    data-aos="fade-right"
+                    className="flex text-white text-lg md:text-3xl font-Montserrat mb-1"
+                  >
+                    Choose your profile picture
+                  </h1>
+                  <p className="text-gray-400 text-sm mb-4">Max size: 2 MB</p>
+                  <div className="flex justify-center min-h-[9rem]">
+                    <Dropzone name="profileImage" />
+                  </div>
                 </div>
                 <button
                   disabled={isSubmitting}
-                  className=" absolute bottom-0 text-gray-300  bg-[#00000042] rounded-full mb-4 px-5 py-3 text-center hover:opacity-75 transition-opacity duration-300"
+                  className="justify-self-end bottom-0 text-gray-300  bg-[#00000042] rounded-full mb-4 px-5 py-3 text-center hover:opacity-75 transition-opacity duration-300"
                   type="submit"
                 >
                   Submit
