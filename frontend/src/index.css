@@ -96,6 +96,5 @@ html, body {
 .page:nth-child(3) {
  
   display: flex;
-  justify-content: center;
   align-items: center;
 }

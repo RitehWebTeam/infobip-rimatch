@@ -8,7 +8,6 @@ import {
 } from "@/assets";
 import useLogout from "@/hooks/useLogout";
 import useCurrentUserContext from "@/hooks/useCurrentUser";
-import cx from "classnames";
 
 const Navbar: React.FunctionComponent = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -32,13 +31,12 @@ const Navbar: React.FunctionComponent = () => {
 
           <div
             onClick={handleOpenDropdown}
-            className={cx(
-              "h-12 w-12 hover:ring-4 user cursor-pointer relative ring-blue-700/30 rounded-full bg-cover bg-center",
-              {
-                "bg-[url(/Default_pfp.svg)]": !user.profileImageUrl,
-                [`bg-[url(${user.profileImageUrl})]`]: user.profileImageUrl,
-              }
-            )}
+            className="h-12 w-12 hover:ring-4 user cursor-pointer relative ring-blue-700/30 rounded-full bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${
+                user.profileImageUrl || "/Default_pfp.svg"
+              })`,
+            }}
           >
             {isDropdownOpen && (
               <div className="drop-down  w-48 overflow-hidden bg-white rounded-md shadow absolute top-12 right-3">
