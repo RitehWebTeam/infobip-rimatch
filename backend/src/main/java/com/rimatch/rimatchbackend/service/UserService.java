@@ -134,17 +134,17 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public User getRandomUser(String currentUserEmail,char genderPreference) {
+    public List<User> getRandomUser(String currentUserEmail,char genderPreference) {
         // Exclude the current user
         List<User> users = mongoTemplate.aggregate(
                 Aggregation.newAggregation(
                         Aggregation.match(Criteria.where("email").ne(currentUserEmail)),
                         Aggregation.match(Criteria.where("gender").is(genderPreference)),
                         Aggregation.match(Criteria.where("active").is(true)),
-                        Aggregation.sample(1)
+                        Aggregation.sample(10)
                 ),
                 "users", User.class).getMappedResults();
-        return users.isEmpty() ? null : users.get(0);
+        return users.isEmpty() ? null : users;
     }
     // add more methods as per your requirements
 }
