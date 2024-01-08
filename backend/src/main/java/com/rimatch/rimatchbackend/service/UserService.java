@@ -12,8 +12,6 @@ import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.Cookie;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -29,6 +27,7 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final MongoTemplate mongoTemplate;
+
     @Autowired
     private UserRepository userRepository;
     /*
@@ -120,6 +119,8 @@ public class UserService {
         return userRepository.findByEmail(jwtUtils.extractSubject(token, TokenType.ACCESS));
     }
 
+
+
     public String refreshAccessToken(String token)throws IllegalArgumentException,JwtException {
         try {
             Claims claims = jwtUtils.validateToken(token, TokenType.REFRESH);
@@ -134,6 +135,10 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    public Optional<User> getUserById(String id){
+        return userRepository.findById(id);
+    }
+
     public User getRandomUser(String currentUserEmail,char genderPreference) {
         // Exclude the current user
         List<User> users = mongoTemplate.aggregate(
@@ -146,5 +151,11 @@ public class UserService {
                 "users", User.class).getMappedResults();
         return users.isEmpty() ? null : users.get(0);
     }
+
+    public void insertToSeenUserIds(User user, String id){
+        user.getSeenUserIds().add(id);
+        userRepository.save(user);
+    }
+
     // add more methods as per your requirements
 }

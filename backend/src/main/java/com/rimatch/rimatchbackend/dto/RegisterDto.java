@@ -7,7 +7,6 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.Getter;
 
-@Getter
 @Data
 public class RegisterDto {
     @NotNull(message = "Email field cannot be null!")

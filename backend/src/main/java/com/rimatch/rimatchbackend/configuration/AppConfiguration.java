@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 
+
+
+import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
@@ -25,7 +28,7 @@ public class AppConfiguration {
         final FilterRegistrationBean<JwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
 
         registrationBean.setFilter(jwtAuthenticationFilter);
-        registrationBean.setUrlPatterns(Collections.singletonList("/api/users/*"));
+        registrationBean.setUrlPatterns(Arrays.asList("/api/users/*","/api/match/*"));
         registrationBean.setOrder(1);
 
         return registrationBean;
