@@ -10,7 +10,7 @@ const CurrentUserContextProvider = ({
 }) => {
   const currentUserQuery = UsersService.useGetCurrentUser();
   if (currentUserQuery.isLoading) {
-    return <p>Loading...</p>;
+    return null;
   }
 
   if (currentUserQuery.isError) {

@@ -68,4 +68,13 @@ export const UsersService = {
       ...mutationOptions,
     });
   },
+
+  useGetPotentailUsers: () => {
+    const axios = useAxiosPrivate();
+    return useQuery<User[], Error>({
+      queryKey: ["UsersService.getPotentialUsers"],
+      queryFn: () => axios.get("/users/potential").then((res) => res.data),
+      staleTime: Infinity,
+    });
+  },
 };

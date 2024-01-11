@@ -1,36 +1,66 @@
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
+import { UsersService } from "@/api/users";
+import cx from "classnames";
+import { useState } from "react";
+
 const MatchCard = () => {
+  const [currentUser, setCurrentUser] = useState<number>(0);
+  const result = UsersService.useGetPotentailUsers();
+
+  if (result.isLoading) {
+    return null;
+  }
+
+  if (result.isError || !result.isSuccess) {
+    return <div>Error: {result.error?.message}</div>;
+  }
+
+  const user = result.data[currentUser];
+
+  const nextUser = () => {
+    setCurrentUser((prev) => (prev + 1) % result.data.length);
+  };
+
   return (
     <div className="flex flex-col justify-center items-center h-5/6 max-h-full">
       <div className="relative flex flex-col items-center rounded-[25px] border-[1px] border-black-200 h-[600px] w-[400px] mx-auto p-4 bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black">
         <div className="relative flex h-72 w-full justify-center rounded-xl bg-cover">
-          <div className="absolute flex h-[200px] w-[200px] items-center justify-center rounded-full bg-pink-400 ">
+          <div
+            className={cx(
+              "absolute flex h-[200px] w-[200px] items-center justify-center rounded-full",
+              {
+                "bg-pink-400": user.gender === "F",
+                "bg-blue-400": user.gender === "M",
+              }
+            )}
+          >
             <img
               className="h-40 w-40 rounded-full"
-              src="https://horizon-tailwind-react-git-tailwind-components-horizon-ui.vercel.app/static/media/avatar11.1060b63041fdffa5f8ef.png"
+              src={user.profileImageUrl || "/Default_pfp.svg"}
               alt=""
             />
           </div>
         </div>
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center w-full">
           <h4 className="text-4xl font-bold text-navy-700 dark:text-white">
-            Adela, 23
+            {`${user.firstName}, ${user.age}`}
           </h4>
-          <p className="text-base font-normal text-gray-200">
-            Zagreb, Hrvatska
-          </p>
+          <p className="text-base font-normal text-gray-200">{user.location}</p>
           <div className="flex justify-center items-center mt-4 text-gray-400">
-            <p className="flex align-middle text-center">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              Laudantium recusandae iure
-            </p>
+            <p className="flex align-middle text-center">{user.description}</p>
           </div>
           <div className="flex mt-20 flex-row justify-between w-full">
-            <button className="btn hover:bg-green-600 bg-green-500 transition-color duration-300 ml-4 mb-2 border-green-700 rounded-full w-24 h-24 shadow-md shadow-black">
+            <button
+              className="btn hover:bg-green-600 bg-green-500 transition-color duration-300 ml-4 mb-2 border-green-700 rounded-full w-24 h-24 shadow-md shadow-black"
+              onClick={nextUser}
+            >
               <CheckIcon fontSize="large" />
             </button>
-            <button className="btn bg-red-500 hover:bg-red-600 transition-color duration-300 rounded-full mr-4 border-red-700 btn-circle w-24 h-24 shadow-md shadow-black">
+            <button
+              className="btn bg-red-500 hover:bg-red-600 transition-color duration-300 rounded-full mr-4 border-red-700 btn-circle w-24 h-24 shadow-md shadow-black"
+              onClick={nextUser}
+            >
               <ClearIcon fontSize="large" />
             </button>
           </div>
