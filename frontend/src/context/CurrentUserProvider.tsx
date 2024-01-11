@@ -1,6 +1,6 @@
-import { User, UsersService } from "@/api/users";
+import { UsersService } from "@/api/users";
 import { createContext } from "react";
-
+import type { User } from "@/types/User";
 export const CurrentUserContext = createContext<User | null>(null);
 
 const CurrentUserContextProvider = ({

@@ -1,55 +1,13 @@
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import type { Match, MatchData } from "@/types/Match";
+import type { PreferencesInitData, User } from "@/types/User";
 import {
   UseMutationOptions,
   useMutation,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-
-export interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  hashedPassword: string;
-  gender: string;
-  age: number;
-  active: boolean;
-  description: string;
-  profileImageUrl: string;
-  phoneNumber: string;
-  location: string;
-  preferences: UserPreferences;
-  lastSeen: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface UserPreferences {
-  ageGroupMin: number;
-  ageGroupMax: number;
-  partnerGender: string;
-}
-
-export interface PreferencesInitData {
-  description: string;
-  profileImageUrl: string;
-  phoneNumber: string;
-  location: string;
-  preferences: UserPreferences;
-}
-
-interface Match {
-  id: string;
-  firstUserId: string;
-  secondUserId: string;
-  accepted?: boolean;
-  finished?: boolean;
-}
-interface MatchData {
-  userId: string;
-}
 
 export const UsersService = {
   useGetCurrentUser() {
