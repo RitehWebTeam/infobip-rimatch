@@ -20,6 +20,8 @@ public class DisplayUserDto {
 
     private Character gender;
 
+    private int age;
+
     public void initDisplayUser(User user){
         this.id = user.getId();
         this.firstName = user.getFirstName();
@@ -28,6 +30,7 @@ public class DisplayUserDto {
         this.profileImageUrl = user.getProfileImageUrl();
         this.location = user.getLocation();
         this.gender = user.getGender();
+        this.age = user.getAge();
     }
 
 }

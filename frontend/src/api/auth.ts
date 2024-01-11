@@ -1,25 +1,7 @@
+import type { User } from "@/types/User";
+import type { LoginData, RegisterData, TokenResponse } from "@/types/Auth";
 import { axiosPublic } from "./config/axios";
 import { UseMutationOptions, useMutation } from "@tanstack/react-query";
-import { User } from "./users";
-
-interface TokenResponse {
-  token: string;
-  active: boolean;
-}
-
-interface RegisterData {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  gender: string;
-  age: number;
-}
-
-interface LoginData {
-  email: string;
-  password: string;
-}
 
 const AuthService = {
   useLogin: <T = TokenResponse>(

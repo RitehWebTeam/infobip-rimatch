@@ -17,6 +17,7 @@ public class DisplayUserConverter {
         displayUserDto.setProfileImageUrl(user.getProfileImageUrl());
         displayUserDto.setLocation(user.getLocation());
         displayUserDto.setGender(user.getGender());
+        displayUserDto.setAge(user.getAge());
 
         return displayUserDto;
     }

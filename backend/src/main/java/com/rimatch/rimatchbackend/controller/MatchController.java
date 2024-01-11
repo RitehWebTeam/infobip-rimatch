@@ -9,7 +9,6 @@ import com.rimatch.rimatchbackend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +34,7 @@ public class MatchController {
     }
 
     @PostMapping("/accept")
-    public ResponseEntity<?> accept(HttpServletRequest request, @Valid @RequestBody MatchDto matchDto){
+    public ResponseEntity<Match> accept(HttpServletRequest request, @Valid @RequestBody MatchDto matchDto){
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);
         userService.insertToSeenUserIds(user,matchDto.getUserId());
