@@ -2,13 +2,14 @@ import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import { UsersService } from "@/api/users";
 import cx from "classnames";
-import { useState } from "react";
 
 const MatchCard = () => {
-  const [currentUser, setCurrentUser] = useState<number>(0);
   const result = UsersService.useGetPotentailUsers();
+  const acceptMatch = UsersService.useAcceptMatch();
+  const rejectMatch = UsersService.useRejectMatch();
 
-  if (result.isLoading) {
+  // TODO: Add loading spinner or something
+  if (result.isLoading || acceptMatch.isPending || rejectMatch.isPending) {
     return null;
   }
 
@@ -16,11 +17,12 @@ const MatchCard = () => {
     return <div>Error: {result.error?.message}</div>;
   }
 
-  const user = result.data[currentUser];
+  // TODO: Nicer message when there are no more users
+  if (result.data.length === 0) {
+    return <div>No more users</div>;
+  }
 
-  const nextUser = () => {
-    setCurrentUser((prev) => (prev + 1) % result.data.length);
-  };
+  const user = result.data[0];
 
   return (
     <div className="flex flex-col justify-center items-center h-5/6 max-h-full">
@@ -53,13 +55,13 @@ const MatchCard = () => {
           <div className="flex mt-20 flex-row justify-between w-full">
             <button
               className="btn hover:bg-green-600 bg-green-500 transition-color duration-300 ml-4 mb-2 border-green-700 rounded-full w-24 h-24 shadow-md shadow-black"
-              onClick={nextUser}
+              onClick={() => acceptMatch.mutate({ userId: user.id })}
             >
               <CheckIcon fontSize="large" />
             </button>
             <button
               className="btn bg-red-500 hover:bg-red-600 transition-color duration-300 rounded-full mr-4 border-red-700 btn-circle w-24 h-24 shadow-md shadow-black"
-              onClick={nextUser}
+              onClick={() => rejectMatch.mutate({ userId: user.id })}
             >
               <ClearIcon fontSize="large" />
             </button>

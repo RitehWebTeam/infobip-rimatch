@@ -1,7 +1,6 @@
 package com.rimatch.rimatchbackend.model;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import org.springframework.data.annotation.Id;

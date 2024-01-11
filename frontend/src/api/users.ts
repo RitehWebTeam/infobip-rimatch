@@ -4,6 +4,7 @@ import {
   UseMutationOptions,
   useMutation,
   useQuery,
+  useQueryClient,
 } from "@tanstack/react-query";
 
 export interface User {
@@ -37,6 +38,17 @@ export interface PreferencesInitData {
   phoneNumber: string;
   location: string;
   preferences: UserPreferences;
+}
+
+interface Match {
+  id: string;
+  firstUserId: string;
+  secondUserId: string;
+  accepted?: boolean;
+  finished?: boolean;
+}
+interface MatchData {
+  userId: string;
 }
 
 export const UsersService = {
@@ -73,8 +85,52 @@ export const UsersService = {
     const axios = useAxiosPrivate();
     return useQuery<User[], Error>({
       queryKey: ["UsersService.getPotentialUsers"],
-      queryFn: () => axios.get("/users/potential").then((res) => res.data),
+      queryFn: () => axios.get("/match/potential").then((res) => res.data),
       staleTime: Infinity,
+    });
+  },
+
+  useAcceptMatch: <T = Match>(
+    mutationOptions?: Omit<
+      UseMutationOptions<T, Error, MatchData>,
+      "mutationFn"
+    >
+  ) => {
+    const axios = useAxiosPrivate();
+    const queryClient = useQueryClient();
+    return useMutation<T, Error, MatchData>({
+      mutationFn: async (data) => {
+        const response = await axios.post<T>("/match/accept", data);
+        return response.data;
+      },
+      onSuccess: () => {
+        return queryClient.invalidateQueries({
+          queryKey: ["UsersService.getPotentialUsers"],
+        });
+      },
+      ...mutationOptions,
+    });
+  },
+
+  useRejectMatch: <T = Match>(
+    mutationOptions?: Omit<
+      UseMutationOptions<T, Error, MatchData>,
+      "mutationFn"
+    >
+  ) => {
+    const axios = useAxiosPrivate();
+    const queryClient = useQueryClient();
+    return useMutation<T, Error, MatchData>({
+      mutationFn: async (data) => {
+        const response = await axios.post<T>("/match/reject", data);
+        return response.data;
+      },
+      onSuccess: () => {
+        return queryClient.invalidateQueries({
+          queryKey: ["UsersService.getPotentialUsers"],
+        });
+      },
+      ...mutationOptions,
     });
   },
 };
