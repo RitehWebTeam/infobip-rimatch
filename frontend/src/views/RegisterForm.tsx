@@ -60,10 +60,9 @@ const RegisterForm = () => {
 
   return (
     <div id="red-to-black">
-      {" "}
-      <div className=" min-h-screen flex items-stretch text-white ">
-        <div className=" lg:w-full  h-full flex items-center justify-center text-center md:px-16 px-0 z-0">
-          <div className="py-6 w-1/2 z-20 ">
+      <div className="min-h-screen flex items-stretch text-white">
+        <div className="w-full h-full flex items-center justify-center text-center md:px-16 px-0 z-0">
+          <div className="py-6 w-full sm:w-3/4 md:w-2/3 lg:w-1/2 z-20">
             <h1 className="text-white font-bold text-5xl mb-2 font-Pacifico">
               RiMatch
             </h1>
