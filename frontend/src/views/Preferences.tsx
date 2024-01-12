@@ -124,13 +124,13 @@ const Preferences = () => {
           <Form>
             <div
               id="page1"
-              className="page"
+              className="page sm:w-full"
               ref={(el: HTMLDivElement) => (pageRefs.current["1"] = el)}
             >
               {/*Page 1 Gender select and number input*/}
-              <div className="page flex flex-col items-center w-full ">
+              <div className="page sm:w-full flex flex-col items-center w-full ">
                 <div className="flex flex-col mt-4" data-aos="fade-right">
-                  <div className="   mb-16">
+                  <div className="mb-16 flex justify-center">
                     <div
                       data-aos="fade-right"
                       className="relative  text-left flex flex-col"
@@ -146,7 +146,7 @@ const Preferences = () => {
                         type="number"
                         name="userPhoneNumber"
                         id="userPhoneNumber"
-                        className="bg-gray-50 border  font-Montserrat border-gray-300 text-gray-900 text-m rounded-lg focus:ring-red-500 focus:border-red-500 w-full  p-2.5"
+                        className="bg-gray-50 border font-Montserrat border-gray-300 text-gray-900 text-m rounded-lg focus:ring-red-500 focus:border-red-500  p-2.5"
                         placeholder="091 999 999"
                         innerRef={(el: HTMLInputElement) =>
                           (inputRefs.current.userPhoneNumber = el!)
@@ -164,9 +164,9 @@ const Preferences = () => {
                     data-aos-delay="250"
                     className="mt-16"
                   >
-                    <div className="relative ">
+                    <div className="flex flex-col ">
                       <label
-                        className="text-white text-3xl text-center font-Montserrat"
+                        className="text-white text-2xl sm:text-3xl text-center font-Montserrat"
                         htmlFor="preferredGender"
                       >
                         Choose your preferred gender
@@ -196,7 +196,7 @@ const Preferences = () => {
                   </div>
                 </div>
 
-                <div className="absolute bottom-0 mb-5">
+                <div className="absolute bottom-0 mb-16 sm:mb-5">
                   <MovmentButtons page="#page2" moveName="Next" />
                 </div>
               </div>
@@ -204,7 +204,7 @@ const Preferences = () => {
             {/*Page 2 age select*/}
             <div>
               <div
-                className="page"
+                className="page "
                 id="page2"
                 ref={(el: HTMLDivElement) => (pageRefs.current["2"] = el)}
               >
@@ -268,13 +268,13 @@ const Preferences = () => {
                     />
                   </div>
                 </div>
-                <div className="absolute bottom-0 mb-5">
+                <div className="absolute bottom-0  mb-16 sm:mb-5">
                   <MovmentButtons page="#page3" moveName="Next" />
                 </div>
               </div>
               {/*Page 3 Location and description*/}
               <div
-                className="page  flex flex-col justify-center"
+                className="page  flex flex-col "
                 id="page3"
                 ref={(el: HTMLDivElement) => (pageRefs.current["3"] = el)}
               >
@@ -282,7 +282,10 @@ const Preferences = () => {
                   <MovmentButtons page="#page2" moveName="Previous" />
                 </div>
                 <div data-aos="fade-right" data-aos-once="false">
-                  <div data-aos="fade-right" className="flex flex-col mb-24">
+                  <div
+                    data-aos="fade-right"
+                    className="flex flex-col w-80 sm:w-full justify-center mb-24"
+                  >
                     <label
                       className="text-white text-3xl font-Montserrat text-center mb-4"
                       htmlFor="location"
@@ -335,7 +338,7 @@ const Preferences = () => {
                     />
                   </div>
                 </div>
-                <div className="absolute bottom-0 mb-5">
+                <div className="absolute bottom-0 mb-16 sm:mb-5">
                   <MovmentButtons page="#page4" moveName="Next" />
                 </div>
               </div>
@@ -366,7 +369,7 @@ const Preferences = () => {
                 </div>
                 <button
                   disabled={isSubmitting}
-                  className="justify-self-end bottom-0 text-gray-300  bg-[#00000042] rounded-full mb-4 px-5 py-3 text-center hover:opacity-75 transition-opacity duration-300"
+                  className="justify-self-end mb-16 sm:mb-5 bottom-0 text-gray-300  bg-[#00000042] rounded-full  px-5 py-3 text-center hover:opacity-75 transition-opacity duration-300"
                   type="submit"
                 >
                   Submit

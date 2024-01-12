@@ -50,14 +50,14 @@ const LoginForm = () => {
             onSubmit={handleSubmit}
           >
             {({ isSubmitting }) => (
-              <Form className="w-1/4 rounded-xl  shadow-black drop-shadow-2xl ">
-                <h1 className="text-white-800 text-center font-bold text-5xl mb-2 font-Pacifico">
+              <Form className=" sm:w-1/2 md:w-1/3 lg:w-1/4   rounded-xl shadow-black drop-shadow-2xl">
+                <h1 className="text-white-800 text-center font-bold text-3xl  mb-2 font-Pacifico">
                   RiMatch
                 </h1>
-                <p className="text-lg font-normal text-center text-white-600 mb-7">
+                <p className="text-sm sm:text-base md:text-lg font-normal text-center text-white-600 mb-7">
                   Welcome Back
                 </p>
-                <div className="flex items-center bg-white border-2 py-3 px-4 rounded-2xl mt-6 ">
+                <div className="flex items-center bg-white border-2 py-2 sm:py-3 px-2 sm:px-4 rounded-2xl mt-4 sm:mt-6">
                   <EmailAtIcon />
                   <Field
                     className="pl-2 text-black outline-none border-none bg-white w-full"
@@ -72,9 +72,8 @@ const LoginForm = () => {
                   name="email"
                   className="text-red-500"
                 />
-                <div className="flex items-center bg-white border-2 py-3 px-4 rounded-2xl mt-6 ">
+                <div className="flex items-center bg-white border-2 py-2 sm:py-3 px-2 sm:px-4 rounded-2xl mt-4 sm:mt-6">
                   <LockIcon />
-
                   <Field
                     className="pl-2 text-black bg-white outline-none border-none w-full"
                     type="password"
@@ -91,14 +90,14 @@ const LoginForm = () => {
                 <button
                   disabled={isSubmitting}
                   type="submit"
-                  className="block w-full bg-red-600  transition duration-300 ease-in-out hover:bg-red-800 mt-4 py-3 rounded-2xl text-white font-semibold "
+                  className="block w-full bg-red-600 transition duration-300 ease-in-out hover:bg-red-800 mt-4 py-2 sm:py-3 rounded-2xl text-white font-semibold"
                 >
                   Login
                 </button>
-                <span className="text-base text-white ml-2 flex my-3 justify-center hover:text-gray-500 cursor-pointer">
+                <span className="text-sm sm:text-base text-white ml-2 flex my-3 justify-center hover:text-gray-500 cursor-pointer">
                   Forgot Password ?
                 </span>
-                <p className="text-sm w-full text-center py-3">
+                <p className="text-xs sm:text-sm md:text-base w-full text-center py-3">
                   Don&apos;t have an account?{" "}
                   <Link
                     to="/register"
