@@ -48,6 +48,8 @@ public class SendEmailLib {
     }
   }
 
+
+
   private EmailApi initEmailApi() {
     var apiClient = ApiClient.forApiKey(ApiKey.from(API_KEY)).withBaseUrl(BaseUrl.from(BASE_URL)).build();
 

@@ -1,7 +1,10 @@
 package com.rimatch.rimatchbackend.controller;
 
+import com.infobip.ApiException;
 import com.rimatch.rimatchbackend.dto.DisplayUserDto;
 import com.rimatch.rimatchbackend.dto.MatchDto;
+import com.rimatch.rimatchbackend.lib.InfobipClient;
+import com.rimatch.rimatchbackend.lib.SendEmailLib;
 import com.rimatch.rimatchbackend.model.Match;
 import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.service.MatchService;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +29,12 @@ public class MatchController {
     @Autowired
     UserService userService;
 
+    /*@Autowired
+    private SendEmailLib sendEmailLib;*/
+
+    @Autowired
+    private InfobipClient infobipClient;
+
     @GetMapping("/potential")
     public List<DisplayUserDto> getPotentinalMatch(HttpServletRequest request){
         String authToken = request.getHeader("Authorization");
@@ -34,7 +44,7 @@ public class MatchController {
     }
 
     @PostMapping("/accept")
-    public ResponseEntity<Match> accept(HttpServletRequest request, @Valid @RequestBody MatchDto matchDto){
+    public ResponseEntity<Match> accept(HttpServletRequest request, @Valid @RequestBody MatchDto matchDto) throws ApiException {
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);
         userService.insertToSeenUserIds(user,matchDto.getUserId());
@@ -44,6 +54,11 @@ public class MatchController {
         Match match = matchService.findMatch(user.getId(),matchedUser.get().getId());
 
         if(match != null){
+
+            var recepients = new ArrayList<>(List.of("dominikkovacevic6@gmail.com"));
+            var string = String.format("Hello %s you just matched with %s %s!",matchedUser.get().getFirstName(),user.getFirstName(),user.getLastName());
+            infobipClient.sendEmail(recepients,"You got a match!", string);
+            infobipClient.sendSms(string);
             return ResponseEntity.ok(matchService.finishMatch(match,true));
         }
 

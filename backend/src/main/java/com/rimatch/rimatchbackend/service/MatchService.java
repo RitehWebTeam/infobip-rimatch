@@ -9,6 +9,7 @@ import com.rimatch.rimatchbackend.util.DisplayUserConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.Fields;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
@@ -69,7 +70,6 @@ public class MatchService {
                         ),
                         //Second age parametar needs to defined separatenly because of limitations of the org.bson.Document
                         Aggregation.match(Criteria.where("age").gte(user.getPreferences().getAgeGroupMin())),
-
                         Aggregation.limit(10)
                 ),
                 "users", User.class).getMappedResults());

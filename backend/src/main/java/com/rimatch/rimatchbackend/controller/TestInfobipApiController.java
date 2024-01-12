@@ -41,13 +41,13 @@ public class TestInfobipApiController {
   }
 
   @PostMapping("/email-test")
-  public ResponseEntity<Void> postMethodName(@RequestBody EmailTestBody body) {
+  public ResponseEntity<?> postMethodName(@RequestBody EmailTestBody body) {
     var recepients = new ArrayList<>(List.of(body.getRecipient()));
     try {
       sendEmailLib.sendEmail(recepients, body.getSubject(), body.getMessage());
       return ResponseEntity.ok().build();
     } catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
   }
 }
