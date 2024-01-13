@@ -2,8 +2,8 @@ import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 const MatchCard = () => {
   return (
-    <div className="flex flex-col justify-center items-center h-5/6 max-h-full">
-      <div className="relative flex flex-col items-center rounded-[25px] border-[1px] border-black-200 h-[600px] w-[400px] mx-auto p-4 bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black">
+    <div className="flex relative z-1 flex-col justify-center items-center h-5/6 max-h-full">
+      <div className="relative flex flex-col items-center rounded-[25px] border-[1px] border-black-200 h-[580px] sm:h-[600] w-[340px] sm:w-[400px]  sm:mr-24 p-4 bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black">
         <div className="relative flex h-72 w-full justify-center rounded-xl bg-cover">
           <div className="absolute flex h-[200px] w-[200px] items-center justify-center rounded-full bg-pink-400 ">
             <img
@@ -27,10 +27,10 @@ const MatchCard = () => {
             </p>
           </div>
           <div className="flex mt-20 flex-row justify-between w-full">
-            <button className="btn hover:bg-green-600 bg-green-500 transition-color duration-300 ml-4 mb-2 border-green-700 rounded-full w-24 h-24 shadow-md shadow-black">
+            <button className="btn hover:bg-green-600 bg-green-500 transition-color duration-300 sm:ml-4 mb-2 border-green-700 rounded-full w-24 h-24 shadow-md shadow-black">
               <CheckIcon fontSize="large" />
             </button>
-            <button className="btn bg-red-500 hover:bg-red-600 transition-color duration-300 rounded-full mr-4 border-red-700 btn-circle w-24 h-24 shadow-md shadow-black">
+            <button className="btn bg-red-500 hover:bg-red-600 transition-color duration-300 rounded-full sm:mr-4 border-red-700 btn-circle w-24 h-24 shadow-md shadow-black">
               <ClearIcon fontSize="large" />
             </button>
           </div>
