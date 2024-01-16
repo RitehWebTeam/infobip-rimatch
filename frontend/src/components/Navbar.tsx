@@ -1,11 +1,5 @@
 import { useState } from "react";
-import {
-  RiMatchLogo,
-  CogIcon,
-  HeartIcon,
-  LogoutIcon,
-  HamburgerMenuIcon,
-} from "@/assets";
+import { RiMatchLogo, CogIcon, HeartIcon, LogoutIcon } from "@/assets";
 import useLogout from "@/hooks/useLogout";
 import useCurrentUserContext from "@/hooks/useCurrentUser";
 import { Link } from "react-router-dom";
@@ -19,13 +13,13 @@ const Navbar: React.FunctionComponent = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
   return (
-    <nav className="flex dark:bg-[#1E1E1E] items-center relative justify-between bg-white px-5 py-6 w-full border-b border-gray-700">
+    <nav className="flex bg-[#1E1E1E] items-center relative justify-between  px-5 py-6 w-full border-b border-gray-700">
       <div>
         <RiMatchLogo />
       </div>
       <Link
         to="/"
-        className="text-red-500 text-5xl ml-56 flex justify-center font-semibold font-Pacifico"
+        className="text-red-500 text-4xl sm:text-5xl ml-56 flex justify-center font-semibold font-Pacifico"
       >
         RiMatch
       </Link>
@@ -33,11 +27,11 @@ const Navbar: React.FunctionComponent = () => {
         <Link to="/matches" className="pr-4 font-bold text-2xl border-r-2">
           My matches
         </Link>
-        <p>{user.firstName}</p>
+        <p className="hidden sm:block">{user.firstName}</p>
 
         <div
           onClick={handleOpenDropdown}
-          className="h-12 w-12 hover:ring-4 user cursor-pointer relative ring-blue-700/30 rounded-full bg-cover bg-center"
+          className="h-12 w-12 hover:ring-4 user cursor-pointer relative ring-blue-700/30 rounded-full bg-cover bg-center "
           style={{
             backgroundImage: `url(${
               user.profileImageUrl || "/Default_pfp.svg"
@@ -45,7 +39,7 @@ const Navbar: React.FunctionComponent = () => {
           }}
         >
           {isDropdownOpen && (
-            <div className="drop-down  w-48 overflow-hidden bg-white rounded-md shadow absolute top-12 right-3">
+            <div className="drop-down w-48 overflow-hidden bg-white rounded-md shadow absolute z-10 top-12 right-3">
               <ul>
                 <li className="px-3 py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-400">
                   <span>
@@ -71,13 +65,6 @@ const Navbar: React.FunctionComponent = () => {
               </ul>
             </div>
           )}
-        </div>
-        <div
-          onClick={handleOpenDropdown}
-          className="sm:hidden cursor-pointer"
-          id="mobile-toggle"
-        >
-          <HamburgerMenuIcon />
         </div>
       </div>
     </nav>

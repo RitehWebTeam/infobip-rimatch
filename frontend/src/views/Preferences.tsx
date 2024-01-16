@@ -136,7 +136,7 @@ const Preferences = () => {
                       className="relative  text-left flex flex-col"
                     >
                       <label
-                        className="text-white text-3xl text-center font-Montserrat mb-4 "
+                        className="text-white text-2xl sm:text-3xl text-center font-Montserrat mb-4 "
                         htmlFor="userPhoneNumber"
                       >
                         Input you phone number
@@ -166,7 +166,7 @@ const Preferences = () => {
                   >
                     <div className="flex flex-col ">
                       <label
-                        className="text-white text-2xl sm:text-3xl text-center font-Montserrat"
+                        className="text-white text-[21px]  sm:text-3xl text-center font-Montserrat"
                         htmlFor="preferredGender"
                       >
                         Choose your preferred gender
@@ -219,7 +219,7 @@ const Preferences = () => {
                     className="flex flex-col my-16"
                   >
                     <label
-                      className="text-white text-3xl font-Montserrat text-center my-4"
+                      className="text-white text-[26px] sm:text-4xl font-Montserrat text-center my-4"
                       htmlFor="minAge"
                     >
                       Minimum partner Age
@@ -246,7 +246,7 @@ const Preferences = () => {
                     className="flex flex-col "
                   >
                     <label
-                      className="text-white text-3xl font-Montserrat text-center my-4"
+                      className="text-white text-[26px] sm:text-4xl  font-Montserrat text-center my-4"
                       htmlFor="maxAge"
                     >
                       Maximum partner age
@@ -274,7 +274,7 @@ const Preferences = () => {
               </div>
               {/*Page 3 Location and description*/}
               <div
-                className="page  flex flex-col "
+                className="page  flex flex-col items-center "
                 id="page3"
                 ref={(el: HTMLDivElement) => (pageRefs.current["3"] = el)}
               >
@@ -284,10 +284,10 @@ const Preferences = () => {
                 <div data-aos="fade-right" data-aos-once="false">
                   <div
                     data-aos="fade-right"
-                    className="flex flex-col w-80 sm:w-full justify-center mb-24"
+                    className="flex flex-col  mb-24 items-center"
                   >
                     <label
-                      className="text-white text-3xl font-Montserrat text-center mb-4"
+                      className="text-white text-[26px] sm:text-3xl font-Montserrat text-center mb-4"
                       htmlFor="location"
                     >
                       Where are you from
@@ -297,7 +297,7 @@ const Preferences = () => {
                       id="location"
                       placeholder="Please input your location"
                       name="location"
-                      className="rounded-2xl px-5 py-2 bg-gray-200 text-black"
+                      className="flex justify-center rounded-2xl px-5 w-72 sm:w-full py-2 bg-gray-200 text-black"
                       innerRef={(el: HTMLInputElement) =>
                         (inputRefs.current.location = el!)
                       }
@@ -314,7 +314,7 @@ const Preferences = () => {
                     className="flex flex-col mb-24"
                   >
                     <label
-                      className="text-white text-3xl font-Montserrat text-center mb-4"
+                      className="text-white text-[26px] sm:text-3xl  font-Montserrat text-center mb-4"
                       htmlFor="userDescription"
                     >
                       Tell us about yourself
@@ -326,7 +326,7 @@ const Preferences = () => {
                       id="userDescription"
                       placeholder="Description"
                       name="userDescription"
-                      className="rounded-2xl px-5 py-2 bg-gray-200 text-black"
+                      className="w-full  rounded-2xl px-5 py-2 bg-gray-200 text-black"
                       innerRef={(el: HTMLInputElement) =>
                         (inputRefs.current.userDescription = el!)
                       }
