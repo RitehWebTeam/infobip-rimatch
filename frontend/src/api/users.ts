@@ -91,4 +91,13 @@ export const UsersService = {
       ...mutationOptions,
     });
   },
+
+  useGetMatches: () => {
+    const axios = useAxiosPrivate();
+    return useQuery<Match[], Error>({
+      queryKey: ["UsersService.getMatches"],
+      queryFn: () => axios.get("/match/all").then((res) => res.data),
+      staleTime: Infinity,
+    });
+  },
 };

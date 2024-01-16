@@ -82,4 +82,13 @@ public class MatchController {
 
         return ResponseEntity.ok("Test");
     }
+
+    // all matches for user sending the reuqest 
+    @GetMapping("/all")
+    public List<Match> getAllMatches(HttpServletRequest request){
+        String authToken = request.getHeader("Authorization");
+        User user = userService.getUserByToken(authToken);
+        List<Match> list = matchService.getAllSuccessfulMatches(user);
+        return list;
+    }
 }

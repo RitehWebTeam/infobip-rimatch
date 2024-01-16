@@ -32,14 +32,14 @@ public class MatchService {
         this.mongoTemplate = mongoTemplate;
     }
 
-    public Match saveMatch(String id1, String id2){
-        return matchRepository.save(new Match(id1,id2));
+    public Match saveMatch(String id1, String id2) {
+        return matchRepository.save(new Match(id1, id2));
     }
 
     public Match findMatch(String user1, String user2) {
         Optional<Match> match1 = matchRepository.findByFirstUserIdAndSecondUserId(user1, user2);
 
-        if(match1.isPresent()){
+        if (match1.isPresent()) {
             return match1.get();
         }
 
@@ -49,13 +49,13 @@ public class MatchService {
 
     }
 
-    public Match finishMatch(Match match,boolean status){
+    public Match finishMatch(Match match, boolean status) {
         match.setFinished(true);
         match.setAccepted(status);
         return matchRepository.save(match);
     }
 
-    public List<DisplayUserDto> findPotentialMatches(User user){
+    public List<DisplayUserDto> findPotentialMatches(User user) {
 
         return DisplayUserConverter.convertToDtoList(mongoTemplate.aggregate(
                 Aggregation.newAggregation(
@@ -66,13 +66,26 @@ public class MatchService {
                                         .and("age").lte(user.getPreferences().getAgeGroupMax())
                                         .and("gender").is(user.getPreferences().getPartnerGender())
                                         .and("location").is(user.getLocation())
-                                        .and("email").ne(user.getEmail())
-                        ),
-                        //Second age parametar needs to defined separatenly because of limitations of the org.bson.Document
+                                        .and("email").ne(user.getEmail())),
+                        // Second age parametar needs to defined separatenly because of limitations of
+                        // the org.bson.Document
                         Aggregation.match(Criteria.where("age").gte(user.getPreferences().getAgeGroupMin())),
                         Aggregation.limit(10)
                 ),
                 "users", User.class).getMappedResults());
     }
 
+    public List<Match> getAllSuccessfulMatches(User user) {
+        Criteria criteria = new Criteria().andOperator(
+                Criteria.where("finished").is(true),
+                Criteria.where("accepted").is(true),
+                new Criteria().orOperator(
+                        Criteria.where("firstUserId").is(user.getId()),
+                        Criteria.where("secondUserId").is(user.getId())));
+
+        return mongoTemplate.aggregate(
+                Aggregation.newAggregation(
+                        Aggregation.match(criteria)),
+                "matches", Match.class).getMappedResults();
+    }
 }
