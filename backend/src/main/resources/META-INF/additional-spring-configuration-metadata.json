@@ -28,5 +28,10 @@
     "name": "infobip.sender-email",
     "type": "java.lang.String",
     "description": "A description for 'infobip.sender-email'"
+  },
+  {
+    "name": "infobip.phone-number",
+    "type": "java.lang.String",
+    "description": "A description for 'infobip.phone-number'"
   }
 ]}

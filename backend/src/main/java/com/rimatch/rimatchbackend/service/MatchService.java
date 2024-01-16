@@ -6,15 +6,26 @@ import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.repository.MatchRepository;
 import com.rimatch.rimatchbackend.repository.UserRepository;
 import com.rimatch.rimatchbackend.util.DisplayUserConverter;
+
+import lombok.Builder;
+import lombok.Getter;
+
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.ComparisonOperators;
+import org.springframework.data.mongodb.core.aggregation.ConditionalOperators;
 import org.springframework.data.mongodb.core.aggregation.Fields;
+import org.springframework.data.mongodb.core.aggregation.LookupOperation;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MatchService {
@@ -70,22 +81,39 @@ public class MatchService {
                         // Second age parametar needs to defined separatenly because of limitations of
                         // the org.bson.Document
                         Aggregation.match(Criteria.where("age").gte(user.getPreferences().getAgeGroupMin())),
-                        Aggregation.limit(10)
-                ),
+                        Aggregation.limit(10)),
                 "users", User.class).getMappedResults());
     }
 
-    public List<Match> getAllSuccessfulMatches(User user) {
-        Criteria criteria = new Criteria().andOperator(
-                Criteria.where("finished").is(true),
-                Criteria.where("accepted").is(true),
-                new Criteria().orOperator(
-                        Criteria.where("firstUserId").is(user.getId()),
-                        Criteria.where("secondUserId").is(user.getId())));
+    public List<DisplayUserDto> getAllSuccessfulMatchedUsers(User user) {
+        MatchOperation matchOperation = Aggregation.match(
+            Criteria.where("finished").is(true)
+                .and("accepted").is(true)
+                .andOperator(
+                    new Criteria().orOperator(
+                        Criteria.where("firstUserId").is(user.getId().toString()),
+                        Criteria.where("secondUserId").is(user.getId().toString()))));
 
-        return mongoTemplate.aggregate(
-                Aggregation.newAggregation(
-                        Aggregation.match(criteria)),
-                "matches", Match.class).getMappedResults();
+        ProjectionOperation projectionOperation = Aggregation.project().and(
+            ConditionalOperators
+                .when(ComparisonOperators.Eq.valueOf("firstUserId").equalToValue(user.getId().toString()))
+                .thenValueOf("secondUserId")
+                .otherwiseValueOf("firstUserId"))
+            .as("matchedUserId");
+
+        Aggregation aggregation = Aggregation.newAggregation(matchOperation, projectionOperation);
+
+        List<MatchedUserIdDTO> matchedIds = mongoTemplate.aggregate(aggregation, "matches", MatchedUserIdDTO.class).getMappedResults();
+
+        List<String> matchedUserIds = matchedIds.stream()
+            .map(matchedUserDTO -> matchedUserDTO.getMatchedUserId())
+            .collect(Collectors.toList());
+
+        return DisplayUserConverter.convertToDtoList(userRepository.findAllById(matchedUserIds));
+    }
+
+    @Getter
+    private static class MatchedUserIdDTO {
+        private String matchedUserId;
     }
 }

@@ -8,6 +8,7 @@ import {
 } from "@/assets";
 import useLogout from "@/hooks/useLogout";
 import useCurrentUserContext from "@/hooks/useCurrentUser";
+import { Link } from "react-router-dom";
 
 const Navbar: React.FunctionComponent = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -22,10 +23,16 @@ const Navbar: React.FunctionComponent = () => {
       <div>
         <RiMatchLogo />
       </div>
-      <h1 className="text-red-500 text-5xl flex justify-center font-semibold font-Pacifico">
+      <Link
+        to="/"
+        className="text-red-500 text-5xl ml-56 flex justify-center font-semibold font-Pacifico"
+      >
         RiMatch
-      </h1>
+      </Link>
       <div className="flex gap-3 items-center">
+        <Link to="/matches" className="pr-4 font-bold text-2xl border-r-2">
+          My matches
+        </Link>
         <p>{user.firstName}</p>
 
         <div

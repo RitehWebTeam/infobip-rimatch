@@ -4,11 +4,11 @@ import com.infobip.ApiException;
 import com.rimatch.rimatchbackend.dto.DisplayUserDto;
 import com.rimatch.rimatchbackend.dto.MatchDto;
 import com.rimatch.rimatchbackend.lib.InfobipClient;
-import com.rimatch.rimatchbackend.lib.SendEmailLib;
 import com.rimatch.rimatchbackend.model.Match;
 import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.service.MatchService;
 import com.rimatch.rimatchbackend.service.UserService;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,10 +85,10 @@ public class MatchController {
 
     // all matches for user sending the reuqest 
     @GetMapping("/all")
-    public List<Match> getAllMatches(HttpServletRequest request){
+    public ResponseEntity<List<DisplayUserDto>> getAllMatches(HttpServletRequest request){
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);
-        List<Match> list = matchService.getAllSuccessfulMatches(user);
-        return list;
+        List<DisplayUserDto> list = matchService.getAllSuccessfulMatchedUsers(user);
+        return ResponseEntity.ok(list);
     }
 }

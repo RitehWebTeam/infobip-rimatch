@@ -17,6 +17,18 @@ export interface User {
   updatedAt: string;
 }
 
+export type ProjectedUser = Pick<
+  User,
+  | "id"
+  | "firstName"
+  | "lastName"
+  | "description"
+  | "profileImageUrl"
+  | "location"
+  | "gender"
+  | "age"
+>;
+
 interface UserPreferences {
   ageGroupMin: number;
   ageGroupMax: number;

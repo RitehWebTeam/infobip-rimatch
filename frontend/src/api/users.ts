@@ -1,7 +1,7 @@
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import type { Match, MatchData } from "@/types/Match";
-import type { PreferencesInitData, User } from "@/types/User";
+import type { PreferencesInitData, ProjectedUser, User } from "@/types/User";
 import {
   UseMutationOptions,
   useMutation,
@@ -94,7 +94,7 @@ export const UsersService = {
 
   useGetMatches: () => {
     const axios = useAxiosPrivate();
-    return useQuery<Match[], Error>({
+    return useQuery<ProjectedUser[], Error>({
       queryKey: ["UsersService.getMatches"],
       queryFn: () => axios.get("/match/all").then((res) => res.data),
       staleTime: Infinity,
