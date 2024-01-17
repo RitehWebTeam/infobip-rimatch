@@ -10,7 +10,7 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
+
   background-color: #1E1E1E;
 
   font-synthesis: none;
@@ -21,17 +21,17 @@
 
 }
 
-@media (prefers-color-scheme: dark) {
+
   .drop-down {
     background-color: #3b3a3a; 
-    color: #ffffff; 
+   
   }
-}
-@media (prefers-color-scheme: dark) {
+
+
   .drop-down li:hover {
     background-color: #696464; 
   }
-}
+
 #red-to-black {
   position: relative;
   clip: path(polygon(0 0, 100% 0, 100% 100%, 0% 100%, 0% 50%, 50% 0%));

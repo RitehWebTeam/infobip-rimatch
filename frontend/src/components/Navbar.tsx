@@ -3,6 +3,7 @@ import { RiMatchLogo, CogIcon, HeartIcon, LogoutIcon } from "@/assets";
 import useLogout from "@/hooks/useLogout";
 import useCurrentUserContext from "@/hooks/useCurrentUser";
 import { Link } from "react-router-dom";
+import MatchIcon from "@/assets/MatchIcon";
 
 const Navbar: React.FunctionComponent = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -19,14 +20,19 @@ const Navbar: React.FunctionComponent = () => {
       </div>
       <Link
         to="/"
-        className="text-red-500 text-4xl sm:text-5xl ml-56 flex justify-center font-semibold font-Pacifico"
+        className="text-red-500 text-4xl sm:text-5xl ml-0 sm:ml-56 flex justify-center font-semibold font-Pacifico"
       >
         RiMatch
       </Link>
       <div className="flex gap-3 items-center">
-        <Link to="/matches" className="pr-4 font-bold text-2xl border-r-2">
-          My matches
-        </Link>
+        {!isDropdownOpen && (
+          <Link
+            to="/matches"
+            className="pr-4 font-bold text-2xl border-r-2 sm:block hidden"
+          >
+            My matches
+          </Link>
+        )}
         <p className="hidden sm:block">{user.firstName}</p>
 
         <div
@@ -61,6 +67,13 @@ const Navbar: React.FunctionComponent = () => {
                     <LogoutIcon />
                   </span>
                   <span> Logout </span>
+                </li>
+                <li className="sm:hidden px-3 py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-400">
+                  <span>
+                    {" "}
+                    <MatchIcon />
+                  </span>
+                  <span>My Matches</span>
                 </li>
               </ul>
             </div>
