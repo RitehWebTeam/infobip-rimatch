@@ -31,7 +31,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ user, onClose }) => {
             )}
           >
             <img
-              className="h-45 w-45 rounded-full"
+              className="h-60 w-80 rounded-full"
               src={user.profileImageUrl || "/Default_pfp.svg"}
               alt=""
             />
@@ -44,7 +44,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ user, onClose }) => {
             <p className="text-xl text-gray-200">Lives in: {user.location}</p>
           </div>
           <div className="mt-4">
-            <p className="text-2xl">About {`${user.firstName}`}</p>
+            <p className="text-3xl font-bold">About {`${user.firstName}`}</p>
           </div>
           <div className="flex justify-center items-center mt-1 text-gray-400">
             <p className="flex align-middle text-center text-lg sm:text-xl ">

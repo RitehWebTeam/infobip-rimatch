@@ -2,35 +2,13 @@ const MatchIcon = () => {
   return (
     <div>
       <svg
+        className="w-6 h-6 text-gray-800 dark:text-white"
+        aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
-        x="0px"
-        y="0px"
-        width="50"
-        height="50"
-        viewBox="0 0 172 172"
-        style={{ fill: "#26e07f" }}
+        fill="currentColor"
+        viewBox="0 0 20 18"
       >
-        <g
-          fill="none"
-          fillRule="nonzero"
-          stroke="none"
-          strokeWidth="1"
-          strokeLinecap="butt"
-          strokeLinejoin="miter"
-          strokeMiterlimit="10"
-          strokeDasharray=""
-          strokeDashoffset="0"
-          fontFamily="none"
-          fontWeight="none"
-          fontSize="none"
-          textAnchor="none"
-          style={{ mixBlendMode: "normal" }}
-        >
-          <path d="M0,172v-172h172v172z" fill="none"></path>
-          <g fill="#1fb141">
-            <path d="M21.5,21.5v129h64.5v-32.25v-64.5v-32.25zM86,53.75c0,17.7805 14.4695,32.25 32.25,32.25c17.7805,0 32.25,-14.4695 32.25,-32.25c0,-17.7805 -14.4695,-32.25 -32.25,-32.25c-17.7805,0 -32.25,14.4695 -32.25,32.25zM118.25,86c-17.7805,0 -32.25,14.4695 -32.25,32.25c0,17.7805 14.4695,32.25 32.25,32.25c17.7805,0 32.25,-14.4695 32.25,-32.25c0,-17.7805 -14.4695,-32.25 -32.25,-32.25z"></path>
-          </g>
-        </g>
+        <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
       </svg>
     </div>
   );
