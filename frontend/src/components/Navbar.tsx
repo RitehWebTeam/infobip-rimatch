@@ -51,13 +51,13 @@ const Navbar: React.FunctionComponent = () => {
                   <span>
                     <CogIcon />
                   </span>
-                  <span> Profile </span>
+                  <a href="/userProfile"> Profile </a>
                 </li>
                 <li className="px-3  py-3  text-sm font-medium flex items-center space-x-2 hover:bg-slate-400">
                   <span>
                     <HeartIcon />
                   </span>
-                  <span> Preferences </span>
+                  <a href="/userPreferences"> Preferences </a>
                 </li>
                 <li
                   onClick={() => logout()}

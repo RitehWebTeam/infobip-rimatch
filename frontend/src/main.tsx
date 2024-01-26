@@ -13,6 +13,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Root from "./views/Root.tsx";
 import Preferences from "./views/Preferences.tsx";
 import MyMatches from "./components/MyMatches.tsx";
+import UserPreferencePage from "./views/UserPreferencePage.tsx";
+import UserProfilePage from "./views/UserProfilePage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +44,18 @@ const router = createBrowserRouter([
     path: "/register",
     element: <RegisterForm />,
     errorElement: <ErrorPage />,
+  },
+  {
+    path: "/userPreferences",
+    element: <ProtectedRoutes layout={<Root />} />,
+    errorElement: <ErrorPage />,
+    children: [{ index: true, element: <UserPreferencePage /> }],
+  },
+  {
+    path: "/userProfile",
+    element: <ProtectedRoutes layout={<Root />} />,
+    errorElement: <ErrorPage />,
+    children: [{ index: true, element: <UserProfilePage /> }],
   },
 ]);
 
