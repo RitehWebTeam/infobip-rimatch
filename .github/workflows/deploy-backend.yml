@@ -51,4 +51,8 @@ jobs:
           -e CORS_ALLOWED_ORIGINS="${{vars.FRONTEND_URL}}"
           -e JWT_SECRET_ACCESS="${{ secrets.JWT_SECRET_ACCESS }}"
           -e JWT_SECRET_REFRESH="${{ secrets.JWT_SECRET_REFRESH }}"
+          -e INFOBIP_API_KEY="${{ secrets.INFOBIP_API_KEY }}"
+          -e INFOBIP_BASE_URL="${{ secrets.INFOBIP_BASE_URL }}"
+          -e INFOBIP_SENDER_EMAIL="${{ secrets.INFOBIP_SENDER_EMAIL }}"
+          -e INFOBIP_PHONE_NUMBER="${{ secrets.INFOBIP_PHONE_NUMBER }}"
           --name rimatch-backend-container dominikkovacevic/rimatch

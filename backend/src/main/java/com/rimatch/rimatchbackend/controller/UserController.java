@@ -5,6 +5,7 @@ import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("api/users")
@@ -22,17 +26,17 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/potentional")
-    public ResponseEntity<?> getPotentinalMatch(HttpServletRequest request){
+    @GetMapping("/potential")
+    public ResponseEntity<?> getPotentinalMatch(HttpServletRequest request) {
         String authToken = request.getHeader("Authorization");
         /*
-        Replace with something that doesn't query a database but ok for now
-        */
+         * Replace with something that doesn't query a database but ok for now
+         */
         User user = userService.getUserByToken(authToken);
-        User randomUser = userService.getRandomUser(user.getEmail(),user.getPreferences().getPartnerGender());
+        var randomUsers = userService.getRandomUser(user.getEmail(), user.getPreferences().getPartnerGender());
 
-        if (randomUser != null) {
-            return new ResponseEntity<>(randomUser, HttpStatus.OK);
+        if (randomUsers != null) {
+            return new ResponseEntity<>(randomUsers, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

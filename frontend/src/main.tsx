@@ -12,13 +12,21 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Root from "./views/Root.tsx";
 import Preferences from "./views/Preferences.tsx";
+import MyMatches from "./components/MyMatches.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <ProtectedRoutes layout={<Root />} />,
     errorElement: <ErrorPage />,
-    children: [{ index: true, element: <MatchCard /> }],
+    children: [
+      { index: true, element: <MatchCard /> },
+      {
+        path: "matches",
+        element: <MyMatches />,
+        errorElement: <ErrorPage />,
+      },
+    ],
   },
   {
     path: "/init/preferences",

@@ -10,12 +10,12 @@ import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Document(collection = "users")
 @Data
-@Getter
-@Setter
 public class User {
 
     @Valid
@@ -62,6 +62,8 @@ public class User {
 
     private Preferences preferences;
 
+    private List<String> seenUserIds = new ArrayList<>();
+
     private Date lastSeen;
 
     @CreatedDate
@@ -82,4 +84,3 @@ public class User {
     }
 
 }
-

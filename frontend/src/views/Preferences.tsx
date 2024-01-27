@@ -7,7 +7,8 @@ import "aos/dist/aos.css";
 import MovmentButtons from "../components/MovmentButtons";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
-import { PreferencesInitData, UsersService } from "@/api/users";
+import { UsersService } from "@/api/users";
+import type { PreferencesInitData } from "@/types/User";
 import ScrollToFieldError from "@/components/ScrollToFieldError";
 
 const preferenceSchema = Yup.object({

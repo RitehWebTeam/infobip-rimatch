@@ -1,43 +1,13 @@
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import type { Match, MatchData } from "@/types/Match";
+import type { PreferencesInitData, ProjectedUser, User } from "@/types/User";
 import {
   UseMutationOptions,
   useMutation,
   useQuery,
+  useQueryClient,
 } from "@tanstack/react-query";
-
-export interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  hashedPassword: string;
-  gender: string;
-  age: number;
-  active: boolean;
-  description: string;
-  profileImageUrl: string;
-  phoneNumber: string;
-  location: string;
-  preferences: UserPreferences;
-  lastSeen: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface UserPreferences {
-  ageGroupMin: number;
-  ageGroupMax: number;
-  partnerGender: string;
-}
-
-export interface PreferencesInitData {
-  description: string;
-  profileImageUrl: string;
-  phoneNumber: string;
-  location: string;
-  preferences: UserPreferences;
-}
 
 export const UsersService = {
   useGetCurrentUser() {
@@ -66,6 +36,68 @@ export const UsersService = {
         return response.data;
       },
       ...mutationOptions,
+    });
+  },
+
+  useGetPotentailUsers: () => {
+    const axios = useAxiosPrivate();
+    return useQuery<User[], Error>({
+      queryKey: ["UsersService.getPotentialUsers"],
+      queryFn: () => axios.get("/match/potential").then((res) => res.data),
+      staleTime: Infinity,
+    });
+  },
+
+  useAcceptMatch: <T = Match>(
+    mutationOptions?: Omit<
+      UseMutationOptions<T, Error, MatchData>,
+      "mutationFn"
+    >
+  ) => {
+    const axios = useAxiosPrivate();
+    const queryClient = useQueryClient();
+    return useMutation<T, Error, MatchData>({
+      mutationFn: async (data) => {
+        const response = await axios.post<T>("/match/accept", data);
+        return response.data;
+      },
+      onSuccess: () => {
+        return queryClient.invalidateQueries({
+          queryKey: ["UsersService.getPotentialUsers"],
+        });
+      },
+      ...mutationOptions,
+    });
+  },
+
+  useRejectMatch: <T = Match>(
+    mutationOptions?: Omit<
+      UseMutationOptions<T, Error, MatchData>,
+      "mutationFn"
+    >
+  ) => {
+    const axios = useAxiosPrivate();
+    const queryClient = useQueryClient();
+    return useMutation<T, Error, MatchData>({
+      mutationFn: async (data) => {
+        const response = await axios.post<T>("/match/reject", data);
+        return response.data;
+      },
+      onSuccess: () => {
+        return queryClient.invalidateQueries({
+          queryKey: ["UsersService.getPotentialUsers"],
+        });
+      },
+      ...mutationOptions,
+    });
+  },
+
+  useGetMatches: () => {
+    const axios = useAxiosPrivate();
+    return useQuery<ProjectedUser[], Error>({
+      queryKey: ["UsersService.getMatches"],
+      queryFn: () => axios.get("/match/all").then((res) => res.data),
+      staleTime: Infinity,
     });
   },
 };
