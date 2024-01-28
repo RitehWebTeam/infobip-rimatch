@@ -2,6 +2,7 @@ import type { User } from "@/types/User";
 import type { LoginData, RegisterData, TokenResponse } from "@/types/Auth";
 import { axiosPublic } from "./config/axios";
 import { UseMutationOptions, useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
 const AuthService = {
   useLogin: <T = TokenResponse>(
@@ -28,10 +29,16 @@ const AuthService = {
   ) => {
     return useMutation({
       mutationFn: async () => {
-        const response = await axiosPublic.get<T>("/auth/refresh", {
-          withCredentials: true,
-        });
-        return response.data;
+        try {
+          const response = await axiosPublic.get<T>("/auth/refresh", {
+            withCredentials: true,
+          });
+          return response.data;
+        } catch (e) {
+          const error = e as AxiosError<Record<string, string>>;
+          const message = `Status: ${error.response?.status}, Error: ${error.response?.data?.error}, Message: ${error.response?.data?.message}`;
+          throw new Error(message);
+        }
       },
       ...mutationOptions,
     });

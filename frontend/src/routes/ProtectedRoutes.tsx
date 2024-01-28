@@ -21,7 +21,10 @@ const ProtectedRoutes = ({ layout = <Outlet /> }: ProtectedRoutesProps) => {
       try {
         await refresh();
       } catch (err) {
-        console.error(err);
+        console.warn(
+          "No session found or session expired, redirecting to login."
+        );
+        console.error((err as Error).message);
       } finally {
         isMounted && setIsLoading(false);
       }
