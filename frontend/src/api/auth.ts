@@ -8,22 +8,36 @@ import type {
 import { axiosPublic } from "./config/axios";
 import { UseMutationOptions, useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import useLocalStorage from "@/hooks/useLocalStorage";
+import useAuth from "@/hooks/useAuth";
 
 const AuthService = {
-  useLogin: <T = RefreshTokenResponse>(
+  useLogin: (
     mutationOptions?: Omit<
-      UseMutationOptions<T, Error, LoginData>,
-      "mutationFn"
+      UseMutationOptions<RefreshTokenResponse, Error, LoginData>,
+      "mutationFn" | "onSuccess"
     >
   ) => {
-    return useMutation<T, Error, LoginData>({
+    const [, setRefreshToken] = useLocalStorage<string>("refreshToken", "");
+    const { setAuth } = useAuth();
+    return useMutation<RefreshTokenResponse, Error, LoginData>({
       mutationFn: async ({ email, password }) => {
-        const response = await axiosPublic.post<T>(
+        const response = await axiosPublic.post<RefreshTokenResponse>(
           "/auth/login",
           { email, password },
           { withCredentials: true }
         );
         return response.data;
+      },
+      onSuccess: ({ token, active, refreshToken }, { email }) => {
+        setAuth({
+          user: {
+            email,
+          },
+          accessToken: token,
+          active,
+        });
+        setRefreshToken(refreshToken);
       },
       ...mutationOptions,
     });
@@ -33,7 +47,10 @@ const AuthService = {
     mutationOptions?: Omit<UseMutationOptions<T>, "mutationFn">
   ) => {
     // When in StrictMode useLocalStorage sometimes returns the default value so this is a workaround
-    const refreshToken = JSON.parse(localStorage.getItem("refreshToken") ?? "");
+    const localStorageRefreshToken = localStorage.getItem("refreshToken");
+    const refreshToken = localStorageRefreshToken
+      ? JSON.parse(localStorageRefreshToken)
+      : "";
     return useMutation({
       mutationFn: async () => {
         try {

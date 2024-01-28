@@ -3,8 +3,6 @@ import * as Yup from "yup";
 import { EmailAtIcon, LockIcon } from "../assets";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthService from "@/api/auth";
-import useAuth from "@/hooks/useAuth";
-import useLocalStorage from "@/hooks/useLocalStorage";
 
 const LoginSchema = Yup.object({
   email: Yup.string().required("Required").email("Must be valid email"),
@@ -20,24 +18,14 @@ const initialValues = {
 type LoginValues = typeof initialValues;
 
 const LoginForm = () => {
-  const { setAuth } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const [, setRefreshToken] = useLocalStorage<string>("refreshToken", "");
   const { mutateAsync: login } = AuthService.useLogin();
   const from = location?.state?.from?.pathname ?? "/";
 
   const handleSubmit = (values: LoginValues) => {
     return login(values, {
-      onSuccess: ({ token, active, refreshToken }) => {
-        setAuth({
-          user: {
-            email: values.email,
-          },
-          accessToken: token,
-          active,
-        });
-        setRefreshToken(refreshToken);
+      onSuccess: () => {
         navigate(from, { replace: true });
       },
     });
