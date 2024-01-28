@@ -18,6 +18,10 @@ export interface TokenResponse {
   active: boolean;
 }
 
+export interface RefreshTokenResponse extends TokenResponse {
+  refreshToken: string;
+}
+
 export interface RegisterData {
   email: string;
   password: string;

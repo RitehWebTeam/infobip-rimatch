@@ -14,29 +14,12 @@ export default function useLocalStorage<T>(
     }
 
     setValue(item ? JSON.parse(item) : defaultValue);
-
-    function handler(e: StorageEvent) {
-      if (e.key !== key) return;
-
-      const lsi = localStorage.getItem(key);
-      setValue(JSON.parse(lsi ?? ""));
-    }
-
-    window.addEventListener("storage", handler);
-
-    return () => {
-      window.removeEventListener("storage", handler);
-    };
   }, [key, defaultValue]);
 
   const setValueWrap = (value: T) => {
     try {
       setValue(value);
-
       localStorage.setItem(key, JSON.stringify(value));
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(new StorageEvent("storage", { key }));
-      }
     } catch (e) {
       console.error(e);
     }
