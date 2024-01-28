@@ -9,7 +9,6 @@ import com.rimatch.rimatchbackend.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 
-import jakarta.servlet.http.Cookie;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -74,28 +73,6 @@ public class UserService {
         private String token;
         private String refreshToken;
         private boolean active;
-    }
-
-    public Cookie clearRefreshTokenCookie() {
-        return handleRefreshTokenCookie(null, true);
-    }
-
-    public Cookie setRefreshTokenCookie(String token) {
-        return handleRefreshTokenCookie(token, false);
-    }
-
-    private Cookie handleRefreshTokenCookie(String token, boolean clear) {
-        Cookie cookie = new Cookie("refreshToken", clear ? null : token);
-        cookie.setHttpOnly(true);
-        // This should be set if we setup HTTPS
-        // cookie.setSecure(true);
-        final int maxAge = clear
-                ? 0
-                : (int) (JWTUtils.TOKEN_DURATION.get(TokenType.REFRESH) / 1000);
-        cookie.setMaxAge(maxAge);
-        cookie.setPath("/");
-        //cookie.setAttribute("SameSite", "None");
-        return cookie;
     }
 
     public User finishUserSetup(User user, SetupDto setupDto){

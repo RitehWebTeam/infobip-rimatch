@@ -1,11 +1,16 @@
 import type { User } from "@/types/User";
-import type { LoginData, RegisterData, TokenResponse } from "@/types/Auth";
+import type {
+  LoginData,
+  RefreshTokenResponse,
+  RegisterData,
+  TokenResponse,
+} from "@/types/Auth";
 import { axiosPublic } from "./config/axios";
 import { UseMutationOptions, useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
 const AuthService = {
-  useLogin: <T = TokenResponse>(
+  useLogin: <T = RefreshTokenResponse>(
     mutationOptions?: Omit<
       UseMutationOptions<T, Error, LoginData>,
       "mutationFn"
@@ -27,12 +32,16 @@ const AuthService = {
   useRefreshToken: <T = TokenResponse>(
     mutationOptions?: Omit<UseMutationOptions<T>, "mutationFn">
   ) => {
+    // When in StrictMode useLocalStorage sometimes returns the default value so this is a workaround
+    const refreshToken = JSON.parse(localStorage.getItem("refreshToken") ?? "");
     return useMutation({
       mutationFn: async () => {
         try {
-          const response = await axiosPublic.get<T>("/auth/refresh", {
-            withCredentials: true,
-          });
+          const response = await axiosPublic.post<T>(
+            "/auth/refresh",
+            { refreshToken },
+            { withCredentials: true }
+          );
           return response.data;
         } catch (e) {
           const error = e as AxiosError<Record<string, string>>;
