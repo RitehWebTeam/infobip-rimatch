@@ -2,6 +2,7 @@ package com.rimatch.rimatchbackend.service;
 import com.rimatch.rimatchbackend.dto.LoginDto;
 import com.rimatch.rimatchbackend.dto.RegisterDto;
 import com.rimatch.rimatchbackend.dto.SetupDto;
+import com.rimatch.rimatchbackend.dto.UserUpdateDTO;
 import com.rimatch.rimatchbackend.util.JWTUtils;
 import com.rimatch.rimatchbackend.util.JWTUtils.TokenType;
 import com.rimatch.rimatchbackend.model.User;
@@ -15,9 +16,11 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.modelmapper.ModelMapper;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -35,6 +38,9 @@ public class UserService {
     final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Autowired
     private JWTUtils jwtUtils;
+
+    @Autowired
+    private ModelMapper modelMapper;
     @Autowired
     public UserService(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
@@ -96,8 +102,6 @@ public class UserService {
         return userRepository.findByEmail(jwtUtils.extractSubject(token, TokenType.ACCESS));
     }
 
-
-
     public String refreshAccessToken(String token)throws IllegalArgumentException,JwtException {
         try {
             Claims claims = jwtUtils.validateToken(token, TokenType.REFRESH);
@@ -133,6 +137,12 @@ public class UserService {
     public void insertToSeenUserIds(User user, String id){
         user.getSeenUserIds().add(id);
         userRepository.save(user);
+    }
+
+    public User updateUser(User user, UserUpdateDTO userUpdateDTO) {
+        modelMapper.map(userUpdateDTO, user);
+        System.out.println(user);
+        return userRepository.save(user);
     }
 
     // add more methods as per your requirements
