@@ -19,7 +19,7 @@ const Navbar: React.FunctionComponent = () => {
       </div>
       <Link
         to="/"
-        className="text-red-500 text-4xl sm:text-5xl md:ml-56 flex justify-center font-semibold font-Pacifico"
+        className="text-red-500 text-4xl sm:absolute sm:w-52 sm:left-0 sm:right-0 sm:mr-auto sm:ml-auto sm:text-5xl flex justify-center font-semibold font-Pacifico"
       >
         RiMatch
       </Link>

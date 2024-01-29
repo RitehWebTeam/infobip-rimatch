@@ -23,7 +23,7 @@ const MatchesPage = () => {
 
   return (
     <MatchHeader>
-      <div className="grid grid-cols-2 sm:grid-cols-3 w-full gap-x-4 gap-y-6 mt-3 lg:max-h-[35rem] lg:overflow-y-auto">
+      <div className="grid grid-cols-2 sm:grid-cols-3 w-full gap-x-4 gap-y-6 mt-3 lg:max-h-[33rem] lg:overflow-y-auto">
         {matches.map((user) => (
           <MatchedUser key={user.id} user={user} />
         ))}
@@ -45,7 +45,7 @@ const MatchHeader = ({ children }: MatchHeaderProps) => {
             Matches
           </div>
         </div>
-        <div className="text-opacity-70 text-black dark:text-white dark:text-opacity-70   w-full mt-4">
+        <div className="text-opacity-70 text-black dark:text-white dark:text-opacity-70 w-full mt-4">
           This is a list of people who matched with you.
         </div>
         <div className="flex w-full items-center gap-3 mt-7 mb-3">
