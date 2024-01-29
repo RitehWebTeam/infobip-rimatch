@@ -13,6 +13,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Root from "./views/Root.tsx";
 import Preferences from "./views/Preferences.tsx";
 import MyMatches from "./components/MyMatches.tsx";
+import MatchesImproved from "./components/MatchesImproved.tsx";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
       },
     ],
+  },
+  {
+    path: "/test",
+    element: <MatchesImproved />,
   },
   {
     path: "/init/preferences",
