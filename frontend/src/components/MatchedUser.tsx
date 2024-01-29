@@ -1,24 +1,19 @@
+import { ProjectedUser } from "@/types/User";
+
 interface MatchedUsersProps {
-  user: {
-    id: number;
-    profileImageUrl: string;
-    firstName: string;
-    lastName: string;
-    age: number;
-    location: string;
-  };
+  user: ProjectedUser;
 }
 
 const MatchedUser = ({ user }: MatchedUsersProps) => {
   return (
-    <div className="flex flex-col overflow-hidden relative items-center rounded-lg">
-      <div className="absolute w-full h-full bg-gradient-to-t from-black from-0% to-50%"></div>
+    <div className="flex flex-col overflow-hidden relative items-center rounded-lg sm:h-44">
+      <div className="absolute w-full h-full bg-gradient-to-t from-black from-0% to-30%"></div>
       <img
         loading="lazy"
         srcSet={user.profileImageUrl}
-        className="object-cover object-center inset-0 h-48"
+        className="object-cover w-full h-36 sm:h-44"
       />
-      <div className="absolute left-4 bottom-2 text-white text-base font-bold leading-6 whitespace-nowrap">
+      <div className="absolute left-4 bottom-2 text-white font-bold text-sm leading-6 whitespace-nowrap">
         {user.firstName}, {user.age}
       </div>
     </div>

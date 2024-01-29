@@ -13,18 +13,21 @@ const Navbar: React.FunctionComponent = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
   return (
-    <nav className="flex bg-[#1E1E1E] items-center relative justify-between  px-5 py-6 w-full border-b border-gray-700">
+    <nav className="flex bg-[#1E1E1E] items-center relative justify-between  px-5 py-6 w-full border-b border-gray-700 sm:mb-8">
       <div>
         <RiMatchLogo />
       </div>
       <Link
         to="/"
-        className="text-red-500 text-4xl sm:text-5xl ml-56 flex justify-center font-semibold font-Pacifico"
+        className="text-red-500 text-4xl sm:text-5xl md:ml-56 flex justify-center font-semibold font-Pacifico"
       >
         RiMatch
       </Link>
       <div className="flex gap-3 items-center">
-        <Link to="/matches" className="pr-4 font-bold text-2xl border-r-2">
+        <Link
+          to="/matches"
+          className="hidden md:block pr-4 font-bold text-2xl border-r-2"
+        >
           My matches
         </Link>
         <p className="hidden sm:block">{user.firstName}</p>
