@@ -48,15 +48,15 @@ public class AuthController {
             return new ResponseEntity<>(Map.of("message", "Invalid email or password"), HttpStatus.UNAUTHORIZED);
         }
     
-        response.addCookie(userService.setRefreshTokenCookie(loginResponseData.getRefreshToken()));
         return new ResponseEntity<>(
-            Map.of("token", loginResponseData.getToken(), "active", loginResponseData.isActive()),
+            Map.of("token", loginResponseData.getToken(), "active", loginResponseData.isActive(), "refreshToken", loginResponseData.getRefreshToken()),
             HttpStatus.OK);
     }
 
-    @GetMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@CookieValue("refreshToken") String refreshToken) {
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestBody Map<String, String> body) {
         try {
+            final String refreshToken = body.get("refreshToken");
             String token = userService.refreshAccessToken(refreshToken);
             boolean active = userService.getUserByToken(token).isActive();
             return ResponseEntity.ok(Map.of("token", token, "active", active));
@@ -66,10 +66,8 @@ public class AuthController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<Void> logout(@CookieValue(name = "refreshToken", required = false) String refreshToken, HttpServletResponse response) {
-        if (refreshToken != null) {
-            response.addCookie(userService.clearRefreshTokenCookie());
-        }
+    public ResponseEntity<Void> logout() {
+        // TODO: Invalidate refresh token
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
