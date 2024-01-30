@@ -6,7 +6,7 @@ const UserPageLayout = () => {
   const user = useCurrentUserContext();
   return (
     <div className="flex w-full flex-grow justify-center md:pb-8">
-      <div className="bg-white  dark:bg-[#343030] flex w-full sm:w-[25rem] flex-col h-full items-center sm:rounded-lg sm:shadow-lg shadow-black">
+      <div className="bg-white  dark:bg-[#343030] flex w-full sm:w-[27rem] flex-col h-full items-center sm:rounded-lg sm:shadow-lg shadow-black">
         <div className="w-full sm:rounded-t-lg bg-black flex-grow">
           <img
             srcSet={user.profileImageUrl}

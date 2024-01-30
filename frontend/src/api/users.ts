@@ -1,7 +1,11 @@
-import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import type { Match, MatchData } from "@/types/Match";
-import type { PreferencesInitData, ProjectedUser, User } from "@/types/User";
+import type {
+  PreferencesInitData,
+  ProjectedUser,
+  User,
+  UserUpdateData,
+} from "@/types/User";
 import {
   UseMutationOptions,
   useMutation,
@@ -11,13 +15,11 @@ import {
 
 export const UsersService = {
   useGetCurrentUser() {
-    const { auth } = useAuth();
     const axios = useAxiosPrivate();
     return useQuery<User, Error>({
-      queryKey: ["UsersService.getCurrentUser", auth?.accessToken],
+      queryKey: ["UsersService.getCurrentUser"],
       queryFn: () => axios.get("/users/me").then((response) => response.data),
       staleTime: Infinity,
-      enabled: !!auth?.accessToken,
     });
   },
 
@@ -85,7 +87,7 @@ export const UsersService = {
       },
       onSuccess: () => {
         return queryClient.invalidateQueries({
-          queryKey: ["UsersService.getPotentialUsers"],
+          queryKey: ["UsersService.getCurrentUser"],
         });
       },
       ...mutationOptions,
@@ -98,6 +100,30 @@ export const UsersService = {
       queryKey: ["UsersService.getMatches"],
       queryFn: () => axios.get("/match/all").then((res) => res.data),
       staleTime: 60e3,
+    });
+  },
+
+  useUpdateUser: <T = void, Args = UserUpdateData>(
+    mutationOptions?: Omit<UseMutationOptions<T, Error, Args>, "mutationFn">
+  ) => {
+    const axios = useAxiosPrivate();
+    const queryClient = useQueryClient();
+    return useMutation<T, Error, Args>({
+      mutationFn: async (data) => {
+        const response = await axios.put<T>("/users/me/update", data);
+        return response.data;
+      },
+      onSuccess: () => {
+        return Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: ["UsersService.getCurrentUser"],
+          }),
+          queryClient.invalidateQueries({
+            queryKey: ["UsersService.getPotentialUsers"],
+          }),
+        ]);
+      },
+      ...mutationOptions,
     });
   },
 };

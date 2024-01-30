@@ -3,6 +3,7 @@ import useCurrentUserContext from "@/hooks/useCurrentUser";
 import { Field, Form, ErrorMessage, Formik } from "formik";
 import * as Yup from "yup";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import { UsersService } from "@/api/users";
 
 const updatePreferenceSchema = Yup.object({
   phoneNumber: Yup.number().required("Required"),
@@ -33,13 +34,13 @@ type formTypes = {
 const UserProfileForm = () => {
   const user = useCurrentUserContext();
   const [editMode, setEditMode] = useState(false);
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>(user.tags ?? []);
+  const { mutateAsync: updateUser } = UsersService.useUpdateUser();
 
   //Ovo handalja promjenu splitanje tagova i spremanje u state
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     const newTags = value.split(/[ ,]/);
-    console.log(newTags);
     setTags(newTags);
   };
 
@@ -51,8 +52,15 @@ const UserProfileForm = () => {
     location: user.location ?? "",
   };
 
-  const handleSubmit = (values: formTypes) => {
-    console.log({ ...values, tags });
+  const handleSubmit = async (values: formTypes) => {
+    await updateUser({
+      phoneNumber: values.phoneNumber,
+      age: values.age,
+      description: values.description,
+      favouriteSong: values.favoriteSong,
+      location: values.location,
+      tags: tags,
+    });
     setEditMode(false);
   };
 

@@ -3,6 +3,7 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import { UsersService } from "@/api/users";
 
 const updatePreferenceSchema = Yup.object({
   minAge: Yup.number()
@@ -23,6 +24,7 @@ const updatePreferenceSchema = Yup.object({
 const UserPreferenceForm = () => {
   const user = useCurrentUserContext();
   const [editMode, setEditMode] = useState(false);
+  const { mutateAsync: updateUser } = UsersService.useUpdateUser();
 
   const initialValues = {
     minAge: user.preferences.ageGroupMin ?? "",
@@ -34,9 +36,15 @@ const UserPreferenceForm = () => {
     setEditMode(true);
   };
 
-  const handleSaveClick = (values: typeof initialValues) => {
+  const handleSaveClick = async (values: typeof initialValues) => {
+    await updateUser({
+      preferences: {
+        ageGroupMax: values.maxAge,
+        ageGroupMin: values.minAge,
+        partnerGender: values.preferredGender,
+      },
+    });
     setEditMode(false);
-    console.log(values);
   };
 
   return (
