@@ -12,7 +12,7 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Root from "./views/Root.tsx";
 import Preferences from "./views/Preferences.tsx";
-import MyMatches from "./components/MyMatches.tsx";
+import MatchesPage from "./views/MatchesPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -23,7 +23,7 @@ const router = createBrowserRouter([
       { index: true, element: <MatchCard /> },
       {
         path: "matches",
-        element: <MyMatches />,
+        element: <MatchesPage />,
         errorElement: <ErrorPage />,
       },
     ],

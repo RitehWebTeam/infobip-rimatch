@@ -97,7 +97,7 @@ export const UsersService = {
     return useQuery<ProjectedUser[], Error>({
       queryKey: ["UsersService.getMatches"],
       queryFn: () => axios.get("/match/all").then((res) => res.data),
-      staleTime: Infinity,
+      staleTime: 60e3,
     });
   },
 };

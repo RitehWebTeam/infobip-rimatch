@@ -25,8 +25,8 @@ const MatchCard = () => {
   const user = result.data[0];
 
   return (
-    <div className="flex relative z-1 flex-col justify-center items-center h-5/6 max-h-full">
-      <div className="relative flex flex-col items-center rounded-[25px] border-[1px] border-black-200 h-[580px] sm:h-[600] w-[340px] sm:w-[400px]  sm:mr-24 p-4 bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black">
+    <div className="flex justify-center">
+      <div className="relative flex flex-col items-center rounded-[25px] border-[1px] border-black-200 h-[580px] sm:h-[600] w-[340px] sm:w-[24rem] p-4 bg-white dark:bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black">
         <div className="relative flex h-72 w-full justify-center rounded-xl bg-cover">
           <div
             className={cx(
@@ -48,11 +48,13 @@ const MatchCard = () => {
           <h4 className="text-4xl font-bold text-navy-700 dark:text-white">
             {`${user.firstName}, ${user.age}`}
           </h4>
-          <p className="text-base font-normal text-gray-200">{user.location}</p>
+          <p className="text-base font-normal dark:text-gray-200">
+            {user.location}
+          </p>
           <div className="flex justify-center items-center mt-4 text-gray-400">
             <p className="flex align-middle text-center">{user.description}</p>
           </div>
-          <div className="flex mt-20 flex-row justify-between w-full">
+          <div className="flex mt-20 flex-row justify-between w-full text-white">
             <button
               className="btn hover:bg-green-600 bg-green-500 transition-color duration-300 sm:ml-4 mb-2 border-green-700 rounded-full w-24 h-24 shadow-md shadow-black"
               onClick={() => acceptMatch.mutate({ userId: user.id })}

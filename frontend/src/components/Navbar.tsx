@@ -13,18 +13,21 @@ const Navbar: React.FunctionComponent = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
   return (
-    <nav className="flex bg-[#1E1E1E] items-center relative justify-between  px-5 py-6 w-full border-b border-gray-700">
+    <nav className="flex  items-center relative justify-between  px-5 py-6 w-full border-b border-gray-300 dark:border-gray-700 sm:mb-8">
       <div>
         <RiMatchLogo />
       </div>
       <Link
         to="/"
-        className="text-red-500 text-4xl sm:text-5xl ml-56 flex justify-center font-semibold font-Pacifico"
+        className="text-red-500 text-4xl sm:absolute sm:w-52 sm:left-0 sm:right-0 sm:mr-auto sm:ml-auto sm:text-5xl flex justify-center font-semibold font-Pacifico"
       >
         RiMatch
       </Link>
       <div className="flex gap-3 items-center">
-        <Link to="/matches" className="pr-4 font-bold text-2xl border-r-2">
+        <Link
+          to="/matches"
+          className="hidden md:block pr-4 font-bold text-2xl border-r-2"
+        >
           My matches
         </Link>
         <p className="hidden sm:block">{user.firstName}</p>
@@ -39,15 +42,15 @@ const Navbar: React.FunctionComponent = () => {
           }}
         >
           {isDropdownOpen && (
-            <div className="drop-down w-48 overflow-hidden bg-white rounded-md shadow absolute z-10 top-12 right-3">
+            <div className="drop-down w-48 overflow-hidden text-black bg-white dark:bg-[#3b3a3a] dark:text-white rounded-md shadow absolute z-10 top-12 right-3">
               <ul>
-                <li className="px-3 py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-400">
+                <li className="px-3 py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-200  dark:hover:bg-slate-400">
                   <span>
                     <CogIcon />
                   </span>
                   <span> Profile </span>
                 </li>
-                <li className="px-3  py-3  text-sm font-medium flex items-center space-x-2 hover:bg-slate-400">
+                <li className="px-3  py-3  text-sm font-medium flex items-center space-x-2 hover:bg-slate-200 dark:hover:bg-slate-400">
                   <span>
                     <HeartIcon />
                   </span>
@@ -55,7 +58,7 @@ const Navbar: React.FunctionComponent = () => {
                 </li>
                 <li
                   onClick={() => logout()}
-                  className="px-3  py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-400"
+                  className="px-3  py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-200  dark:hover:bg-slate-400"
                 >
                   <span>
                     <LogoutIcon />
