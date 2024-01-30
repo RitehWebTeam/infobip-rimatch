@@ -5,7 +5,6 @@ import com.rimatch.rimatchbackend.util.converter.ToLowerCaseConverter;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 public class RegisterDto {
@@ -32,5 +31,5 @@ public class RegisterDto {
     @NotNull(message = "Age field cannot be null!")
     @Min(value = 18, message = "Age cannot be less than 18!")
     @Max(value = 99, message = "Age cannot be more than 99!")
-    private int age;
+    private Integer age;
 }

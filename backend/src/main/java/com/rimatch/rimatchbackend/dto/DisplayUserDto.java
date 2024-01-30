@@ -24,7 +24,7 @@ public class DisplayUserDto {
 
     private Character gender;
 
-    private int age;
+    private Integer age;
 
     private String favouriteSong;
 

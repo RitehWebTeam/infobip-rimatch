@@ -48,7 +48,7 @@ public class User {
     @NotBlank(message = "This field cannot be blank!")
     @Min(value = 18,message = "This field cannot be less then 18!")
     @Max(value = 99,message = "This field cannot be more then 99! I guess?")
-    private int age;
+    private Integer age;
 
     private boolean active;
 
