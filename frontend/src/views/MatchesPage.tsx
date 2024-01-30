@@ -23,7 +23,7 @@ const MatchesPage = () => {
 
   return (
     <MatchHeader>
-      <div className="grid grid-cols-2 sm:grid-cols-3 w-full gap-x-4 gap-y-6 mt-3 lg:max-h-[33rem] lg:overflow-y-auto">
+      <div className="grid grid-cols-2 sm:grid-cols-3 w-full gap-7 mt-3 lg:max-h-[33rem] lg:overflow-y-auto">
         {matches.map((user) => (
           <MatchedUser key={user.id} user={user} />
         ))}
