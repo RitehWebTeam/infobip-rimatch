@@ -33,7 +33,7 @@ const LoginForm = () => {
 
   return (
     <div>
-      <div className="h-screen flex" id="red-to-black">
+      <div className="h-screen flex text-white" id="red-to-black">
         <div className="flex w-full justify-center items-center ">
           <Formik
             initialValues={initialValues}

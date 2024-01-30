@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Kalnia&family=Montserrat:wght@300;500&family=Pacifico&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Kalnia&family=Montserrat:wght@300;500&family=Pacifico&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,26 +10,19 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #1E1E1E;
+  color: rgba(24, 24, 24, 0.87);
+  background-color: rgb(243 244 246);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
-
-}
-
-@media (prefers-color-scheme: dark) {
-  .drop-down {
-    background-color: #3b3a3a; 
-    color: #ffffff; 
-  }
 }
 @media (prefers-color-scheme: dark) {
-  .drop-down li:hover {
-    background-color: #696464; 
+  :root {
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #1e1e1e;
   }
 }
 #red-to-black {
@@ -38,16 +31,18 @@
   background: radial-gradient(
     farthest-corner at 40px 100px,
     rgba(223, 68, 68, 0.616) 10%,
-    rgb(41, 32, 32) 40%)
- 
-} 
+    rgb(41, 32, 32) 40%
+  );
+  background-color: #1e1e1e;
+}
 
-
-html, body, #root {
-  height: 100vh; 
+html,
+body,
+#root {
+  height: 100vh;
   margin: 0;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   scroll-behavior: smooth;
   box-sizing: border-box;
 }
@@ -57,14 +52,14 @@ html, body, #root {
   height: 100%;
   white-space: nowrap;
 }
-.hidden1{
+.hidden1 {
   opacity: 0;
   filter: blur(5px);
   transform: translateX(-100%);
   transition: all 1s;
 }
 
-.show{
+.show {
   opacity: 1;
   filter: blur(0);
   transform: translateX(0);
@@ -78,25 +73,24 @@ html, body, #root {
   background: radial-gradient(
     farthest-corner at 40px 100px,
     rgba(223, 68, 68, 0.616) 10%,
-    rgb(41, 32, 32) 40%)
+    rgb(41, 32, 32) 40%
+  );
+  background-color: #1e1e1e;
 }
 
 .page:nth-child(1) {
-  
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .page:nth-child(2) {
-  
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .page:nth-child(3) {
- 
   display: flex;
   align-items: center;
 }
