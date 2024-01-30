@@ -1,25 +1,16 @@
 import React from "react";
 import cx from "classnames";
+import { ProjectedUser } from "@/types/User";
 
 type ProfileCardProps = {
-  user: {
-    firstName: string;
-    age: number;
-    description: string;
-    lastName: string;
-    location: string;
-    profileImageUrl: string;
-    gender: string;
-    // Add other user-specific properties here
-  };
+  user: ProjectedUser;
   onClose: () => void;
 };
 
 export const ProfileCard: React.FC<ProfileCardProps> = ({ user, onClose }) => {
-  // Customize the content and appearance of the expanded profile card
   return (
-    <div className="  bg-gray-800 bg-opacity-70 flex justify-center items-center">
-      <div className="relative top-7 flex flex-col items-center rounded-[25px] border-[1px] border-black-200 h-[750px] sm:h-[700px] w-[550px] p-4 bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black">
+    <div className="flex justify-center items-center">
+      <div className="relative flex flex-col items-center rounded-[25px] border-[1px] border-black-200 h-[750px] sm:h-[700px] w-[550px] p-4 dark:bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black">
         <div className="relative flex h-72 w-full justify-center rounded-xl bg-cover">
           <div
             className={cx(
@@ -31,7 +22,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ user, onClose }) => {
             )}
           >
             <img
-              className="h-60 w-80 rounded-full"
+              className="w-full object-cover rounded-full"
               src={user.profileImageUrl || "/Default_pfp.svg"}
               alt=""
             />
@@ -41,7 +32,9 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ user, onClose }) => {
           <h4 className="text-4xl font-bold text-navy-700 dark:text-white lin">{`${user.firstName} ${user.lastName}, ${user.age} ${user.gender}`}</h4>
 
           <div className="mt-4 border-t border-gray-500 w-full flex justify-center">
-            <p className="text-xl text-gray-200">Lives in: {user.location}</p>
+            <p className="text-xl dark:text-gray-200">
+              Lives in: {user.location}
+            </p>
           </div>
           <div className="mt-4">
             <p className="text-3xl font-bold">About {`${user.firstName}`}</p>
@@ -53,14 +46,14 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ user, onClose }) => {
           </div>
           <div className="flex flex-row gap-2 justify-center items-center">
             <p className=" text-lg text-gray-400">Favorite song:</p>
-            <p className=" text-lg text-gray-400">Despacito</p>
+            <p className=" text-lg text-gray-400">{user.favouriteSong}</p>
           </div>
           <div className=" absolute bottom-16">
             <p className="mt-4 border-t border-gray-500  w-full flex justify-center">
               TAGS
             </p>
             <div>
-              <p className="mt-1">#travel #love #life</p>
+              <p className="mt-1">{user.tags.map((tag) => `#${tag}`)}</p>
             </div>
           </div>
 

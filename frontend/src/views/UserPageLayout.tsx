@@ -7,10 +7,10 @@ const UserPageLayout = () => {
   return (
     <div className="flex w-full flex-grow justify-center md:pb-8">
       <div className="bg-white  dark:bg-[#343030] flex w-full sm:w-[27rem] flex-col h-full items-center sm:rounded-lg sm:shadow-lg shadow-black">
-        <div className="w-full sm:rounded-t-lg bg-black flex-grow">
+        <div className="w-full sm:rounded-t-lg bg-[#f3f4f6] dark:bg-[#1e1e1e] flex-grow">
           <img
-            srcSet={user.profileImageUrl}
-            className="object-cover w-full max-h-[33rem] md:max-h-[26rem] sm:rounded-t-lg"
+            srcSet={user.profileImageUrl || "/Default_pfp.svg"}
+            className="w-full object-cover md:object-contain max-h-[33rem] md:max-h-[26rem] sm:rounded-t-lg"
           />
         </div>
         <div className="bg-white dark:bg-[#343030] h-full w-full mt-[-2rem] rounded-t-3xl rounded-lg  px-8 pt-6 pb-10">

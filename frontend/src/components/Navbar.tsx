@@ -14,7 +14,7 @@ const Navbar: React.FunctionComponent = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
   return (
-    <nav className="flex  items-center relative justify-between  px-5 py-6 w-full border-b border-gray-300 dark:border-gray-700 sm:mb-8">
+    <nav className="flex items-center relative justify-between  px-5 py-6 w-full border-b border-gray-300 dark:border-gray-700 sm:mb-8">
       <div>
         <RiMatchLogo />
       </div>
@@ -25,19 +25,13 @@ const Navbar: React.FunctionComponent = () => {
         RiMatch
       </Link>
       <div className="flex gap-3 items-center">
-        {!isDropdownOpen && (
-          <Link
-            to="/matches"
-            className="pr-4 font-bold text-2xl border-r-2 sm:block hidden"
-          >
-            My matches
-          </Link>
-        )}
-        <p className="hidden sm:block">{user.firstName}</p>
+        <p className="hidden sm:block text-2xl font-Montserrat">
+          {user.firstName}
+        </p>
 
         <div
           onClick={handleOpenDropdown}
-          className="h-12 w-12 hover:ring-4 user cursor-pointer relative ring-blue-700/30 rounded-full bg-cover bg-center "
+          className="h-12 w-12 md:h-14 md:w-14 hover:ring-4 user cursor-pointer relative ring-blue-700/30 rounded-full bg-cover bg-center "
           style={{
             backgroundImage: `url(${
               user.profileImageUrl || "/Default_pfp.svg"
@@ -51,6 +45,13 @@ const Navbar: React.FunctionComponent = () => {
                 className="px-3 py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-200  dark:hover:bg-slate-400"
               >
                 <CogIcon /> <span>Profile</span>
+              </Link>
+              <Link
+                to="/matches"
+                className="px-3 py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-400"
+              >
+                <MatchIcon />
+                <span>My Matches</span>
               </Link>
               <Link
                 to="/user/preferences"
@@ -68,13 +69,6 @@ const Navbar: React.FunctionComponent = () => {
                 </span>
                 <span> Logout </span>
               </div>
-              <li className="sm:hidden px-3 py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-400">
-                <span>
-                  {" "}
-                  <MatchIcon />
-                </span>
-                <span>My Matches</span>
-              </li>
             </div>
           )}
         </div>
