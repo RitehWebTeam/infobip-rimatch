@@ -25,6 +25,7 @@
     background-color: #1e1e1e;
   }
 }
+
 #red-to-black {
   position: relative;
   clip: path(polygon(0 0, 100% 0, 100% 100%, 0% 100%, 0% 50%, 50% 0%));

@@ -9,17 +9,7 @@ import java.util.stream.Collectors;
 public class DisplayUserConverter {
 
     public static DisplayUserDto convertToDto(User user) {
-        DisplayUserDto displayUserDto = new DisplayUserDto();
-        displayUserDto.setId(user.getId());
-        displayUserDto.setFirstName(user.getFirstName());
-        displayUserDto.setLastName(user.getLastName());
-        displayUserDto.setDescription(user.getDescription());
-        displayUserDto.setProfileImageUrl(user.getProfileImageUrl());
-        displayUserDto.setLocation(user.getLocation());
-        displayUserDto.setGender(user.getGender());
-        displayUserDto.setAge(user.getAge());
-
-        return displayUserDto;
+        return DisplayUserDto.fromUser(user);
     }
 
     public static List<DisplayUserDto> convertToDtoList(List<User> users) {
@@ -27,4 +17,5 @@ public class DisplayUserConverter {
                 .map(DisplayUserConverter::convertToDto)
                 .collect(Collectors.toList());
     }
+
 }

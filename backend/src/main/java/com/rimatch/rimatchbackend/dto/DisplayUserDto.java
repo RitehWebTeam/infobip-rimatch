@@ -2,6 +2,10 @@ package com.rimatch.rimatchbackend.dto;
 
 import com.rimatch.rimatchbackend.model.User;
 import lombok.Data;
+import org.modelmapper.ModelMapper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class DisplayUserDto {
@@ -22,15 +26,13 @@ public class DisplayUserDto {
 
     private int age;
 
-    public void initDisplayUser(User user){
-        this.id = user.getId();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
-        this.description = user.getDescription();
-        this.profileImageUrl = user.getProfileImageUrl();
-        this.location = user.getLocation();
-        this.gender = user.getGender();
-        this.age = user.getAge();
+    private String favouriteSong;
+
+    private List<String> tags = new ArrayList<>();
+
+    public static DisplayUserDto fromUser(User user){
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(user, DisplayUserDto.class);
     }
 
 }

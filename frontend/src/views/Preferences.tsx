@@ -34,6 +34,8 @@ const preferenceSchema = Yup.object({
   userDescription: Yup.string().required("Required"),
   preferredGender: Yup.string().required("Required"),
   profileImage: Yup.mixed().required("Required"),
+  tags: Yup.string().required("Required"),
+  favSong: Yup.string().required("Required"),
 });
 
 const initialValues = {
@@ -44,6 +46,8 @@ const initialValues = {
   userDescription: "",
   location: "",
   profileImage: null,
+  tags: "",
+  favSong: "",
 };
 
 type PreferenceValues = typeof initialValues & { profileImage: File | null };
@@ -55,7 +59,9 @@ const INPUT_PAGE_LOCATION: Record<keyof PreferenceValues, number> = {
   maxAge: 2,
   userDescription: 3,
   location: 3,
-  profileImage: 4,
+  tags: 4,
+  favSong: 4,
+  profileImage: 5,
 };
 
 const mapPreferenceValues = async (
@@ -342,14 +348,82 @@ const Preferences = () => {
                   <MovmentButtons page="#page4" moveName="Next" />
                 </div>
               </div>
-              {/*Page 4 Picture upload*/}
+              {/*Page 4 add tags and maybe something else */}
               <div
-                className="page flex flex-col justify-between"
+                className="page  flex flex-col items-center justify-center "
                 id="page4"
                 ref={(el: HTMLDivElement) => (pageRefs.current["4"] = el)}
               >
-                <div className="top-0 mt-5">
+                <div className="absolute top-0 mt-5">
                   <MovmentButtons page="#page3" moveName="Previous" />
+                </div>
+                <div data-aos="fade-right" data-aos-once="false">
+                  <div
+                    data-aos="fade-right"
+                    className="flex flex-col  mb-24 items-center "
+                  >
+                    <label
+                      className="text-white text-[26px] sm:text-3xl font-Montserrat text-center mb-4"
+                      htmlFor="tags"
+                    >
+                      Add some # for your profile
+                    </label>
+                    <Field
+                      type="text"
+                      id="tags"
+                      placeholder="Please input some #"
+                      name="tags"
+                      className="flex justify-center rounded-2xl px-5 w-72 sm:w-full py-2 bg-gray-200 text-black"
+                      innerRef={(el: HTMLInputElement) =>
+                        (inputRefs.current.location = el!)
+                      }
+                    />
+                    <ErrorMessage
+                      component="div"
+                      name="location"
+                      className="text-red-500"
+                    />
+                  </div>
+                  <div
+                    data-aos="fade-right"
+                    data-aos-delay="200"
+                    className="flex flex-col  mb-24 items-center "
+                  >
+                    <label
+                      className="text-white text-[26px] sm:text-3xl font-Montserrat text-center mb-4"
+                      htmlFor="favSong"
+                    >
+                      What is your favorite song?
+                    </label>
+                    <Field
+                      type="text"
+                      id="favSong"
+                      placeholder="Please input your favorite song"
+                      name="favSong"
+                      className="flex justify-center rounded-2xl px-5 w-72 sm:w-full py-2 bg-gray-200 text-black"
+                      innerRef={(el: HTMLInputElement) =>
+                        (inputRefs.current.location = el!)
+                      }
+                    />
+                    <ErrorMessage
+                      component="div"
+                      name="location"
+                      className="text-red-500"
+                    />
+                  </div>
+                </div>
+                <div className="absolute bottom-0 mb-16 sm:mb-5">
+                  <MovmentButtons page="#page5" moveName="Next" />
+                </div>
+              </div>
+              {/*Page 5 Picture upload*/}
+              <div
+                className="page flex flex-col justify-between items-center"
+                id="page5"
+                ref={(el: HTMLDivElement) => (pageRefs.current["5"] = el)}
+              >
+                <div className=" top-0 mt-5">
+                  <MovmentButtons page="#page4" moveName="Previous" />
                 </div>
                 <div
                   data-aos-delay="200"

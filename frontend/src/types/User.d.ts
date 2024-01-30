@@ -15,6 +15,8 @@ export interface User {
   lastSeen: string;
   createdAt: string;
   updatedAt: string;
+  favouriteSong: string;
+  tags: string[];
 }
 
 export type ProjectedUser = Pick<
@@ -27,7 +29,22 @@ export type ProjectedUser = Pick<
   | "location"
   | "gender"
   | "age"
+  | "favouriteSong"
+  | "tags"
 >;
+
+export type UserUpdateData = Partial<{
+  age: number;
+  description: string;
+  phoneNumber: string;
+  location: string;
+  preferences: UserPreferences; // You need to define this type
+  firstName: string;
+  lastName: string;
+  gender: string;
+  favouriteSong: string;
+  tags: string[];
+}>;
 
 interface UserPreferences {
   ageGroupMin: number;

@@ -42,7 +42,7 @@ public class User {
 
     @NotNull(message = "This field cannot be null!")
     @NotBlank(message = "This field cannot be blank!")
-    private char gender;
+    private Character gender;
 
     @NotNull(message = "This field cannot be null!")
     @NotBlank(message = "This field cannot be blank!")
@@ -61,6 +61,10 @@ public class User {
     private String location;
 
     private Preferences preferences;
+
+    private String favouriteSong;
+
+    private List<String> tags = new ArrayList<>();
 
     private List<String> seenUserIds = new ArrayList<>();
 
