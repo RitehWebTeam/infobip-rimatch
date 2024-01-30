@@ -13,7 +13,7 @@ const UserPageLayout = () => {
             className="object-cover w-full max-h-[33rem] md:max-h-[26rem] sm:rounded-t-lg"
           />
         </div>
-        <div className="bg-white dark:bg-[#343030] h-full w-full mt-[-2rem] rounded-t-3xl rounded-lg  px-8 py-6">
+        <div className="bg-white dark:bg-[#343030] h-full w-full mt-[-2rem] rounded-t-3xl rounded-lg  px-8 pt-6 pb-10">
           <h2 className="text-3xl font-bold dark:text-red-500 mb-5">
             {user.firstName} {user.lastName}
           </h2>

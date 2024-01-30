@@ -15,6 +15,8 @@ export interface User {
   lastSeen: string;
   createdAt: string;
   updatedAt: string;
+  favouriteSong: string;
+  tags: string[];
 }
 
 export type ProjectedUser = Pick<
@@ -27,6 +29,8 @@ export type ProjectedUser = Pick<
   | "location"
   | "gender"
   | "age"
+  | "favouriteSong"
+  | "tags"
 >;
 
 interface UserPreferences {

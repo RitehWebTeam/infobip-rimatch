@@ -13,7 +13,7 @@ import Root from "./views/Root.tsx";
 import Preferences from "./views/Preferences.tsx";
 import MatchesPage from "./views/MatchesPage.tsx";
 import UserPageLayout from "./views/UserPageLayout.tsx";
-import UserProfilePage from "./views/UserProfilePage.tsx";
+import UserProfilePage from "./views/UserProfileForm.tsx";
 import UserPreferenceForm from "./views/UserPreferenceForm.tsx";
 import React from "react";
 
