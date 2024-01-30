@@ -14,13 +14,13 @@ const Navbar: React.FunctionComponent = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
   return (
-    <nav className="flex bg-[#1E1E1E] items-center relative justify-between  px-5 py-6 w-full border-b border-gray-700">
+    <nav className="flex  items-center relative justify-between  px-5 py-6 w-full border-b border-gray-300 dark:border-gray-700 sm:mb-8">
       <div>
         <RiMatchLogo />
       </div>
       <Link
         to="/"
-        className="text-red-500 text-4xl sm:text-5xl ml-0 sm:ml-56 flex justify-center font-semibold font-Pacifico"
+        className="text-red-500 text-4xl sm:absolute sm:w-52 sm:left-0 sm:right-0 sm:mr-auto sm:ml-auto sm:text-5xl flex justify-center font-semibold font-Pacifico"
       >
         RiMatch
       </Link>
@@ -45,15 +45,15 @@ const Navbar: React.FunctionComponent = () => {
           }}
         >
           {isDropdownOpen && (
-            <div className="drop-down w-48 overflow-hidden bg-white rounded-md shadow absolute z-10 top-12 right-3">
+            <div className="drop-down w-48 overflow-hidden text-black bg-white dark:bg-[#3b3a3a] dark:text-white rounded-md shadow absolute z-10 top-12 right-3">
               <ul>
-                <li className="px-3 py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-400">
+                <li className="px-3 py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-200  dark:hover:bg-slate-400">
                   <span>
                     <CogIcon />
                   </span>
                   <a href="/userProfile"> Profile </a>
                 </li>
-                <li className="px-3  py-3  text-sm font-medium flex items-center space-x-2 hover:bg-slate-400">
+                <li className="px-3  py-3  text-sm font-medium flex items-center space-x-2 hover:bg-slate-200 dark:hover:bg-slate-400">
                   <span>
                     <HeartIcon />
                   </span>
@@ -61,7 +61,7 @@ const Navbar: React.FunctionComponent = () => {
                 </li>
                 <li
                   onClick={() => logout()}
-                  className="px-3  py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-400"
+                  className="px-3  py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-200  dark:hover:bg-slate-400"
                 >
                   <span>
                     <LogoutIcon />
