@@ -5,6 +5,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 public class SetupDto {
 
@@ -24,5 +27,9 @@ public class SetupDto {
 
     @NotNull(message = "Preferences cannot be null")
     private Preferences preferences;
+
+    private String favouriteSong;
+
+    private List<String> tags = new ArrayList<>();
 }
 

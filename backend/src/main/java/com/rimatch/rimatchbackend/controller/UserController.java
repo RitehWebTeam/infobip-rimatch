@@ -1,6 +1,7 @@
 package com.rimatch.rimatchbackend.controller;
 
 import com.rimatch.rimatchbackend.dto.SetupDto;
+import com.rimatch.rimatchbackend.dto.UserUpdateDTO;
 import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -74,8 +75,13 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-
-    // add more endpoints as per your requirements
+    @PutMapping("/me/update")
+    public ResponseEntity<User> updateUser(@RequestBody UserUpdateDTO userUpdateDTO,HttpServletRequest request) {
+        String authToken = request.getHeader("Authorization");
+        User user = userService.getUserByToken(authToken);
+        User updatedUser = userService.updateUser(user, userUpdateDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     /*ExceptionHandler for requests with bad Arguments - should be moved to different file*/
 
