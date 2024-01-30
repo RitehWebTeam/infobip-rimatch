@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
@@ -13,8 +12,10 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Root from "./views/Root.tsx";
 import Preferences from "./views/Preferences.tsx";
 import MatchesPage from "./views/MatchesPage.tsx";
-import UserPreferencePage from "./views/UserPreferencePage.tsx";
+import UserPageLayout from "./views/UserPageLayout.tsx";
 import UserProfilePage from "./views/UserProfilePage.tsx";
+import UserPreferenceForm from "./views/UserPreferenceForm.tsx";
+import React from "react";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,16 @@ const router = createBrowserRouter([
         path: "matches",
         element: <MatchesPage />,
         errorElement: <ErrorPage />,
+      },
+
+      {
+        path: "user",
+        element: <UserPageLayout />,
+        errorElement: <ErrorPage />,
+        children: [
+          { path: "profile", element: <UserProfilePage /> },
+          { path: "preferences", element: <UserPreferenceForm /> },
+        ],
       },
     ],
   },
@@ -44,18 +55,6 @@ const router = createBrowserRouter([
     path: "/register",
     element: <RegisterForm />,
     errorElement: <ErrorPage />,
-  },
-  {
-    path: "/userPreferences",
-    element: <ProtectedRoutes layout={<Root />} />,
-    errorElement: <ErrorPage />,
-    children: [{ index: true, element: <UserPreferencePage /> }],
-  },
-  {
-    path: "/userProfile",
-    element: <ProtectedRoutes layout={<Root />} />,
-    errorElement: <ErrorPage />,
-    children: [{ index: true, element: <UserProfilePage /> }],
   },
 ]);
 

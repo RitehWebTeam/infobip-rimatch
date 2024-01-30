@@ -46,36 +46,35 @@ const Navbar: React.FunctionComponent = () => {
         >
           {isDropdownOpen && (
             <div className="drop-down w-48 overflow-hidden text-black bg-white dark:bg-[#3b3a3a] dark:text-white rounded-md shadow absolute z-10 top-12 right-3">
-              <ul>
-                <li className="px-3 py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-200  dark:hover:bg-slate-400">
-                  <span>
-                    <CogIcon />
-                  </span>
-                  <a href="/userProfile"> Profile </a>
-                </li>
-                <li className="px-3  py-3  text-sm font-medium flex items-center space-x-2 hover:bg-slate-200 dark:hover:bg-slate-400">
-                  <span>
-                    <HeartIcon />
-                  </span>
-                  <a href="/userPreferences"> Preferences </a>
-                </li>
-                <li
-                  onClick={() => logout()}
-                  className="px-3  py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-200  dark:hover:bg-slate-400"
-                >
-                  <span>
-                    <LogoutIcon />
-                  </span>
-                  <span> Logout </span>
-                </li>
-                <li className="sm:hidden px-3 py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-400">
-                  <span>
-                    {" "}
-                    <MatchIcon />
-                  </span>
-                  <span>My Matches</span>
-                </li>
-              </ul>
+              <Link
+                to="/user/profile"
+                className="px-3 py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-200  dark:hover:bg-slate-400"
+              >
+                <CogIcon /> <span>Profile</span>
+              </Link>
+              <Link
+                to="/user/preferences"
+                className="px-3  py-3  text-sm font-medium flex items-center space-x-2 hover:bg-slate-200 dark:hover:bg-slate-400"
+              >
+                <HeartIcon />
+                <span> Preferences </span>
+              </Link>
+              <div
+                onClick={() => logout()}
+                className="px-3  py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-200  dark:hover:bg-slate-400"
+              >
+                <span>
+                  <LogoutIcon />
+                </span>
+                <span> Logout </span>
+              </div>
+              <li className="sm:hidden px-3 py-3 text-sm font-medium flex items-center space-x-2 hover:bg-slate-400">
+                <span>
+                  {" "}
+                  <MatchIcon />
+                </span>
+                <span>My Matches</span>
+              </li>
             </div>
           )}
         </div>
