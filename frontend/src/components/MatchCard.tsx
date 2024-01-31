@@ -2,8 +2,9 @@ import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import { UsersService } from "@/api/users";
 import cx from "classnames";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ProfileCard } from "./ProfileCard";
+import { useQueryClient } from "@tanstack/react-query";
 
 const PAGE_SIZE = 5;
 
@@ -15,6 +16,7 @@ const MatchCard = () => {
   const rejectMatch = UsersService.useRejectMatch();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const prefetchPotential = UsersService.usePrefetchPotentialUsers(page);
+  const queryClient = useQueryClient();
 
   const handleNextUser = (matchAccept: boolean, userId: string) => {
     const match = matchAccept ? acceptMatch.mutate : rejectMatch.mutate;
@@ -29,6 +31,17 @@ const MatchCard = () => {
       setCurrentUserIndex((prev) => prev + 1);
     }
   };
+
+  // When the component unmounts it is necessary to invalidate the query
+  // because the query is cached and it will return the same data
+  // but the new component will start from index 0 of the array
+  useEffect(() => {
+    return () => {
+      queryClient.invalidateQueries({
+        queryKey: ["UsersService.getPotentialUsers"],
+      });
+    };
+  }, []);
 
   const user = useMemo(() => {
     if (!result.data) return undefined;
