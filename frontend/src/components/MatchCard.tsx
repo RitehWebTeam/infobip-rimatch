@@ -113,7 +113,7 @@ const MatchCard = () => {
             </div>
           </div>
           <div className="flex flex-col items-center w-full">
-            <h4 className="text-2xl sm:text-5xl font-bold text-navy-700 dark:text-white">
+            <h4 className="text-5xl font-bold text-navy-700 dark:text-white">
               {`${user.firstName}, ${user.age}`}
             </h4>
             <p className="font-normal text-lg dark:text-gray-200">
@@ -165,7 +165,7 @@ const MatchCardContainer = ({
   return (
     <div className="flex justify-center">
       <div
-        className="relative flex flex-col items-center rounded-[25px] border-[1px] border-black-200 h-[580px] sm:h-[600] w-[340px] sm:w-[24rem] p-4 bg-white dark:bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black"
+        className="relative flex flex-col items-center rounded-[25px] border-[1px] border-black-200 h-[750px] sm:h-[700px] w-[450px] sm:w-[24rem] p-4 bg-white dark:bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black"
         {...props}
       >
         {children}
