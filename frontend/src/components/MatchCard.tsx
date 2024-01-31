@@ -5,6 +5,7 @@ import cx from "classnames";
 import { useEffect, useMemo, useState } from "react";
 import { ProfileCard } from "./ProfileCard";
 import { useQueryClient } from "@tanstack/react-query";
+import { CircularProgress } from "@mui/material";
 
 const PAGE_SIZE = 5;
 
@@ -49,18 +50,37 @@ const MatchCard = () => {
     return result.data[currentUserIndex];
   }, [currentUserIndex, result.data]);
 
-  // TODO: Add loading spinner or something
-  if (result.isLoading || !user || result.isFetching) {
-    return null;
+  if (result.isLoading || result.isFetching) {
+    return (
+      <MatchCardContainer>
+        <div className="flex justify-center items-center h-full w-full">
+          <CircularProgress />
+        </div>
+      </MatchCardContainer>
+    );
   }
 
   if (result.isError || !result.isSuccess) {
-    return <div>Error: {result.error?.message}</div>;
+    return (
+      <MatchCardContainer>
+        <div className="flex justify-center flex-col items-center h-full w-full text-center px-4">
+          <h2 className="text-red-500 mb-2 text-3xl">Whoops.</h2>
+          <span className="text-lg">
+            Something went wrong, try refreshing the page
+          </span>
+        </div>
+      </MatchCardContainer>
+    );
   }
 
-  // TODO: Nicer message when there are no more users
-  if (result.data.length === 0) {
-    return <div>No more users</div>;
+  if (result.data.length === 0 || !user) {
+    return (
+      <MatchCardContainer>
+        <div className="flex justify-center items-center h-full w-full text-center px-4 text-lg sm:text-2xl">
+          Oops! You&apos;ve swiped everyone away. Try not to look so surprised.
+        </div>
+      </MatchCardContainer>
+    );
   }
 
   const openProfile = () => {
@@ -72,9 +92,9 @@ const MatchCard = () => {
   };
   const truncatedDescription = user.description.slice(0, 100);
   return (
-    <div className="flex justify-center">
+    <>
       {!isProfileOpen && (
-        <div className="relative flex flex-col items-center rounded-[25px] border-[1px] border-black-200 h-[580px] sm:h-[600] w-[340px] sm:w-[24rem] p-4 bg-white dark:bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black">
+        <MatchCardContainer>
           <div className="relative flex h-72 w-full justify-center rounded-xl bg-cover">
             <div
               className={cx(
@@ -127,9 +147,29 @@ const MatchCard = () => {
               </button>
             </div>
           </div>
-        </div>
+        </MatchCardContainer>
       )}
       {isProfileOpen && <ProfileCard user={user} onClose={closeProfile} />}
+    </>
+  );
+};
+
+interface MatchCardContainerProps {
+  children?: React.ReactNode;
+}
+
+const MatchCardContainer = ({
+  children,
+  ...props
+}: MatchCardContainerProps) => {
+  return (
+    <div className="flex justify-center">
+      <div
+        className="relative flex flex-col items-center rounded-[25px] border-[1px] border-black-200 h-[580px] sm:h-[600] w-[340px] sm:w-[24rem] p-4 bg-white dark:bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black"
+        {...props}
+      >
+        {children}
+      </div>
     </div>
   );
 };
