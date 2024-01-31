@@ -66,7 +66,7 @@ public class MatchService {
         return matchRepository.save(match);
     }
 
-    public List<DisplayUserDto> findPotentialMatches(User user) {
+    public List<DisplayUserDto> findPotentialMatches(User user, int skip) {
 
         return DisplayUserConverter.convertToDtoList(mongoTemplate.aggregate(
                 Aggregation.newAggregation(
@@ -81,7 +81,8 @@ public class MatchService {
                         // Second age parametar needs to defined separatenly because of limitations of
                         // the org.bson.Document
                         Aggregation.match(Criteria.where("age").gte(user.getPreferences().getAgeGroupMin())),
-                        Aggregation.limit(10)),
+                        Aggregation.skip(skip),
+                        Aggregation.limit(5)),
                 "users", User.class).getMappedResults());
     }
 

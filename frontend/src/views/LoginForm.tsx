@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import { EmailAtIcon, LockIcon } from "../assets";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthService from "@/api/auth";
+import { CircularProgress } from "@mui/material";
 
 const LoginSchema = Yup.object({
   email: Yup.string().required("Required").email("Must be valid email"),
@@ -23,7 +24,9 @@ const LoginForm = () => {
   const { mutateAsync: login } = AuthService.useLogin();
   const from = location?.state?.from?.pathname ?? "/";
 
-  const handleSubmit = (values: LoginValues) => {
+  const handleSubmit = (
+    values: LoginValues /*helpers: FormikHelpers<LoginValues>*/
+  ) => {
     return login(values, {
       onSuccess: () => {
         navigate(from, { replace: true });
@@ -61,7 +64,7 @@ const LoginForm = () => {
                 <ErrorMessage
                   component="div"
                   name="email"
-                  className="text-red-500"
+                  className="pl-2 text-sm text-red-500"
                 />
                 <div className="flex items-center bg-white border-2 py-2 sm:py-3 px-2 sm:px-4 rounded-2xl mt-4 sm:mt-6">
                   <LockIcon />
@@ -76,14 +79,18 @@ const LoginForm = () => {
                 <ErrorMessage
                   component="div"
                   name="password"
-                  className="text-red-500"
+                  className="pl-2 text-sm text-red-500"
                 />
                 <button
                   disabled={isSubmitting}
                   type="submit"
                   className="block w-full bg-red-600 transition duration-300 ease-in-out hover:bg-red-800 mt-4 py-2 sm:py-3 rounded-2xl text-white font-semibold"
                 >
-                  Login
+                  {!isSubmitting ? (
+                    "Login"
+                  ) : (
+                    <CircularProgress size="1rem" color="inherit" />
+                  )}
                 </button>
                 <span className="text-sm sm:text-base text-white ml-2 flex my-3 justify-center hover:text-gray-500 cursor-pointer">
                   Forgot Password ?

@@ -36,10 +36,11 @@ public class MatchController {
     private InfobipClient infobipClient;
 
     @GetMapping("/potential")
-    public List<DisplayUserDto> getPotentinalMatch(HttpServletRequest request){
+    public List<DisplayUserDto> getPotentialMatch(HttpServletRequest request, @RequestParam(value = "skip", required = false) Integer skip) {
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);
-        List<DisplayUserDto> list = matchService.findPotentialMatches(user);
+        int skipValue = skip != null ? skip : 0;
+        List<DisplayUserDto> list = matchService.findPotentialMatches(user, skipValue);
         return list;
     }
 

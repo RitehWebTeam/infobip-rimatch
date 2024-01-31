@@ -1,3 +1,4 @@
+import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import type { Match, MatchData } from "@/types/Match";
 import type {
@@ -15,9 +16,10 @@ import {
 
 export const UsersService = {
   useGetCurrentUser() {
+    const { auth } = useAuth();
     const axios = useAxiosPrivate();
     return useQuery<User, Error>({
-      queryKey: ["UsersService.getCurrentUser"],
+      queryKey: ["UsersService.getCurrentUser", auth?.accessToken],
       queryFn: () => axios.get("/users/me").then((response) => response.data),
       staleTime: Infinity,
     });
@@ -41,13 +43,29 @@ export const UsersService = {
     });
   },
 
-  useGetPotentailUsers: () => {
+  useGetPotentailUsers: (page: number) => {
     const axios = useAxiosPrivate();
     return useQuery<User[], Error>({
-      queryKey: ["UsersService.getPotentialUsers"],
+      queryKey: ["UsersService.getPotentialUsers", page],
       queryFn: () => axios.get("/match/potential").then((res) => res.data),
-      staleTime: Infinity,
+      staleTime: 60e3,
     });
+  },
+
+  usePrefetchPotentialUsers: (page: number) => {
+    const axios = useAxiosPrivate();
+    const queryClient = useQueryClient();
+
+    const prefetch = () => {
+      queryClient.prefetchQuery({
+        queryKey: ["UsersService.getPotentialUsers", page + 1],
+        queryFn: () =>
+          axios.get(`/match/potential?skip=3`).then((res) => res.data),
+        staleTime: 60e3,
+      });
+    };
+
+    return prefetch;
   },
 
   useAcceptMatch: <T = Match>(
@@ -57,16 +75,10 @@ export const UsersService = {
     >
   ) => {
     const axios = useAxiosPrivate();
-    const queryClient = useQueryClient();
     return useMutation<T, Error, MatchData>({
       mutationFn: async (data) => {
         const response = await axios.post<T>("/match/accept", data);
         return response.data;
-      },
-      onSuccess: () => {
-        return queryClient.invalidateQueries({
-          queryKey: ["UsersService.getPotentialUsers"],
-        });
       },
       ...mutationOptions,
     });
@@ -79,16 +91,10 @@ export const UsersService = {
     >
   ) => {
     const axios = useAxiosPrivate();
-    const queryClient = useQueryClient();
     return useMutation<T, Error, MatchData>({
       mutationFn: async (data) => {
         const response = await axios.post<T>("/match/reject", data);
         return response.data;
-      },
-      onSuccess: () => {
-        return queryClient.invalidateQueries({
-          queryKey: ["UsersService.getCurrentUser"],
-        });
       },
       ...mutationOptions,
     });
