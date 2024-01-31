@@ -92,10 +92,10 @@ const MatchCard = () => {
   };
   const truncatedDescription = user.description.slice(0, 100);
   return (
-    <>
+    <div className="overflow-y-hidden">
       {!isProfileOpen && (
         <MatchCardContainer>
-          <div className="relative flex h-72 w-full justify-center rounded-xl bg-cover">
+          <div className="relative  flex h-72 w-full justify-center rounded-xl bg-cover">
             <div
               className={cx(
                 "absolute flex h-[200px] w-[200px] items-center justify-center rounded-full",
@@ -112,7 +112,7 @@ const MatchCard = () => {
               />
             </div>
           </div>
-          <div className="flex flex-col items-center w-full">
+          <div className="flex flex-col items-center w-full ">
             <h4 className="text-5xl font-bold text-navy-700 dark:text-white">
               {`${user.firstName}, ${user.age}`}
             </h4>
@@ -150,7 +150,7 @@ const MatchCard = () => {
         </MatchCardContainer>
       )}
       {isProfileOpen && <ProfileCard user={user} onClose={closeProfile} />}
-    </>
+    </div>
   );
 };
 
