@@ -1,3 +1,4 @@
+import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import type { Match, MatchData } from "@/types/Match";
 import type {
@@ -15,9 +16,10 @@ import {
 
 export const UsersService = {
   useGetCurrentUser() {
+    const { auth } = useAuth();
     const axios = useAxiosPrivate();
     return useQuery<User, Error>({
-      queryKey: ["UsersService.getCurrentUser"],
+      queryKey: ["UsersService.getCurrentUser", auth?.accessToken],
       queryFn: () => axios.get("/users/me").then((response) => response.data),
       staleTime: Infinity,
     });
