@@ -36,6 +36,10 @@ const UserPreferenceForm = () => {
     setEditMode(true);
   };
 
+  const handleCancleClick = () => {
+    setEditMode(false);
+  };
+
   const handleSaveClick = async (values: typeof initialValues) => {
     await updateUser({
       preferences: {
@@ -105,12 +109,20 @@ const UserPreferenceForm = () => {
             <ModeEditIcon />
           </div>
         ) : (
-          <button
-            type="submit"
-            className="absolute right-3 -top-12 text-sm px-4 py-2 text-white bg-red-400 dark:bg-slate-400 rounded"
-          >
-            Save
-          </button>
+          <div>
+            <button
+              type="submit"
+              className="absolute right-0 -top-12 text-sm px-4 py-2 bg-red-400 dark:bg-slate-400 rounded"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => handleCancleClick()}
+              className="absolute right-[4.2rem] -top-12 text-sm px-3 py-2 bg-red-400 dark:bg-red-400 rounded"
+            >
+              Cancel
+            </button>
+          </div>
         )}
       </Form>
     </Formik>

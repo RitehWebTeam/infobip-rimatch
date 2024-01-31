@@ -58,4 +58,6 @@ export interface PreferencesInitData {
   phoneNumber: string;
   location: string;
   preferences: UserPreferences;
+  favouriteSong: string;
+  tags: string[];
 }
