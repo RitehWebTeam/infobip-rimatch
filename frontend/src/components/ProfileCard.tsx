@@ -9,8 +9,8 @@ type ProfileCardProps = {
 
 export const ProfileCard: React.FC<ProfileCardProps> = ({ user, onClose }) => {
   return (
-    <div className="flex justify-center items-center">
-      <div className="relative flex flex-col items-center rounded-[25px] border-[1px] border-black-200 h-[750px] sm:h-[700px] w-[550px] p-4 dark:bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black">
+    <div className="flex justify-center items-center overflow-y-hidden">
+      <div className="relative flex flex-col items-center  rounded-[25px] border-[1px] border-black-200 h-[750px] sm:h-[700px] w-[550px] p-4 dark:bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black">
         <div className="relative flex h-72 w-full justify-center rounded-xl bg-cover">
           <div
             className={cx(
@@ -29,7 +29,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ user, onClose }) => {
           </div>
         </div>
         <div className="flex flex-col  items-center w-full ">
-          <h4 className="text-4xl font-bold text-navy-700 dark:text-white lin">{`${user.firstName} ${user.lastName}, ${user.age} ${user.gender}`}</h4>
+          <h4 className="text-4xl font-bold text-navy-700 dark:text-white lin text-center">{`${user.firstName} ${user.lastName}, ${user.age} ${user.gender}`}</h4>
 
           <div className="mt-4 border-t border-gray-500 w-full flex justify-center">
             <p className="text-xl dark:text-gray-200">
@@ -40,13 +40,13 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ user, onClose }) => {
             <p className="text-3xl font-bold">About {`${user.firstName}`}</p>
           </div>
           <div className="flex justify-center items-center mt-1 text-gray-400">
-            <p className="flex align-middle text-center text-lg sm:text-xl ">
+            <p className="flex align-middle text-center text-lg sm:text-xl text-gray-300 ">
               {user.description}
             </p>
           </div>
           <div className="flex flex-row gap-2 justify-center items-center">
-            <p className=" text-lg text-gray-400">Favorite song:</p>
-            <p className=" text-lg text-gray-400">{user.favouriteSong}</p>
+            <p className=" text-lg text-gray-300">Favorite song:</p>
+            <p className=" text-lg text-gray-300">{user.favouriteSong}</p>
           </div>
           <div className=" absolute bottom-16">
             <p className="mt-4 border-t border-gray-500  w-full flex justify-center">

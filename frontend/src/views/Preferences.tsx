@@ -10,6 +10,7 @@ import useAuth from "@/hooks/useAuth";
 import { UsersService } from "@/api/users";
 import type { PreferencesInitData } from "@/types/User";
 import ScrollToFieldError from "@/components/ScrollToFieldError";
+import { useState } from "react";
 
 const preferenceSchema = Yup.object({
   minAge: Yup.number()
@@ -34,7 +35,7 @@ const preferenceSchema = Yup.object({
   userDescription: Yup.string().required("Required"),
   preferredGender: Yup.string().required("Required"),
   profileImage: Yup.mixed().required("Required"),
-  tags: Yup.string().required("Required"),
+
   favSong: Yup.string().required("Required"),
 });
 
@@ -46,11 +47,13 @@ const initialValues = {
   userDescription: "",
   location: "",
   profileImage: null,
-  tags: "",
   favSong: "",
+  tags: [],
 };
 
-type PreferenceValues = typeof initialValues & { profileImage: File | null };
+type PreferenceValues = typeof initialValues & { profileImage: File | null } & {
+  tags: string[];
+};
 
 const INPUT_PAGE_LOCATION: Record<keyof PreferenceValues, number> = {
   userPhoneNumber: 1,
@@ -65,12 +68,15 @@ const INPUT_PAGE_LOCATION: Record<keyof PreferenceValues, number> = {
 };
 
 const mapPreferenceValues = async (
-  values: PreferenceValues
+  values: PreferenceValues,
+  tags: string[]
 ): Promise<PreferencesInitData> => ({
   description: values.userDescription,
   profileImageUrl: await toBase64(values.profileImage!),
   phoneNumber: values.userPhoneNumber,
   location: values.location,
+  favouriteSong: values.favSong,
+  tags: tags,
   preferences: {
     ageGroupMin: parseInt(values.minAge, 10),
     ageGroupMax: parseInt(values.maxAge, 10),
@@ -90,6 +96,7 @@ const Preferences = () => {
   const navigate = useNavigate();
   const { auth, setAuth } = useAuth();
   const { mutateAsync: initPreferences } = UsersService.useInitPreferences();
+  const [tags, setTags] = useState<string[]>([]);
   const inputRefs = useRef(
     {} as Record<keyof PreferenceValues, HTMLInputElement>
   );
@@ -107,10 +114,16 @@ const Preferences = () => {
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
-
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    const newTags = value.split(/[ ,]/);
+    setTags(newTags);
+  };
   const handleSubmit = async (values: PreferenceValues) => {
     // TODO: Error handling
-    const mappedValues = await mapPreferenceValues(values);
+
+    const mappedValues = await mapPreferenceValues(values, tags);
+    console.log(mappedValues);
     await initPreferences(mappedValues);
     setAuth((prev) => ({
       ...prev!,
@@ -368,15 +381,18 @@ const Preferences = () => {
                     >
                       Add some # for your profile
                     </label>
-                    <Field
+
+                    <input
                       type="text"
                       id="tags"
-                      placeholder="Please input some #"
                       name="tags"
+                      placeholder="Please input some #"
                       className="flex justify-center rounded-2xl px-5 w-72 sm:w-full py-2 bg-gray-200 text-black"
-                      innerRef={(el: HTMLInputElement) =>
+                      onChange={handleChange}
+                      ref={(el: HTMLInputElement) =>
                         (inputRefs.current.location = el!)
                       }
+                      value={tags.join(" ")}
                     />
                     <ErrorMessage
                       component="div"

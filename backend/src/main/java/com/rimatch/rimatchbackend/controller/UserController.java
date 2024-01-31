@@ -1,5 +1,6 @@
 package com.rimatch.rimatchbackend.controller;
 
+import com.rimatch.rimatchbackend.dto.PreferencesUpdateDTO;
 import com.rimatch.rimatchbackend.dto.SetupDto;
 import com.rimatch.rimatchbackend.dto.UserUpdateDTO;
 import com.rimatch.rimatchbackend.model.User;
@@ -70,16 +71,30 @@ public class UserController {
             map.put("message","Setup was already done!");
             return ResponseEntity.badRequest().body(map);
         }
-
+        if(setupDto.getPreferences().getAgeGroupMax() < setupDto.getPreferences().getAgeGroupMin()){
+            return ResponseEntity.badRequest().body(createErrorMap("ageGroupMax must be higher or equal to ageGroupMin"));
+        }
         user = userService.finishUserSetup(user,setupDto);
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/me/update")
-    public ResponseEntity<User> updateUser(@RequestBody UserUpdateDTO userUpdateDTO,HttpServletRequest request) {
+    @PutMapping("/me/update/user")
+    public ResponseEntity<User> updateUser(@Valid @RequestBody UserUpdateDTO userUpdateDTO,HttpServletRequest request) {
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);
         User updatedUser = userService.updateUser(user, userUpdateDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/me/update/preferences")
+    public ResponseEntity<?> updatePreferences(@Valid @RequestBody PreferencesUpdateDTO preferencesUpdateDTO, HttpServletRequest request) {
+        String authToken = request.getHeader("Authorization");
+        User user = userService.getUserByToken(authToken);
+        try{
+            userService.updatePreferences(user, preferencesUpdateDTO);
+        }catch (IllegalArgumentException ex){
+            return ResponseEntity.badRequest().body(createErrorMap(ex.getMessage()));
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -96,6 +111,12 @@ public class UserController {
             errors.put(fieldName,errorMessage);
         });
         return errors;
+    }
+
+    private Map<String, String> createErrorMap(String errorMessage) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("error", errorMessage);
+        return errorMap;
     }
 
 }

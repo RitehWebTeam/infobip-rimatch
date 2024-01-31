@@ -1,8 +1,5 @@
 package com.rimatch.rimatchbackend.service;
-import com.rimatch.rimatchbackend.dto.LoginDto;
-import com.rimatch.rimatchbackend.dto.RegisterDto;
-import com.rimatch.rimatchbackend.dto.SetupDto;
-import com.rimatch.rimatchbackend.dto.UserUpdateDTO;
+import com.rimatch.rimatchbackend.dto.*;
 import com.rimatch.rimatchbackend.util.JWTUtils;
 import com.rimatch.rimatchbackend.util.JWTUtils.TokenType;
 import com.rimatch.rimatchbackend.model.User;
@@ -16,7 +13,6 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -82,12 +78,8 @@ public class UserService {
     }
 
     public User finishUserSetup(User user, SetupDto setupDto){
+        modelMapper.map(setupDto,user);
         user.setActive(true);
-        user.setPreferences(setupDto.getPreferences());
-        user.setLocation(setupDto.getLocation());
-        user.setPhoneNumber(setupDto.getPhoneNumber());
-        user.setDescription(setupDto.getDescription());
-        user.setProfileImageUrl(setupDto.getProfileImageUrl());
         return userRepository.save(user);
     }
 
@@ -141,7 +133,17 @@ public class UserService {
 
     public User updateUser(User user, UserUpdateDTO userUpdateDTO) {
         modelMapper.map(userUpdateDTO, user);
-        System.out.println(user);
+        if(!userUpdateDTO.getTags().isEmpty()){
+            user.setTags(userUpdateDTO.getTags());
+        }
+        return userRepository.save(user);
+    }
+
+    public User updatePreferences(User user, PreferencesUpdateDTO preferencesUpdateDTO) throws IllegalArgumentException{
+        modelMapper.map(preferencesUpdateDTO,user.getPreferences());
+        if(user.getPreferences().getAgeGroupMin() > user.getPreferences().getAgeGroupMax()){
+            throw new IllegalArgumentException("ageGroupMin should be lower then ageGroupMax");
+        }
         return userRepository.save(user);
     }
 
