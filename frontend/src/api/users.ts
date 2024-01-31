@@ -109,14 +109,22 @@ export const UsersService = {
     });
   },
 
-  useUpdateUser: <T = void, Args = UserUpdateData>(
-    mutationOptions?: Omit<UseMutationOptions<T, Error, Args>, "mutationFn">
+  useUpdateUser: <T = void>(
+    mutationOptions?: Omit<
+      UseMutationOptions<T, Error, UserUpdateData>,
+      "mutationFn" | "onSuccess"
+    >
   ) => {
     const axios = useAxiosPrivate();
     const queryClient = useQueryClient();
-    return useMutation<T, Error, Args>({
+    return useMutation<T, Error, UserUpdateData>({
       mutationFn: async (data) => {
-        const response = await axios.put<T>("/users/me/update", data);
+        // TODO: Please separate this into two different methods, I want to sleep now
+        const url = data?.preferences
+          ? "/users/me/update/preferences"
+          : "/users/me/update/user";
+        const finalData = data?.preferences ? data.preferences : data;
+        const response = await axios.put<T>(url, finalData);
         return response.data;
       },
       onSuccess: () => {

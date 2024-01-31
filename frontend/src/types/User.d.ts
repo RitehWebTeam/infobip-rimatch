@@ -38,7 +38,7 @@ export type UserUpdateData = Partial<{
   description: string;
   phoneNumber: string;
   location: string;
-  preferences: UserPreferences; // You need to define this type
+  preferences: Partial<UserPreferences>;
   firstName: string;
   lastName: string;
   gender: string;
