@@ -2,16 +2,42 @@ import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import { UsersService } from "@/api/users";
 import cx from "classnames";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ProfileCard } from "./ProfileCard";
+
+const PAGE_SIZE = 5;
+
 const MatchCard = () => {
-  const result = UsersService.useGetPotentailUsers();
+  const [page, setPage] = useState(0);
+  const [currentUserIndex, setCurrentUserIndex] = useState(0);
+  const result = UsersService.useGetPotentailUsers(page);
   const acceptMatch = UsersService.useAcceptMatch();
   const rejectMatch = UsersService.useRejectMatch();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const prefetchPotential = UsersService.usePrefetchPotentialUsers(page);
+
+  const handleNextUser = (matchAccept: boolean, userId: string) => {
+    const match = matchAccept ? acceptMatch.mutate : rejectMatch.mutate;
+    if (currentUserIndex === PAGE_SIZE - 3) {
+      prefetchPotential();
+    }
+    match({ userId });
+    if (currentUserIndex === PAGE_SIZE - 1) {
+      setPage((prev) => prev + 1);
+      setCurrentUserIndex(0);
+    } else {
+      setCurrentUserIndex((prev) => prev + 1);
+    }
+  };
+
+  const user = useMemo(() => {
+    if (!result.data) return undefined;
+    if (result.data.length <= currentUserIndex) return undefined;
+    return result.data[currentUserIndex];
+  }, [currentUserIndex, result.data]);
 
   // TODO: Add loading spinner or something
-  if (result.isLoading || acceptMatch.isPending || rejectMatch.isPending) {
+  if (result.isLoading || !user || result.isFetching) {
     return null;
   }
 
@@ -24,9 +50,6 @@ const MatchCard = () => {
     return <div>No more users</div>;
   }
 
-  const user = result.data[0];
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const openProfile = () => {
     setIsProfileOpen(true);
   };
@@ -34,7 +57,6 @@ const MatchCard = () => {
   const closeProfile = () => {
     setIsProfileOpen(false);
   };
-  //Slice the description to 100 characters
   const truncatedDescription = user.description.slice(0, 100);
   return (
     <div className="flex justify-center">
@@ -80,13 +102,13 @@ const MatchCard = () => {
             <div className="flex mt-16 flex-row justify-between w-full text-white">
               <button
                 className="btn hover:bg-green-600 bg-green-500 transition-color duration-300 sm:ml-4 mb-2 border-green-700 rounded-full w-24 h-24 shadow-md shadow-black"
-                onClick={() => acceptMatch.mutate({ userId: user.id })}
+                onClick={() => handleNextUser(true, user.id)}
               >
                 <CheckIcon fontSize="large" />
               </button>
               <button
                 className="btn bg-red-500 hover:bg-red-600 transition-color duration-300 rounded-full sm:mr-2 border-red-700 btn-circle w-24 h-24 shadow-md shadow-black"
-                onClick={() => rejectMatch.mutate({ userId: user.id })}
+                onClick={() => handleNextUser(false, user.id)}
               >
                 <ClearIcon fontSize="large" />
               </button>
