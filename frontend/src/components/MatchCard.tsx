@@ -53,8 +53,8 @@ const MatchCard = () => {
   if (result.isLoading || result.isFetching) {
     return (
       <MatchCardContainer>
-        <div className="flex justify-center items-center h-full w-full">
-          <CircularProgress />
+        <div className="flex justify-center items-center h-full w-full text-red-500">
+          <CircularProgress size="3rem" color="inherit" />
         </div>
       </MatchCardContainer>
     );

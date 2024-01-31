@@ -7,6 +7,7 @@ import { EmailAtIcon, LockIcon } from "../assets";
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "@/api/auth";
 import DateRangeIcon from "@mui/icons-material/DateRange";
+import { CircularProgress } from "@mui/material";
 const RegisterSchema = Yup.object({
   email: Yup.string().required("Required").email("Must be a valid email"),
   password: Yup.string()
@@ -220,7 +221,11 @@ const RegisterForm = () => {
                       type="submit"
                       className="block w-full bg-red-600  transition duration-300 ease-in-out hover:bg-red-800 mt-4 py-3 rounded-2xl text-white font-semibold"
                     >
-                      Register
+                      {!isSubmitting ? (
+                        "Login"
+                      ) : (
+                        <CircularProgress size="1rem" color="inherit" />
+                      )}
                     </button>
                   </div>
                 </Form>
