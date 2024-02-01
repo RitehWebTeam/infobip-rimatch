@@ -1,6 +1,7 @@
 import { UsersService } from "@/api/users";
 import MatchedUser from "@/components/MatchedUser";
 import { CircularProgress } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const MatchesPage = () => {
   const query = UsersService.useGetMatches();
@@ -20,6 +21,19 @@ const MatchesPage = () => {
   }
 
   const matches = query.data;
+
+  if (matches.length === 0) {
+    return (
+      <MatchHeader>
+        <div className="flex flex-col justify-center items-center h-full w-full text-center px-4 text-lg">
+          <span>No matches yet? </span>
+          <Link to="/" className="underline text-red-500">
+            Check out some users.
+          </Link>
+        </div>
+      </MatchHeader>
+    );
+  }
 
   return (
     <MatchHeader>
