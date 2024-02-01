@@ -86,7 +86,7 @@ const MatchCard = () => {
     return (
       <MatchCardContainer>
         <div className="flex justify-center items-center h-full w-full text-center px-4 text-lg sm:text-2xl">
-          Oops! You&apos;ve swiped everyone away. Try not to look so surprised.
+          No more users? Impossible! Maybe they&apos;re just hiding...
         </div>
       </MatchCardContainer>
     );
