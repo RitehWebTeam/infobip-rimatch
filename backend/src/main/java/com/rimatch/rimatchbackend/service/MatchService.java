@@ -2,6 +2,7 @@ package com.rimatch.rimatchbackend.service;
 
 import com.rimatch.rimatchbackend.dto.DisplayUserDto;
 import com.rimatch.rimatchbackend.model.Match;
+import com.rimatch.rimatchbackend.model.Preferences;
 import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.repository.MatchRepository;
 import com.rimatch.rimatchbackend.repository.UserRepository;
@@ -24,6 +25,8 @@ import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -68,11 +71,9 @@ public class MatchService {
     }
 
     public List<DisplayUserDto> findPotentialMatches(User user, int skip) {
-
-        return DisplayUserConverter.convertToDtoList(mongoTemplate.aggregate(
+        List<User> mappedResults = mongoTemplate.aggregate(
                 Aggregation.newAggregation(
-                    Aggregation.sort(Direction.DESC, "_id"),
-
+                        Aggregation.sort(Direction.DESC, "_id"),
                         Aggregation.match(
                                 Criteria.where("active").is(true)
                                         .and("_id").nin(user.getSeenUserIds())
@@ -80,13 +81,45 @@ public class MatchService {
                                         .and("gender").is(user.getPreferences().getPartnerGender())
                                         .and("location").is(user.getLocation())
                                         .and("email").ne(user.getEmail())),
-                        // Second age parametar needs to defined separatenly because of limitations of
-                        // the org.bson.Document
                         Aggregation.match(Criteria.where("age").gte(user.getPreferences().getAgeGroupMin())),
                         Aggregation.skip(skip),
                         Aggregation.limit(5)),
-                "users", User.class).getMappedResults());
+                "users", User.class).getMappedResults();
+
+        // Create a new list for the filtered users
+        List<User> filteredList = new ArrayList<>();
+
+        // Filter the list by preferences
+        filterUsersByPreferences(user, mappedResults, filteredList);
+
+        // Convert and return the filtered list
+        return DisplayUserConverter.convertToDtoList(filteredList);
     }
+
+    public static void filterUsersByPreferences(User currentUser, List<User> userList, List<User> filteredList) {
+        for (User user : userList) {
+            Preferences listPreferences = user.getPreferences();
+
+            if (listPreferences != null) {
+                // Check age group
+                if (currentUser.getPreferences() != null &&
+                        (currentUser.getAge() < listPreferences.getAgeGroupMin() ||
+                                currentUser.getAge() > listPreferences.getAgeGroupMax())) {
+                    continue; // Skip this user
+                }
+
+                // Check gender preference
+                if (currentUser.getPreferences() != null &&
+                        !currentUser.getGender().equals(listPreferences.getPartnerGender())) {
+                    continue; // Skip this user
+                }
+
+                // Add the user to the filtered list
+                filteredList.add(user);
+            }
+        }
+    }
+
 
     public List<DisplayUserDto> getAllSuccessfulMatchedUsers(User user) {
         MatchOperation matchOperation = Aggregation.match(
