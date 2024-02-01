@@ -222,7 +222,7 @@ const RegisterForm = () => {
                       className="block w-full bg-red-600  transition duration-300 ease-in-out hover:bg-red-800 mt-4 py-3 rounded-2xl text-white font-semibold"
                     >
                       {!isSubmitting ? (
-                        "Login"
+                        "Register"
                       ) : (
                         <CircularProgress size="1rem" color="inherit" />
                       )}
