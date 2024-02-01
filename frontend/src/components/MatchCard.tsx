@@ -134,13 +134,13 @@ const MatchCard = () => {
             </div>
             <div className="flex mt-16 flex-row justify-between w-full text-white">
               <button
-                className="btn mt-10 sm:mt-0 hover:bg-green-600 bg-green-500 transition-color duration-300 sm:ml-4  border-green-700 rounded-full w-24 h-24 shadow-md shadow-black"
+                className="btn mt-10 fixed bottom-10 sm:mt-0 hover:bg-green-600 bg-green-500 transition-color duration-300 sm:ml-4  border-green-700 rounded-full w-24 h-24 shadow-md shadow-black"
                 onClick={() => handleNextUser(true, user.id)}
               >
                 <CheckIcon fontSize="large" />
               </button>
               <button
-                className="btn mt-10 sm:mt-0 bg-red-500 hover:bg-red-600 transition-color duration-300 rounded-full sm:mr-2 border-red-700 btn-circle w-24 h-24 shadow-md shadow-black"
+                className="btn mt-10 fixed bottom-10 right-3 sm:mt-0 bg-red-500 hover:bg-red-600 transition-color duration-300 rounded-full sm:mr-2 border-red-700 btn-circle w-24 h-24 shadow-md shadow-black"
                 onClick={() => handleNextUser(false, user.id)}
               >
                 <ClearIcon fontSize="large" />
@@ -165,7 +165,7 @@ const MatchCardContainer = ({
   return (
     <div className="flex justify-center">
       <div
-        className="relative flex flex-col items-center rounded-[25px] border-[1px] border-black-200 h-[750px] sm:h-[700px] w-[450px] sm:w-[24rem] p-4 bg-white dark:bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black"
+        className="relative flex flex-col items-center rounded-[25px] border-[1px] border-black-200 h-[850px] sm:h-[700px] w-[450px] sm:w-[24rem] p-4 bg-white dark:bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black"
         {...props}
       >
         {children}
