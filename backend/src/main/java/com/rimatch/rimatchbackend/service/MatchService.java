@@ -12,6 +12,7 @@ import lombok.Getter;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.ComparisonOperators;
@@ -70,6 +71,7 @@ public class MatchService {
 
         return DisplayUserConverter.convertToDtoList(mongoTemplate.aggregate(
                 Aggregation.newAggregation(
+                    Aggregation.sort(Direction.DESC, "_id"),
 
                         Aggregation.match(
                                 Criteria.where("active").is(true)

@@ -10,6 +10,7 @@ import { CircularProgress } from "@mui/material";
 const PAGE_SIZE = 5;
 
 const MatchCard = () => {
+  const [lodaing, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [currentUserIndex, setCurrentUserIndex] = useState(0);
   const result = UsersService.useGetPotentailUsers(page);
@@ -20,17 +21,25 @@ const MatchCard = () => {
   const queryClient = useQueryClient();
 
   const handleNextUser = (matchAccept: boolean, userId: string) => {
+    setLoading(true);
     const match = matchAccept ? acceptMatch.mutate : rejectMatch.mutate;
     if (currentUserIndex === PAGE_SIZE - 3) {
       prefetchPotential();
     }
-    match({ userId });
-    if (currentUserIndex === PAGE_SIZE - 1) {
-      setPage((prev) => prev + 1);
-      setCurrentUserIndex(0);
-    } else {
-      setCurrentUserIndex((prev) => prev + 1);
-    }
+    match(
+      { userId },
+      {
+        onSettled: () => {
+          if (currentUserIndex === PAGE_SIZE - 1) {
+            setPage((prev) => prev + 1);
+            setCurrentUserIndex(0);
+          } else {
+            setCurrentUserIndex((prev) => prev + 1);
+          }
+          setLoading(false);
+        },
+      }
+    );
   };
 
   // When the component unmounts it is necessary to invalidate the query
@@ -136,12 +145,14 @@ const MatchCard = () => {
               <button
                 className="btn mt-10 fixed bottom-10 sm:bottom-36 sm:left-[46rem] sm:mt-0 hover:bg-green-600 bg-green-500 transition-color duration-300 sm:ml-4  border-green-700 rounded-full w-24 h-24 shadow-md shadow-black"
                 onClick={() => handleNextUser(true, user.id)}
+                disabled={lodaing}
               >
                 <CheckIcon fontSize="large" />
               </button>
               <button
                 className="btn mt-10 fixed bottom-10 sm:bottom-36 sm:right-[46rem] right-3 sm:mt-0 bg-red-500 hover:bg-red-600 transition-color duration-300 rounded-full sm:mr-2 border-red-700 btn-circle w-24 h-24 shadow-md shadow-black"
                 onClick={() => handleNextUser(false, user.id)}
+                disabled={lodaing}
               >
                 <ClearIcon fontSize="large" />
               </button>
