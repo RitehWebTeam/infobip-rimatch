@@ -95,7 +95,7 @@ const MatchCard = () => {
     <div className="overflow-y-hidden">
       {!isProfileOpen && (
         <MatchCardContainer>
-          <div className="relative  flex h-72 w-full justify-center rounded-xl bg-cover">
+          <div className="relative  flex h-60 w-full justify-center rounded-xl bg-cover">
             <div
               className={cx(
                 "absolute flex h-[200px] w-[200px] items-center justify-center rounded-full",
@@ -134,13 +134,13 @@ const MatchCard = () => {
             </div>
             <div className="flex mt-16 flex-row justify-between w-full text-white">
               <button
-                className="btn mt-10 fixed bottom-10 sm:mt-0 hover:bg-green-600 bg-green-500 transition-color duration-300 sm:ml-4  border-green-700 rounded-full w-24 h-24 shadow-md shadow-black"
+                className="btn mt-10 fixed bottom-10 sm:bottom-36 sm:left-[29rem] sm:mt-0 hover:bg-green-600 bg-green-500 transition-color duration-300 sm:ml-4  border-green-700 rounded-full w-24 h-24 shadow-md shadow-black"
                 onClick={() => handleNextUser(true, user.id)}
               >
                 <CheckIcon fontSize="large" />
               </button>
               <button
-                className="btn mt-10 fixed bottom-10 right-3 sm:mt-0 bg-red-500 hover:bg-red-600 transition-color duration-300 rounded-full sm:mr-2 border-red-700 btn-circle w-24 h-24 shadow-md shadow-black"
+                className="btn mt-10 fixed bottom-10 sm:bottom-36 sm:right-[29rem] right-3 sm:mt-0 bg-red-500 hover:bg-red-600 transition-color duration-300 rounded-full sm:mr-2 border-red-700 btn-circle w-24 h-24 shadow-md shadow-black"
                 onClick={() => handleNextUser(false, user.id)}
               >
                 <ClearIcon fontSize="large" />
