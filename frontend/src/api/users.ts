@@ -75,12 +75,18 @@ export const UsersService = {
     >
   ) => {
     const axios = useAxiosPrivate();
+    const queryClient = useQueryClient();
     return useMutation<T, Error, MatchData>({
       mutationFn: async (data) => {
         const response = await axios.post<T>("/match/accept", data);
         return response.data;
       },
       ...mutationOptions,
+      onSettled: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["UsersService.getMatches"],
+        });
+      },
     });
   },
 
