@@ -107,7 +107,7 @@ const MatchCard = () => {
           <div className="flex w-full justify-center rounded-xl mt-4 mb-6">
             <div
               className={cx(
-                "flex h-[200px] w-[200px] items-center justify-center rounded-full",
+                "flex h-[185px] w-[185px] items-center justify-center rounded-full",
                 {
                   "bg-pink-400": user.gender === "F",
                   "bg-blue-400": user.gender === "M",
@@ -115,7 +115,7 @@ const MatchCard = () => {
               )}
             >
               <img
-                className="h-40 w-40 rounded-full"
+                className="h-44 w-44 rounded-full"
                 src={user.profileImageUrl || "/Default_pfp.svg"}
                 alt=""
               />

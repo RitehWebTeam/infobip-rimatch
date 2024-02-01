@@ -81,7 +81,7 @@ const UserProfileForm = () => {
           <div className="w-1/2 pr-4">
             <label className="block mb-2">Phone Number:</label>
             <Field
-              type="number"
+              type="string"
               id="phoneNumber"
               name="phoneNumber"
               disabled={!editMode}
