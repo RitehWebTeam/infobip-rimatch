@@ -4,6 +4,9 @@ import { useState } from "react";
 import * as Yup from "yup";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { UsersService } from "@/api/users";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import { CircularProgress } from "@mui/material";
 
 const updatePreferenceSchema = Yup.object({
   minAge: Yup.number()
@@ -32,10 +35,6 @@ const UserPreferenceForm = () => {
     preferredGender: user.preferences.partnerGender ?? "",
   };
 
-  const handleEditClick = () => {
-    setEditMode(true);
-  };
-
   const handleCancleClick = () => {
     setEditMode(false);
   };
@@ -57,74 +56,82 @@ const UserPreferenceForm = () => {
       validationSchema={updatePreferenceSchema}
       onSubmit={handleSaveClick}
     >
-      <Form className="flex flex-col px-4 w-full relative">
-        <div className="flex flex-col gap-2 mb-3 w-full">
-          <label className="block ">Min Age:</label>
-          <Field
-            type="number"
-            id="minAge"
-            name="minAge"
-            disabled={!editMode}
-            className="w-full p-3 border rounded"
-          />
-          <ErrorMessage
-            component="div"
-            name="minAge"
-            className="pl-2 text-red-500 text-sm"
-          />
-        </div>
-        <div className="flex flex-col gap-2 mb-3">
-          <label className="block ">Max Age:</label>
-          <Field
-            type="number"
-            id="maxAge"
-            name="maxAge"
-            disabled={!editMode}
-            className="w-full p-3 border rounded"
-          />
-          <ErrorMessage
-            component="div"
-            name="maxAge"
-            className="pl-2 text-red-500"
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <label className="block ">Preferred Gender:</label>
-          <Field
-            as="select"
-            id="preferredGender"
-            name="preferredGender"
-            disabled={!editMode}
-            className="w-full p-3 border rounded"
-          >
-            <option value="M">Male</option>
-            <option value="F">Female</option>
-          </Field>
-        </div>
-        {!editMode ? (
-          <div
-            className="absolute right-3 -top-12 cursor-pointer hover:text-red-400"
-            onClick={() => handleEditClick()}
-          >
-            <ModeEditIcon />
+      {({ isSubmitting }) => (
+        <Form className="flex flex-col px-4 w-full relative">
+          <div className="flex flex-col gap-2 mb-3 w-full">
+            <label className="block ">Min Age:</label>
+            <Field
+              type="number"
+              id="minAge"
+              name="minAge"
+              disabled={!editMode}
+              className="w-full p-3 border rounded"
+            />
+            <ErrorMessage
+              component="div"
+              name="minAge"
+              className="pl-2 text-red-500 text-sm"
+            />
           </div>
-        ) : (
-          <div>
-            <button
-              type="submit"
-              className="absolute right-0 -top-12 text-sm px-4 py-2 bg-red-400 dark:bg-slate-400 rounded"
-            >
-              Save
-            </button>
-            <button
-              onClick={() => handleCancleClick()}
-              className="absolute right-[4.2rem] -top-12 text-sm px-3 py-2 bg-red-400 dark:bg-red-400 rounded"
-            >
-              Cancel
-            </button>
+          <div className="flex flex-col gap-2 mb-3">
+            <label className="block ">Max Age:</label>
+            <Field
+              type="number"
+              id="maxAge"
+              name="maxAge"
+              disabled={!editMode}
+              className="w-full p-3 border rounded"
+            />
+            <ErrorMessage
+              component="div"
+              name="maxAge"
+              className="pl-2 text-red-500"
+            />
           </div>
-        )}
-      </Form>
+          <div className="flex flex-col gap-2">
+            <label className="block ">Preferred Gender:</label>
+            <Field
+              as="select"
+              id="preferredGender"
+              name="preferredGender"
+              disabled={!editMode}
+              className="w-full p-3 border rounded"
+            >
+              <option value="M">Male</option>
+              <option value="F">Female</option>
+            </Field>
+          </div>
+
+          <div className="absolute right-0 -top-12 flex text-2xl gap-6">
+            {isSubmitting && editMode ? (
+              <CircularProgress size="1.5rem" color="inherit" />
+            ) : !editMode ? (
+              <div
+                className="cursor-pointer hover:text-orange-400 text-2xl"
+                onClick={() => setEditMode(true)}
+              >
+                <ModeEditIcon color="inherit" fontSize="inherit" />
+              </div>
+            ) : (
+              <>
+                <button type="submit">
+                  <CheckIcon
+                    color="inherit"
+                    fontSize="inherit"
+                    className="hover:text-green-500"
+                  />
+                </button>
+                <button
+                  onClick={() => handleCancleClick()}
+                  className="hover:text-red-700"
+                >
+                  <CloseIcon color="inherit" fontSize="inherit" />
+                </button>
+              </>
+            )}
+          </div>
+        </Form>
+      )}
     </Formik>
   );
 };

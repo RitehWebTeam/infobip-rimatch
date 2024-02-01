@@ -4,6 +4,9 @@ import { Field, Form, ErrorMessage, Formik } from "formik";
 import * as Yup from "yup";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { UsersService } from "@/api/users";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import { CircularProgress } from "@mui/material";
 
 const updatePreferenceSchema = Yup.object({
   phoneNumber: Yup.number().required("Required"),
@@ -72,129 +75,134 @@ const UserProfileForm = () => {
     <Formik
       initialValues={initialValues}
       validationSchema={updatePreferenceSchema}
-      onSubmit={(values) => {
-        handleSubmit(values);
-      }}
+      onSubmit={handleSubmit}
     >
-      <Form className="w-full flex flex-col relative">
-        <div className="flex w-full">
-          <div className="w-1/2 pr-4">
-            <label className="block mb-2">Phone Number:</label>
-            <Field
-              type="number"
-              id="phoneNumber"
-              name="phoneNumber"
-              disabled={!editMode}
-              className="w-full p-3 border rounded"
-            />
-            <ErrorMessage
-              component="div"
-              name="phoneNumber"
-              className="text-sm text-red-500"
-            />
-            <label className="block my-2">Age:</label>
-            <Field
-              type="number"
-              id="age"
-              name="age"
-              disabled={!editMode}
-              className="w-full p-3 border rounded"
-            />
-            <ErrorMessage
-              component="div"
-              name="age"
-              className="text-sm text-red-500"
-            />
+      {({ isSubmitting }) => (
+        <Form className="w-full flex flex-col relative">
+          <div className="flex w-full">
+            <div className="w-1/2 pr-4">
+              <label className="block mb-2">Phone Number:</label>
+              <Field
+                type="string"
+                id="phoneNumber"
+                name="phoneNumber"
+                disabled={!editMode}
+                className="w-full p-3 border rounded"
+              />
+              <ErrorMessage
+                component="div"
+                name="phoneNumber"
+                className="text-sm text-red-500"
+              />
+              <label className="block my-2">Age:</label>
+              <Field
+                type="number"
+                id="age"
+                name="age"
+                disabled={!editMode}
+                className="w-full p-3 border rounded"
+              />
+              <ErrorMessage
+                component="div"
+                name="age"
+                className="text-sm text-red-500"
+              />
+            </div>
+            <div className="w-1/2 pl-4">
+              <label className="block mb-2">Favorite song:</label>
+              <Field
+                type="string"
+                id="favoriteSong"
+                name="favoriteSong"
+                disabled={!editMode}
+                className="w-full p-3 border rounded"
+              />
+              <ErrorMessage
+                component="div"
+                name="favoriteSong"
+                className="text-sm text-red-500"
+              />
+              <ErrorMessage
+                component="div"
+                name="tags"
+                className="text-sm text-red-500"
+              />
+              <label className="block my-2">Location:</label>
+              <Field
+                type="string"
+                id="location"
+                name="location"
+                disabled={!editMode}
+                className="w-full p-3 border rounded"
+              />
+              <ErrorMessage
+                component="div"
+                name="location"
+                className="text-sm text-red-500"
+              />
+            </div>
           </div>
-          <div className="w-1/2 pl-4">
-            <label className="block mb-2">Favorite song:</label>
-            <Field
-              type="string"
-              id="favoriteSong"
-              name="favoriteSong"
-              disabled={!editMode}
-              className="w-full p-3 border rounded"
-            />
-            <ErrorMessage
-              component="div"
-              name="favoriteSong"
-              className="text-sm text-red-500"
-            />
-            <ErrorMessage
-              component="div"
-              name="tags"
-              className="text-sm text-red-500"
-            />
-            <label className="block my-2">Location:</label>
-            <Field
-              type="string"
-              id="location"
-              name="location"
-              disabled={!editMode}
-              className="w-full p-3 border rounded"
-            />
-            <ErrorMessage
-              component="div"
-              name="location"
-              className="text-sm text-red-500"
-            />
-          </div>
-        </div>
 
-        <label className="block my-2">Tags:</label>
-        <input
-          type="text"
-          id="tags"
-          name="tags"
-          disabled={!editMode}
-          className="w-full p-3 border rounded"
-          onChange={handleChange}
-          value={tags.join(" ")}
-        />
-        <ErrorMessage
-          component="div"
-          name="tags"
-          className="text-sm text-red-500"
-        />
-        <label className="block my-2">Description:</label>
-        <Field
-          as="textarea"
-          cols={20}
-          type="string"
-          id="description"
-          name="description"
-          disabled={!editMode}
-          className="w-full p-3 border rounded"
-        />
-        <ErrorMessage
-          component="div"
-          name="description"
-          className="text-sm text-red-500"
-        />
-        {!editMode ? (
-          <div
-            className="absolute right-3 -top-12 cursor-pointer hover:text-red-400"
-            onClick={() => setEditMode(true)}
-          >
-            <ModeEditIcon />
+          <label className="block my-2">Tags:</label>
+          <input
+            type="text"
+            id="tags"
+            name="tags"
+            disabled={!editMode}
+            className="w-full p-3 border rounded"
+            onChange={handleChange}
+            value={tags.join(" ")}
+          />
+          <ErrorMessage
+            component="div"
+            name="tags"
+            className="text-sm text-red-500"
+          />
+          <label className="block my-2">Description:</label>
+          <Field
+            as="textarea"
+            cols={20}
+            type="string"
+            id="description"
+            name="description"
+            disabled={!editMode}
+            className="w-full p-3 border rounded"
+          />
+          <ErrorMessage
+            component="div"
+            name="description"
+            className="text-sm text-red-500"
+          />
+          <div className="absolute right-0 -top-12 flex text-2xl gap-6">
+            {isSubmitting && editMode ? (
+              <CircularProgress size="1.5rem" color="inherit" />
+            ) : !editMode ? (
+              <div
+                className="cursor-pointer hover:text-orange-400 text-2xl"
+                onClick={() => setEditMode(true)}
+              >
+                <ModeEditIcon color="inherit" fontSize="inherit" />
+              </div>
+            ) : (
+              <>
+                <button type="submit">
+                  <CheckIcon
+                    color="inherit"
+                    fontSize="inherit"
+                    className="hover:text-green-500"
+                  />
+                </button>
+                <button
+                  onClick={() => handleCancleClick()}
+                  className="hover:text-red-700"
+                >
+                  <CloseIcon color="inherit" fontSize="inherit" />
+                </button>
+              </>
+            )}
           </div>
-        ) : (
-          <div>
-            <button
-              type="submit"
-              className="absolute right-0 -top-12 text-sm px-4 py-2 bg-red-400 dark:bg-slate-400 rounded"
-            >
-              Save
-            </button>
-            <button
-              onClick={() => handleCancleClick()}
-              className="absolute right-[4.2rem] -top-12 text-sm px-3 py-2 bg-red-400 dark:bg-red-400 rounded"
-            >
-              Cancel
-            </button>
-          </div>
-        )}
-      </Form>
+        </Form>
+      )}
     </Formik>
   );
 };

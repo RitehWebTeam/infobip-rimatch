@@ -10,6 +10,7 @@ import { CircularProgress } from "@mui/material";
 const PAGE_SIZE = 5;
 
 const MatchCard = () => {
+  const [lodaing, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [currentUserIndex, setCurrentUserIndex] = useState(0);
   const result = UsersService.useGetPotentailUsers(page);
@@ -20,17 +21,25 @@ const MatchCard = () => {
   const queryClient = useQueryClient();
 
   const handleNextUser = (matchAccept: boolean, userId: string) => {
+    setLoading(true);
     const match = matchAccept ? acceptMatch.mutate : rejectMatch.mutate;
     if (currentUserIndex === PAGE_SIZE - 3) {
       prefetchPotential();
     }
-    match({ userId });
-    if (currentUserIndex === PAGE_SIZE - 1) {
-      setPage((prev) => prev + 1);
-      setCurrentUserIndex(0);
-    } else {
-      setCurrentUserIndex((prev) => prev + 1);
-    }
+    match(
+      { userId },
+      {
+        onSettled: () => {
+          if (currentUserIndex === PAGE_SIZE - 1) {
+            setPage((prev) => prev + 1);
+            setCurrentUserIndex(0);
+          } else {
+            setCurrentUserIndex((prev) => prev + 1);
+          }
+          setLoading(false);
+        },
+      }
+    );
   };
 
   // When the component unmounts it is necessary to invalidate the query
@@ -77,7 +86,7 @@ const MatchCard = () => {
     return (
       <MatchCardContainer>
         <div className="flex justify-center items-center h-full w-full text-center px-4 text-lg sm:text-2xl">
-          Oops! You&apos;ve swiped everyone away. Try not to look so surprised.
+          No more users? Impossible! Maybe they&apos;re just hiding...
         </div>
       </MatchCardContainer>
     );
@@ -92,13 +101,13 @@ const MatchCard = () => {
   };
   const truncatedDescription = user.description.slice(0, 100);
   return (
-    <div className="overflow-y-hidden">
+    <>
       {!isProfileOpen && (
         <MatchCardContainer>
-          <div className="relative  flex h-60 w-full justify-center rounded-xl bg-cover">
+          <div className="flex w-full justify-center rounded-xl mt-4 mb-6">
             <div
               className={cx(
-                "absolute flex h-[200px] w-[200px] items-center justify-center rounded-full",
+                "flex h-[185px] w-[185px] items-center justify-center rounded-full",
                 {
                   "bg-pink-400": user.gender === "F",
                   "bg-blue-400": user.gender === "M",
@@ -106,42 +115,46 @@ const MatchCard = () => {
               )}
             >
               <img
-                className="h-40 w-40 rounded-full"
+                className="h-44 w-44 rounded-full"
                 src={user.profileImageUrl || "/Default_pfp.svg"}
                 alt=""
               />
             </div>
           </div>
-          <div className="flex flex-col items-center w-full ">
-            <h4 className="text-5xl font-bold text-navy-700 dark:text-white">
-              {`${user.firstName}, ${user.age}`}
-            </h4>
-            <p className="font-normal text-lg dark:text-gray-200">
-              {user.location}
-            </p>
-            <div className="flex justify-center items-center mt-4 text-gray-400">
-              <p className="flex align-middle text-center text-lg overflow-hidden overflow-ellipsis">
-                {truncatedDescription}
+          <div className="flex flex-col items-center w-full justify-between flex-grow gap-6 md:max-h-[22rem]">
+            <div className="w-full flex flex-col justify-center items-center">
+              <h4 className="text-5xl font-bold text-navy-700 dark:text-white">
+                {`${user.firstName}, ${user.age}`}
+              </h4>
+              <p className="font-normal text-lg dark:text-gray-200 mt-4">
+                {user.location}
               </p>
+              <div className="flex justify-center items-center mt-4 text-gray-400">
+                <p className="flex align-middle text-center text-lg overflow-hidden overflow-ellipsis">
+                  {truncatedDescription}
+                </p>
+              </div>
+              <div>
+                <button
+                  className="mt-3 text-gray-500 hover:text-gray-300 text-lg"
+                  onClick={() => openProfile()}
+                >
+                  View profile
+                </button>
+              </div>
             </div>
-            <div>
+            <div className="flex justify-between w-full text-white pb-4 px-2">
               <button
-                className="mt-3 text-gray-500 hover:text-gray-300 text-lg"
-                onClick={() => openProfile()}
-              >
-                View profile
-              </button>
-            </div>
-            <div className="flex mt-16 flex-row justify-between w-full text-white">
-              <button
-                className="btn mt-10 fixed bottom-10 sm:bottom-36 sm:left-[46rem] sm:mt-0 hover:bg-green-600 bg-green-500 transition-color duration-300 sm:ml-4  border-green-700 rounded-full w-24 h-24 shadow-md shadow-black"
+                className=" hover:bg-green-600 bg-green-500 transition-color duration-300 sm:ml-4  border-green-700 rounded-full w-24 h-24 shadow-md shadow-black"
                 onClick={() => handleNextUser(true, user.id)}
+                disabled={lodaing}
               >
                 <CheckIcon fontSize="large" />
               </button>
               <button
-                className="btn mt-10 fixed bottom-10 sm:bottom-36 sm:right-[46rem] right-3 sm:mt-0 bg-red-500 hover:bg-red-600 transition-color duration-300 rounded-full sm:mr-2 border-red-700 btn-circle w-24 h-24 shadow-md shadow-black"
+                className="bg-red-500 hover:bg-red-600 transition-color duration-300 rounded-full sm:mr-2 border-red-700 btn-circle w-24 h-24 shadow-md shadow-black"
                 onClick={() => handleNextUser(false, user.id)}
+                disabled={lodaing}
               >
                 <ClearIcon fontSize="large" />
               </button>
@@ -150,7 +163,7 @@ const MatchCard = () => {
         </MatchCardContainer>
       )}
       {isProfileOpen && <ProfileCard user={user} onClose={closeProfile} />}
-    </div>
+    </>
   );
 };
 
@@ -163,9 +176,9 @@ const MatchCardContainer = ({
   ...props
 }: MatchCardContainerProps) => {
   return (
-    <div className="flex justify-center">
+    <div className="flex flex-col items-center flex-grow sm:pb-12 min-h-fit max-h-[800px]  md:max-h-[700px]">
       <div
-        className="relative flex flex-col items-center rounded-[25px] border-[1px] border-black-200 h-[850px] sm:h-[700px] w-[450px] sm:w-[24rem] p-4 bg-white dark:bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black"
+        className="flex flex-col items-center rounded-[25px] border-[1px] border-black-200 flex-grow w-full sm:w-[24rem] p-4 bg-white dark:bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black"
         {...props}
       >
         {children}

@@ -11,6 +11,7 @@ import { UsersService } from "@/api/users";
 import type { PreferencesInitData } from "@/types/User";
 import ScrollToFieldError from "@/components/ScrollToFieldError";
 import { useState } from "react";
+import { CircularProgress } from "@mui/material";
 
 const preferenceSchema = Yup.object({
   minAge: Yup.number()
@@ -330,7 +331,7 @@ const Preferences = () => {
                   <div
                     data-aos="fade-right"
                     data-aos-delay="200"
-                    className="flex flex-col mb-24"
+                    className="flex flex-col mb-24 px-10"
                   >
                     <label
                       className="text-white text-[26px] sm:text-3xl  font-Montserrat text-center mb-4"
@@ -462,7 +463,11 @@ const Preferences = () => {
                   className="justify-self-end mb-16 sm:mb-5 bottom-0 text-gray-300  bg-[#00000042] rounded-full  px-5 py-3 text-center hover:opacity-75 transition-opacity duration-300"
                   type="submit"
                 >
-                  Submit
+                  {!isSubmitting ? (
+                    "Submit"
+                  ) : (
+                    <CircularProgress size="1rem" color="inherit" />
+                  )}
                 </button>
               </div>
               <ScrollToFieldError
