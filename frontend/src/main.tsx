@@ -17,6 +17,7 @@ import UserProfilePage from "./views/UserProfileForm.tsx";
 import UserPreferenceForm from "./views/UserPreferenceForm.tsx";
 import ChatPage from "./views/ChatPage.tsx";
 import React from "react";
+import SetupPreferencesPage from "./views/SetupPreferencesPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,11 @@ const router = createBrowserRouter([
   {
     path: "/init/preferences",
     element: <Preferences />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/init/setup",
+    element: <SetupPreferencesPage />,
     errorElement: <ErrorPage />,
   },
   {
