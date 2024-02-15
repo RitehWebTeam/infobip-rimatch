@@ -11,7 +11,7 @@ import { CircularProgress } from "@mui/material";
 const RegisterSchema = Yup.object({
   email: Yup.string().required("Required").email("Must be a valid email"),
   password: Yup.string()
-    .max(16, "Must be 16 characters or less")
+    .max(30, "Must be 30 characters or less")
     .min(8, "Password must be 8 characters or more")
     .required("Required"),
   firstName: Yup.string()
