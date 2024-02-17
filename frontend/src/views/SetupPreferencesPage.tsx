@@ -9,6 +9,8 @@ import {
 import React, { useState } from "react";
 import * as Yup from "yup";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import { CircularProgress } from "@mui/material";
+import TagInput from "@/components/TagInput";
 
 const sleep = (time: number) => new Promise((acc) => setTimeout(acc, time));
 
@@ -18,6 +20,7 @@ const initialValues = {
   phoneNumber: "",
   location: "",
   favouriteSong: "",
+  tags: [],
   preferences: {
     ageGroupMin: "",
     ageGroupMax: "",
@@ -56,6 +59,13 @@ const Step2ValidationSchema = Yup.object({
   }),
 });
 
+const Step3ValidationSchema = Yup.object({
+  favouriteSong: Yup.string().required("Required"),
+  tags: Yup.array()
+    .of(Yup.string().required("This field is required"))
+    .min(1, "At least one tag is required"),
+});
+
 const SetupPreferencesPage = () => {
   return (
     <PreferencesHeader>
@@ -67,7 +77,7 @@ const SetupPreferencesPage = () => {
         }}
       >
         <FormikStep
-          label="Description & Preffered gender"
+          label="Description, Location, Phonenumber"
           validationSchema={Step1ValidationSchema}
         >
           <div className="flex flex-col gap-6 font-Montserrat">
@@ -109,7 +119,7 @@ const SetupPreferencesPage = () => {
               <Field
                 as="textarea"
                 rows="4"
-                placeholder="I like bees"
+                placeholder="I like bees..."
                 name="description"
                 id="description"
                 className="rounded-2xl px-5 py-3 bg-gray-100 text-black"
@@ -122,14 +132,17 @@ const SetupPreferencesPage = () => {
             </div>
           </div>
         </FormikStep>
-        <FormikStep label="Age range" validationSchema={Step2ValidationSchema}>
+        <FormikStep
+          label="Preferences"
+          validationSchema={Step2ValidationSchema}
+        >
           <div className="flex flex-col gap-6 font-Montserrat">
             <div className="flex flex-col gap-2">
               <label
                 className="font-Montserrat"
                 htmlFor="preferences.partnerGender"
               >
-                Choose your preffered gender
+                Preffered gender:
               </label>
 
               <Field
@@ -190,6 +203,42 @@ const SetupPreferencesPage = () => {
             </div>
           </div>
         </FormikStep>
+        <FormikStep label="Tags, Song" validationSchema={Step3ValidationSchema}>
+          <div className="flex flex-col gap-6 font-Montserrat">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="favouriteSong">What is your favorite song?</label>
+              <Field
+                type="string"
+                name="favouriteSong"
+                id="favouriteSong"
+                className="rounded-2xl px-5 py-3 bg-gray-100 text-black"
+                placeholder="Input your favorite song"
+              />
+              <ErrorMessage
+                component="div"
+                name="favouriteSong"
+                className="text-sm pl-2 text-red-500"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="tags">
+                Enter some tags:
+                <span className="text-sm block opacity-80 text-slate-400">
+                  (separate with spaces)
+                </span>
+              </label>
+              <TagInput
+                name="tags"
+                className="rounded-2xl px-5 py-3 bg-gray-100 text-black"
+              />
+              <ErrorMessage
+                component="div"
+                name="tags"
+                className="text-sm pl-2 text-red-500"
+              />
+            </div>
+          </div>
+        </FormikStep>
       </FormikStepper>
     </PreferencesHeader>
   );
@@ -229,18 +278,6 @@ export function FormikStepper<Values extends FormikValues>({
           await props.onSubmit(values, helpers);
         } else {
           setStep((s) => s + 1);
-
-          // the next line was not covered in the youtube video
-          //
-          // If you have multiple fields on the same step
-          // we will see they show the validation error all at the same time after the first step!
-          //
-          // If you want to keep that behaviour, then, comment the next line :)
-          // If you want the second/third/fourth/etc steps with the same behaviour
-          //    as the first step regarding validation errors, then the next line is for you! =)
-          //
-          // In the example of the video, it doesn't make any difference, because we only
-          //    have one field with validation in the second step :)
           helpers.setTouched({});
         }
       }}
@@ -281,9 +318,15 @@ export function FormikStepper<Values extends FormikValues>({
             <button
               disabled={isSubmitting}
               type="submit"
-              className="bg-red-500 flex-1 hover:bg-red-800 px-6 py-2 sm:py-3 rounded-2xl text-white font-semibold"
+              className="bg-red-500 flex-1 disabled:bg-red-700 hover:bg-red-700 px-6 py-2 sm:py-3 rounded-2xl text-white font-semibold"
             >
-              {isSubmitting ? "Submitting" : isLastStep() ? "Submit" : "Next"}
+              {isSubmitting ? (
+                <CircularProgress size="1rem" color="inherit" />
+              ) : isLastStep() ? (
+                "Submit"
+              ) : (
+                "Next"
+              )}
             </button>
           </div>
         </Form>
