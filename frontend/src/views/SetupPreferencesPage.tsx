@@ -8,6 +8,7 @@ import {
 } from "formik";
 import React, { useState } from "react";
 import * as Yup from "yup";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 
 const sleep = (time: number) => new Promise((acc) => setTimeout(acc, time));
 
@@ -30,23 +31,29 @@ const Step1ValidationSchema = Yup.object({
   phoneNumber: Yup.number()
     .required("Required")
     .min(111111111, "Please input a valid phone number"),
-  preferences: Yup.object({
-    partnerGender: Yup.string().required("Required"),
-  }),
-});
-
-const Step2ValidationSchema = Yup.object({
-  preferences: Yup.object({
-    ageGroupMin: Yup.number().required("Required"),
-    ageGroupMax: Yup.number().required("Required"),
-  }),
-});
-
-const Step3ValidationSchema = Yup.object({
   location: Yup.string()
     .required("Required")
     .min(3, "Location name must be longer than 2 characters"),
   description: Yup.string().required("Required"),
+});
+
+const Step2ValidationSchema = Yup.object({
+  preferences: Yup.object({
+    ageGroupMin: Yup.number()
+      .required("Required")
+      .max(99, "Age must be between 18 and 99")
+      .min(18, "Age must be between 18 and 99"),
+    ageGroupMax: Yup.number()
+      .when("ageGroupMin", ([ageGroupMin], schema) =>
+        ageGroupMin
+          ? schema.min(ageGroupMin, "Max age must be greater than min age")
+          : schema
+      )
+      .required("Required")
+      .max(99, "Age must be between 18 and 99")
+      .min(18, "Age must be between 18 and 99"),
+    partnerGender: Yup.string().required("Required"),
+  }),
 });
 
 const SetupPreferencesPage = () => {
@@ -80,6 +87,44 @@ const SetupPreferencesPage = () => {
               />
             </div>
             <div className="flex flex-col gap-2">
+              <label htmlFor="location">Where are you from?</label>
+              <Field
+                type="text"
+                name="location"
+                id="location"
+                className="rounded-2xl px-5 py-3 bg-gray-100 text-black"
+                placeholder="Please input your location"
+              />
+              <ErrorMessage
+                component="div"
+                name="location"
+                className="text-sm pl-2 text-red-500"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="font-Montserrat" htmlFor="description">
+                Tell us about yourself:
+              </label>
+
+              <Field
+                as="textarea"
+                rows="4"
+                placeholder="I like bees"
+                name="description"
+                id="description"
+                className="rounded-2xl px-5 py-3 bg-gray-100 text-black"
+              ></Field>
+              <ErrorMessage
+                component="div"
+                name="description"
+                className="text-sm pl-2 text-red-500"
+              />
+            </div>
+          </div>
+        </FormikStep>
+        <FormikStep label="Age range" validationSchema={Step2ValidationSchema}>
+          <div className="flex flex-col gap-6 font-Montserrat">
+            <div className="flex flex-col gap-2">
               <label
                 className="font-Montserrat"
                 htmlFor="preferences.partnerGender"
@@ -105,10 +150,6 @@ const SetupPreferencesPage = () => {
                 className="text-sm pl-2 text-red-500"
               />
             </div>
-          </div>
-        </FormikStep>
-        <FormikStep label="Age range" validationSchema={Step2ValidationSchema}>
-          <div className="flex flex-col gap-6 font-Montserrat">
             <div className="flex flex-col gap-2">
               <label htmlFor="preferences.ageGroupMin">
                 Minimum partner age
@@ -144,47 +185,6 @@ const SetupPreferencesPage = () => {
               <ErrorMessage
                 component="div"
                 name="preferences.ageGroupMax"
-                className="text-sm pl-2 text-red-500"
-              />
-            </div>
-          </div>
-        </FormikStep>
-        <FormikStep
-          label="Location & Description"
-          validationSchema={Step3ValidationSchema}
-        >
-          <div className="flex flex-col gap-6 font-Montserrat">
-            <div className="flex flex-col gap-2">
-              <label htmlFor="location">Where are you from?</label>
-              <Field
-                type="text"
-                name="location"
-                id="location"
-                className="rounded-2xl px-5 py-3 bg-gray-100 text-black"
-                placeholder="Please input your location"
-              />
-              <ErrorMessage
-                component="div"
-                name="location"
-                className="text-sm pl-2 text-red-500"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label className="font-Montserrat" htmlFor="description">
-                Tell us about yourself:
-              </label>
-
-              <Field
-                as="textarea"
-                rows="4"
-                placeholder="I like bees"
-                name="description"
-                id="description"
-                className="rounded-2xl px-5 py-3 bg-gray-100 text-black"
-              ></Field>
-              <ErrorMessage
-                component="div"
-                name="description"
                 className="text-sm pl-2 text-red-500"
               />
             </div>
@@ -246,29 +246,38 @@ export function FormikStepper<Values extends FormikValues>({
       }}
     >
       {({ isSubmitting }) => (
-        <Form autoComplete="off" className="w-5/6">
-          <div className="w-full h-4 bg-red-50 mb-5 rounded-2xl">
-            <div
-              className="h-full bg-red-500 rounded-2xl transition-all duration-200 ease-in-out"
-              style={{
-                width: `${((step + 1) / childrenArray.length) * 100}%`,
-              }}
-            ></div>
+        <Form
+          autoComplete="off"
+          className="flex flex-col justify-between gap-10 sm:gap-4 h-full w-full sm:w-5/6"
+        >
+          <div>
+            <div className="mb-6 min-h-[3rem] flex items-center -ml-2">
+              {step > 0 && (
+                <button
+                  type="button"
+                  className="p-0.5 rounded-lg border border-red-500 font-semibold shadow-xl"
+                  disabled={isSubmitting}
+                  onClick={() => setStep((s) => s - 1)}
+                >
+                  <KeyboardArrowLeftIcon fontSize="large"></KeyboardArrowLeftIcon>
+                </button>
+              )}
+            </div>
+            <div className="text-white text-3xl sm:text-4xl font-bold mb-8">
+              Setup your profile
+            </div>
+            <div className="w-full h-4 bg-red-50 mt-3 mb-6 rounded-2xl">
+              <div
+                className="h-full bg-red-500 rounded-2xl transition-all duration-200 ease-in-out"
+                style={{
+                  width: `${((step + 1) / childrenArray.length) * 100}%`,
+                }}
+              ></div>
+            </div>
+            {currentChild}
           </div>
 
-          {currentChild}
-
           <div className="flex w-full mt-4 gap-3">
-            {step > 0 ? (
-              <button
-                type="button"
-                className="px-6 py-2 flex-1 bg-black rounded-2xl font-semibold hover:bg-gray-800"
-                disabled={isSubmitting}
-                onClick={() => setStep((s) => s - 1)}
-              >
-                Back
-              </button>
-            ) : null}
             <button
               disabled={isSubmitting}
               type="submit"
@@ -293,13 +302,8 @@ const PreferencesHeader = ({ children }: PreferencesHeaderProps) => {
       className="flex flex-col justify-center items-center flex-grow"
       id="red-to-black"
     >
-      <div className="flex w-full flex-grow justify-center md:pb-8 max-h-[40rem]">
-        <div className="bg-white dark:bg-[#343030] flex w-[30rem] flex-col h-full items-center px-10 py-7 sm:rounded-lg shadow-lg shadow-black">
-          <div className="flex w-full items-start gap-5 mb-6">
-            <div className="text-black dark:text-red-500 text-4xl font-bold leading-[51px] grow shrink basis-auto">
-              Setup your profile
-            </div>
-          </div>
+      <div className="flex w-full flex-grow justify-center md:pb-8 sm:max-h-[50rem]">
+        <div className="bg-white dark:bg-[#343030] flex w-[30rem] flex-col h-full items-center px-10 py-8 sm:rounded-lg shadow-lg shadow-black min-h-fit">
           {children}
         </div>
       </div>
