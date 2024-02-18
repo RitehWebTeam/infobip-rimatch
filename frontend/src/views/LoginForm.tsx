@@ -1,14 +1,16 @@
-import { ErrorMessage, Field, Formik, Form } from "formik";
+import { ErrorMessage, Field, Formik, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { EmailAtIcon, LockIcon } from "../assets";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthService from "@/api/auth";
 import { CircularProgress } from "@mui/material";
+import { useState } from "react";
+import { AxiosError } from "axios";
 
 const LoginSchema = Yup.object({
   email: Yup.string().required("Required").email("Must be valid email"),
   password: Yup.string()
-    .max(16, "Must be 16 characters or less")
+    .max(30, "Must be 30 characters or less")
     .required("Required"),
 });
 
@@ -19,17 +21,33 @@ const initialValues = {
 type LoginValues = typeof initialValues;
 
 const LoginForm = () => {
+  const [loginError, setLoginError] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
-  const { mutateAsync: login } = AuthService.useLogin();
+  const { mutate: login } = AuthService.useLogin();
   const from = location?.state?.from?.pathname ?? "/";
 
   const handleSubmit = (
-    values: LoginValues /*helpers: FormikHelpers<LoginValues>*/
+    values: LoginValues,
+    helpers: FormikHelpers<LoginValues>
   ) => {
-    return login(values, {
+    helpers.setSubmitting(true);
+    setLoginError("");
+    login(values, {
       onSuccess: () => {
         navigate(from, { replace: true });
+      },
+      onError: (error) => {
+        if (error instanceof AxiosError && error.response?.status === 401) {
+          setLoginError(
+            error.response?.data?.message ?? "Invalid email or password"
+          );
+        } else {
+          setLoginError("Something went wrong");
+        }
+      },
+      onSettled: () => {
+        helpers.setSubmitting(false);
       },
     });
   };
@@ -42,13 +60,16 @@ const LoginForm = () => {
             initialValues={initialValues}
             validationSchema={LoginSchema}
             onSubmit={handleSubmit}
+            validate={() => {
+              setLoginError("");
+            }}
           >
             {({ isSubmitting }) => (
-              <Form className=" sm:w-1/2 md:w-1/3 lg:w-1/4   rounded-xl shadow-black drop-shadow-2xl">
-                <h1 className="text-white-800 text-center font-bold text-3xl  mb-2 font-Pacifico">
+              <Form className=" sm:w-1/2 md:w-1/3 lg:w-1/4 rounded-xl shadow-black drop-shadow-2xl">
+                <h1 className="dark:text-white-800 text-center font-bold text-5xl xl:text-7xl mb-2 font-Pacifico">
                   RiMatch
                 </h1>
-                <p className="text-sm sm:text-base md:text-lg font-normal text-center text-white-600 mb-7">
+                <p className="text-sm sm:text-base md:text-lg text-center text-white-600 mb-7">
                   Welcome Back
                 </p>
                 <div className="flex items-center bg-white border-2 py-2 sm:py-3 px-2 sm:px-4 rounded-2xl mt-4 sm:mt-6">
@@ -81,6 +102,9 @@ const LoginForm = () => {
                   name="password"
                   className="pl-2 text-sm text-red-500"
                 />
+                {loginError && (
+                  <div className="text-red-500 text-sm pl-2">{loginError}</div>
+                )}
                 <button
                   disabled={isSubmitting}
                   type="submit"

@@ -10,13 +10,13 @@ import ProtectedRoutes from "./routes/ProtectedRoutes.tsx";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Root from "./views/Root.tsx";
-import Preferences from "./views/Preferences.tsx";
 import MatchesPage from "./views/MatchesPage.tsx";
 import UserPageLayout from "./views/UserPageLayout.tsx";
 import UserProfilePage from "./views/UserProfileForm.tsx";
 import UserPreferenceForm from "./views/UserPreferenceForm.tsx";
 import ChatPage from "./views/ChatPage.tsx";
 import React from "react";
+import SetupPreferencesPage from "./views/SetupPreferences/SetupPreferencesPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -49,7 +49,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/init/preferences",
-    element: <Preferences />,
+    element: <SetupPreferencesPage />,
     errorElement: <ErrorPage />,
   },
   {
