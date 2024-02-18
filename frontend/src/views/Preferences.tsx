@@ -1,9 +1,9 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import Dropzone from "../components/Dropzone";
+import Dropzone from "../components/forms/Dropzone";
 import { useEffect, useRef } from "react";
-import AOS from "aos";
-import "aos/dist/aos.css";
+// import AOS from "aos";
+// import "aos/dist/aos.css";
 import MovmentButtons from "../components/MovmentButtons";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
@@ -112,9 +112,6 @@ const Preferences = () => {
     }
   }, [auth?.active, auth?.accessToken, navigate]);
 
-  useEffect(() => {
-    AOS.init({ duration: 1000 });
-  }, []);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     const newTags = value.split(/[ ,]/);

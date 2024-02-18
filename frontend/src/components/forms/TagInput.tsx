@@ -5,9 +5,14 @@ import CloseIcon from "@mui/icons-material/Close";
 interface TagInputProps {
   name: string;
   className: string;
+  placeholder?: string;
 }
 
-const TagInput = ({ name, className: classStyle }: TagInputProps) => {
+const TagInput = ({
+  name,
+  className: classStyle,
+  placeholder,
+}: TagInputProps) => {
   const [currentInputValue, setCurrentInputValue] = useState("");
   const [field, , helpers] = useField<string[]>(name);
 
@@ -49,6 +54,7 @@ const TagInput = ({ name, className: classStyle }: TagInputProps) => {
         onChange={handleChange}
         value={currentInputValue}
         onKeyDown={handleKeyDown}
+        placeholder={placeholder ?? "Add a tag"}
       />
       <div className="flex flex-row flex-wrap gap-x-2 gap-y-3 mt-2">
         {field?.value.map((tag, index) => (
