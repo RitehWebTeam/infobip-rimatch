@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import { useEffect } from "react";
 import * as Yup from "yup";
+import useLogout from "@/hooks/useLogout";
 
 const initialValues = {
   description: "",
@@ -92,6 +93,7 @@ const SetupPreferencesPage = () => {
   const navigate = useNavigate();
   const { auth, setAuth } = useAuth();
   const { mutateAsync: initPreferences } = UsersService.useInitPreferences();
+  const logout = useLogout();
   useEffect(() => {
     // Hacky solution should change
     // If the user is active we redirect him to / which is ok
@@ -119,6 +121,7 @@ const SetupPreferencesPage = () => {
         formTitle="Setup your profile"
         initialValues={initialValues}
         onSubmit={handleSubmit}
+        handleBackStepZero={logout}
       >
         <FormikStep
           label="Description, Location, Phonenumber"

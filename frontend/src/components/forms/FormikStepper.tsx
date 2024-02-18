@@ -1,5 +1,5 @@
 import { Form, Formik, FormikConfig, FormikValues } from "formik";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { CircularProgress } from "@mui/material";
 
@@ -15,11 +15,13 @@ export function FormikStep({ children }: FormikStepProps) {
 interface FormikStepperProps<T> extends FormikConfig<T> {
   children: React.ReactNode;
   formTitle: string;
+  handleBackStepZero?: () => void;
 }
 
 export function FormikStepper<Values extends FormikValues>({
   children,
   formTitle,
+  handleBackStepZero,
   ...props
 }: FormikStepperProps<Values>) {
   const childrenArray = React.Children.toArray(
@@ -29,6 +31,22 @@ export function FormikStepper<Values extends FormikValues>({
   const currentChild = childrenArray[step];
 
   const isLastStep = () => step === childrenArray.length - 1;
+
+  const backButton = useMemo(() => {
+    if (step > 0)
+      return {
+        handleClick: () => setStep((s) => s - 1),
+        show: true,
+      };
+
+    if (step === 0 && handleBackStepZero)
+      return {
+        handleClick: handleBackStepZero,
+        show: true,
+      };
+
+    return { show: false, handleClick: () => {} };
+  }, [step, handleBackStepZero]);
 
   return (
     <Formik
@@ -50,12 +68,12 @@ export function FormikStepper<Values extends FormikValues>({
         >
           <div>
             <div className="mb-6 min-h-[3rem] flex items-center -ml-2">
-              {step > 0 && (
+              {backButton?.show && (
                 <button
                   type="button"
                   className="p-0.5 rounded-lg border border-red-500 font-semibold shadow-xl"
                   disabled={isSubmitting}
-                  onClick={() => setStep((s) => s - 1)}
+                  onClick={backButton.handleClick}
                 >
                   <KeyboardArrowLeftIcon fontSize="large"></KeyboardArrowLeftIcon>
                 </button>

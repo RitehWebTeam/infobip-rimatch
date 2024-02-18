@@ -20,7 +20,7 @@ const SimpleField = <T,>({
         {...props}
         className={
           props.className ??
-          "focus-visible:outline outline-2 outline-red-400 rounded-2xl px-5 py-3 bg-gray-100 border border-slate-300 dark:text-gray-900"
+          "w-full focus-visible:outline outline-2 outline-red-400 rounded-[10px] px-5 py-3 bg-gray-100 border border-slate-300 dark:border-gray-300 dark:text-gray-900 disabled:text-gray-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
         }
       >
         {children}
