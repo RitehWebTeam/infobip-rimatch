@@ -1,7 +1,10 @@
 import { useField } from "formik";
 import { FileUploader } from "react-drag-drop-files";
+import CloseIcon from "@mui/icons-material/Close";
+import { useMemo } from "react";
+import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 
-const fileTypes = ["JPG", "PNG", "JPEG"];
+const fileTypes = ["JPG", "JPEG"];
 
 interface DropzoneProps {
   name: string;
@@ -15,19 +18,28 @@ function Dropzone({ name }: DropzoneProps) {
     helpers.setTouched(true);
     helpers.setValue(file);
   };
-  return field.value ? (
-    <ImageDisplay file={field.value} clearFile={() => setValue(null)} />
-  ) : (
-    <div className="flex flex-col">
-      <FileUploader
-        multiple={false}
-        handleChange={setValue}
-        name="file"
-        types={fileTypes}
-        maxSize={2}
-        dropMessageStyle={{ opactity: 0 }}
-      />
-      {meta.touched && <div className="text-red-500 mt-5">{meta.error}</div>}
+  return (
+    <div className="w-full flex flex-col items-center justify-center ">
+      {field.value ? (
+        <ImageDisplay file={field.value} clearFile={() => setValue(null)} />
+      ) : (
+        <>
+          <FileUploader
+            classes="focus-within:outline focus-within:outline-2 outline-slate-500 outline-offset-4 rounded-[3.5rem]"
+            multiple={false}
+            handleChange={setValue}
+            name="file"
+            types={fileTypes}
+            maxSize={0.5}
+            dropMessageStyle={{ opactity: 0 }}
+          >
+            <ImageDisplay />
+          </FileUploader>
+          {meta.touched && (
+            <div className="text-sm pl-2 text-red-500 mt-5">{meta.error}</div>
+          )}
+        </>
+      )}
     </div>
   );
 }
@@ -35,38 +47,37 @@ function Dropzone({ name }: DropzoneProps) {
 export default Dropzone;
 
 interface ImageDisplayProps {
-  file: File;
-  clearFile: () => void;
+  file?: File;
+  clearFile?: () => void;
 }
 
 const ImageDisplay = ({ file, clearFile }: ImageDisplayProps) => {
-  const fileUrl = URL.createObjectURL(file);
+  const fileUrl = useMemo(
+    () => (file ? URL.createObjectURL(file) : ""),
+    [file]
+  );
   return (
     <div className="relative">
-      <div
-        onClick={clearFile}
-        className="absolute right-0 top-0 bg-gray-500 w-8 h-8 md:w-10 md:h-10 cursor-pointer hover:bg-red-600 rounded-full flex justify-center items-center"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="white"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="feather feather-x"
+      {fileUrl ? (
+        <button
+          type="button"
+          onClick={clearFile}
+          className="absolute right-0 -top-2 md:text-xl z-10 bg-gray-500 w-8 h-8 md:w-10 md:h-10 cursor-pointer hover:bg-red-600 rounded-full flex justify-center items-center"
         >
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </div>
+          <CloseIcon fontSize="inherit" />
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="absolute right-0 bottom-0 md:text-xl z-10 w-8 h-8 md:w-10 md:h-10 cursor-pointer bg-red-600 rounded-full flex justify-center items-center"
+        >
+          <PhotoCameraIcon fontSize="inherit" />
+        </button>
+      )}
       <img
         src={fileUrl}
-        alt="img"
-        className="w-36 h-36 md:h-64 md:w-64 rounded-full bg-cover"
+        alt="Upload your profile image here"
+        className="flex justify-center items-center text-center text-sm h-64 w-64 rounded-[3.5rem] bg-cover border-2 border-slate-800 shadow-lg cursor-pointer"
       />
     </div>
   );

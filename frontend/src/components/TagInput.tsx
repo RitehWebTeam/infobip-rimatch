@@ -44,14 +44,13 @@ const TagInput = ({ name, className: classStyle }: TagInputProps) => {
   return (
     <>
       <input
-        //onBlur={field.onBlur}
         id={name}
         className={classStyle}
         onChange={handleChange}
         value={currentInputValue}
         onKeyDown={handleKeyDown}
       />
-      <div className="flex flex-row flex-wrap gap-1">
+      <div className="flex flex-row flex-wrap gap-x-2 gap-y-3 mt-2">
         {field?.value.map((tag, index) => (
           <Tag key={index} index={index} value={tag} onRemove={removeTag} />
         ))}
