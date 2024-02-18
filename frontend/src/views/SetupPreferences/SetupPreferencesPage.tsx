@@ -116,6 +116,7 @@ const SetupPreferencesPage = () => {
   return (
     <PreferencesHeader>
       <FormikStepper<SetupPreferencesValues>
+        formTitle="Setup your profile"
         initialValues={initialValues}
         onSubmit={handleSubmit}
       >

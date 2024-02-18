@@ -4,7 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 interface TagInputProps {
   name: string;
-  className: string;
+  className?: string;
   placeholder?: string;
 }
 
@@ -49,6 +49,7 @@ const TagInput = ({
   return (
     <>
       <input
+        onBlur={field.onBlur}
         id={name}
         className={classStyle}
         onChange={handleChange}
@@ -77,7 +78,7 @@ const Tag = ({ value, index, onRemove }: TagProps) => {
       <span>{value}</span>
       <button
         type="button"
-        className="bg-red-400 rounded-full w-6 h-6 flex justify-center items-center"
+        className="bg-red-400 rounded-full w-6 h-6 flex justify-center items-center text-white"
         onClick={() => onRemove(index)}
       >
         <CloseIcon fontSize="inherit" />

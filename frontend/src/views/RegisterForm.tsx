@@ -92,7 +92,7 @@ const RegisterForm = () => {
         {({ isSubmitting }) => (
           <Form
             aria-autocomplete="none"
-            className="sm:w-2/3 w-full px-4 lg: mx-auto  rounded-xl py-10 shadow-black drop-shadow-2xl"
+            className="sm:w-2/3 w-full px-4 lg: mx-auto  rounded-xl shadow-black drop-shadow-2xl"
             autoComplete=""
           >
             {/*NAME*/}
@@ -257,10 +257,10 @@ const RegisterFormHeader = ({ children }: RegisterFormHeaderProps) => (
           <h1 className="text-white font-bold text-5xl mb-2 font-Pacifico">
             RiMatch
           </h1>
-          <h1 className="text-xl font-normal text-gray-200">
+          <h2 className="text-xl font-normal dark:text-gray-200">
             Register your new account
-          </h1>
-          <p className="text-sm mt-2 text-gray-200">
+          </h2>
+          <p className="text-sm mt-2 dark:text-gray-200 mb-6">
             Already have an account?{" "}
             <Link
               to="/login"

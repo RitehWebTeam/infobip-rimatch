@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Montserrat, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -19,22 +19,31 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #1e1e1e;
-  }
-}
 
 #red-to-black {
   position: relative;
   clip: path(polygon(0 0, 100% 0, 100% 100%, 0% 100%, 0% 50%, 50% 0%));
   background: radial-gradient(
     farthest-corner at 40px 100px,
-    rgba(223, 68, 68, 0.616) 10%,
-    rgb(41, 32, 32) 40%
+    #b9b9b9 10%,
+    #ee5253 90%
   );
-  background-color: #1e1e1e;
+  background-color: #b9b9b9;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #1e1e1e;
+  }
+  #red-to-black {
+    background: radial-gradient(
+      farthest-corner at 40px 100px,
+      rgba(223, 68, 68, 0.616) 10%,
+      rgb(41, 32, 32) 40%
+    );
+    background-color: #1e1e1e;
+  }
 }
 
 html,

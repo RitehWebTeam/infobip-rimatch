@@ -14,10 +14,12 @@ export function FormikStep({ children }: FormikStepProps) {
 
 interface FormikStepperProps<T> extends FormikConfig<T> {
   children: React.ReactNode;
+  formTitle: string;
 }
 
 export function FormikStepper<Values extends FormikValues>({
   children,
+  formTitle,
   ...props
 }: FormikStepperProps<Values>) {
   const childrenArray = React.Children.toArray(
@@ -59,12 +61,10 @@ export function FormikStepper<Values extends FormikValues>({
                 </button>
               )}
             </div>
-            <div className="text-white text-3xl sm:text-4xl font-bold mb-8">
-              Setup your profile
-            </div>
+            <h1 className="text-3xl sm:text-4xl font-bold mb-8">{formTitle}</h1>
             <div className="w-full h-4 bg-red-50 mt-3 mb-6 rounded-2xl">
               <div
-                className="h-full bg-red-500 rounded-2xl transition-all duration-200 ease-in-out"
+                className="h-full bg-red-500 rounded-2xl transition-all duration-200 ease-in-out "
                 style={{
                   width: `${((step + 1) / childrenArray.length) * 100}%`,
                 }}

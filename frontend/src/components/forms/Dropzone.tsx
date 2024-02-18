@@ -62,14 +62,14 @@ const ImageDisplay = ({ file, clearFile }: ImageDisplayProps) => {
         <button
           type="button"
           onClick={clearFile}
-          className="absolute right-0 -top-2 md:text-xl z-10 bg-gray-500 w-8 h-8 md:w-10 md:h-10 cursor-pointer hover:bg-red-600 rounded-full flex justify-center items-center"
+          className="absolute right-0 -top-2 md:text-xl z-10 bg-gray-500 w-8 h-8 md:w-10 md:h-10 cursor-pointer hover:bg-red-600 rounded-full flex justify-center items-center text-white"
         >
           <CloseIcon fontSize="inherit" />
         </button>
       ) : (
         <button
           type="button"
-          className="absolute right-0 bottom-0 md:text-xl z-10 w-8 h-8 md:w-10 md:h-10 cursor-pointer bg-red-600 rounded-full flex justify-center items-center"
+          className="absolute right-0 bottom-0 md:text-xl z-10 w-8 h-8 md:w-10 md:h-10 cursor-pointer bg-red-600 rounded-full flex justify-center items-center text-white"
         >
           <PhotoCameraIcon fontSize="inherit" />
         </button>

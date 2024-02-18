@@ -65,11 +65,11 @@ const LoginForm = () => {
             }}
           >
             {({ isSubmitting }) => (
-              <Form className=" sm:w-1/2 md:w-1/3 lg:w-1/4   rounded-xl shadow-black drop-shadow-2xl">
-                <h1 className="text-white-800 text-center font-bold text-3xl  mb-2 font-Pacifico">
+              <Form className=" sm:w-1/2 md:w-1/3 lg:w-1/4 rounded-xl shadow-black drop-shadow-2xl">
+                <h1 className="dark:text-white-800 text-center font-bold text-5xl xl:text-7xl mb-2 font-Pacifico">
                   RiMatch
                 </h1>
-                <p className="text-sm sm:text-base md:text-lg font-normal text-center text-white-600 mb-7">
+                <p className="text-sm sm:text-base md:text-lg text-center text-white-600 mb-7">
                   Welcome Back
                 </p>
                 <div className="flex items-center bg-white border-2 py-2 sm:py-3 px-2 sm:px-4 rounded-2xl mt-4 sm:mt-6">
