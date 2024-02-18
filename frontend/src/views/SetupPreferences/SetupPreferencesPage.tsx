@@ -1,4 +1,4 @@
-import { FormikStepper } from "@/components/forms/FormikStepper";
+import { FormikStep, FormikStepper } from "@/components/forms/FormikStepper";
 import Step1Preferences from "./steps/Step1Preferences";
 import Step2Preferences from "./steps/Step2Preferences";
 import Step3Preferences from "./steps/Step3Preferences";
@@ -8,6 +8,7 @@ import { UsersService } from "@/api/users";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import { useEffect } from "react";
+import * as Yup from "yup";
 
 const initialValues = {
   description: "",
@@ -22,6 +23,46 @@ const initialValues = {
     partnerGender: "",
   },
 };
+
+const Step1ValidationSchema = Yup.object({
+  phoneNumber: Yup.number()
+    .required("Required")
+    .min(111111111, "Please input a valid phone number"),
+  location: Yup.string()
+    .required("Required")
+    .min(3, "Location name must be longer than 2 characters"),
+  description: Yup.string().required("Required"),
+});
+
+const Step2ValidationSchema = Yup.object({
+  preferences: Yup.object({
+    ageGroupMin: Yup.number()
+      .required("Required")
+      .max(99, "Age must be between 18 and 99")
+      .min(18, "Age must be between 18 and 99"),
+    ageGroupMax: Yup.number()
+      .when("ageGroupMin", ([ageGroupMin], schema) =>
+        ageGroupMin
+          ? schema.min(ageGroupMin, "Max age must be greater than min age")
+          : schema
+      )
+      .required("Required")
+      .max(99, "Age must be between 18 and 99")
+      .min(18, "Age must be between 18 and 99"),
+    partnerGender: Yup.string().required("Required"),
+  }),
+});
+
+const Step3ValidationSchema = Yup.object({
+  favouriteSong: Yup.string().required("Required"),
+  tags: Yup.array()
+    .of(Yup.string().required("This field is required"))
+    .min(1, "At least one tag is required"),
+});
+
+const Step4ValidationSchema = Yup.object({
+  profileImageUrl: Yup.string().required("Required"),
+});
 
 type SetupPreferencesValues = typeof initialValues & {
   profileImageUrl: File | null;
@@ -78,10 +119,29 @@ const SetupPreferencesPage = () => {
         initialValues={initialValues}
         onSubmit={handleSubmit}
       >
-        <Step1Preferences />
-        <Step2Preferences />
-        <Step3Preferences />
-        <Step4Preferences />
+        <FormikStep
+          label="Description, Location, Phonenumber"
+          validationSchema={Step1ValidationSchema}
+        >
+          <Step1Preferences />
+        </FormikStep>
+
+        <FormikStep
+          label="Preferences"
+          validationSchema={Step2ValidationSchema}
+        >
+          <Step2Preferences />
+        </FormikStep>
+
+        <FormikStep label="Tags, Song" validationSchema={Step3ValidationSchema}>
+          <Step3Preferences />
+        </FormikStep>
+        <FormikStep
+          label="Profile image"
+          validationSchema={Step4ValidationSchema}
+        >
+          <Step4Preferences />
+        </FormikStep>
       </FormikStepper>
     </PreferencesHeader>
   );
