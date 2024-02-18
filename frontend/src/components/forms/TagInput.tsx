@@ -1,7 +1,7 @@
 import { useField } from "formik";
 import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import * as cx from "classnames";
+import cx from "classnames";
 interface TagInputProps {
   name: string;
   className?: string;
@@ -82,7 +82,7 @@ interface TagProps {
   onRemove: (index: number) => void;
 }
 
-const Tag = ({ value, index, onRemove, disabled }: TagProps) => {
+const Tag = ({ value, index, onRemove, disabled = false }: TagProps) => {
   return (
     <div className="text-md inline-flex items-center gap-2 py-0.5 pl-2 pr-0.5 rounded-2xl border border-red-500">
       <span className={cx({ "opacity-65": disabled })}>{value}</span>
