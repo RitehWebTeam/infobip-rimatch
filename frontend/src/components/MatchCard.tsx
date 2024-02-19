@@ -3,7 +3,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { UsersService } from "@/api/users";
 import cx from "classnames";
 import { useEffect, useMemo, useState } from "react";
-import { ProfileCard } from "./ProfileCard";
+import ProfileCard from "./ProfileCard";
 import { useQueryClient } from "@tanstack/react-query";
 import { CircularProgress } from "@mui/material";
 

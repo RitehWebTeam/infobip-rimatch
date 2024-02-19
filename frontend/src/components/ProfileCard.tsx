@@ -1,68 +1,108 @@
-import React from "react";
-import cx from "classnames";
+import useCurrentUserContext from "@/hooks/useCurrentUser";
 import { ProjectedUser } from "@/types/User";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
+import { useMemo } from "react";
+import { Spotify } from "react-spotify-embed";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import cx from "classnames";
 
-type ProfileCardProps = {
+interface ProfileCardProps {
   user: ProjectedUser;
   onClose: () => void;
-};
+}
 
-export const ProfileCard: React.FC<ProfileCardProps> = ({ user, onClose }) => {
+interface MatchedTag {
+  value: string;
+  matched: boolean;
+}
+
+const ProfileCard = ({ user, onClose }: ProfileCardProps) => {
+  const loggedInUser = useCurrentUserContext();
+  const isSpotifySong = useMemo(
+    () => user.favouriteSong.search(/open.spotify.com/gi) !== -1,
+    [user.favouriteSong]
+  );
+
+  const matchedTags = useMemo<MatchedTag[]>(() => {
+    const matchTags = user.tags.map((tag) => ({
+      value: tag,
+      matched: loggedInUser.tags.includes(tag),
+    }));
+    return matchTags.sort((a) => (a.matched ? -1 : 1));
+  }, [user.tags, loggedInUser.tags]);
   return (
-    <div className="flex flex-col items-center flex-grow sm:pb-8">
-      <div className="flex flex-col items-center rounded-[25px] border-[1px] border-black-200 flex-grow sm:h-[700px] max-h-[50rem] w-full sm:w-[550px] p-4 dark:bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black">
-        <div className="flex w-full justify-center rounded-xl mt-4 mb-6">
-          <div
-            className={cx(
-              "flex h-[215px] w-[215px] items-center justify-center rounded-full",
-              {
-                "bg-pink-400": user.gender === "F",
-                "bg-blue-400": user.gender === "M",
-              }
-            )}
+    <div className="flex w-full flex-grow justify-center md:pb-8">
+      <div className="bg-white  dark:bg-[#343030] flex w-full sm:w-[27rem] flex-col h-fit items-center sm:rounded-lg sm:shadow-lg shadow-black border dark:border-[#343030]">
+        <div className="w-full sm:rounded-t-lg bg-[#f3f4f6] dark:bg-[#1e1e1e] flex-grow relative">
+          <button
+            type="button"
+            className="p-1 top-8 left-8 sm:top-4 sm:left-4 absolute rounded-lg border border-[#E8E6EA] font-semibold bg-white/20"
+            onClick={onClose}
           >
-            <img
-              className="h-52 w-52 rounded-full"
-              src={user.profileImageUrl || "/Default_pfp.svg"}
-              alt=""
-            />
-          </div>
+            <KeyboardArrowLeftIcon fontSize="large" />
+          </button>
+          <img
+            srcSet={user.profileImageUrl || "/Default_pfp.svg"}
+            className="w-full object-cover md:object-contain max-h-[33rem] md:max-h-[26rem] sm:rounded-t-lg"
+            loading="lazy"
+          />
         </div>
-        <div className="flex flex-col items-center w-full justify-around flex-grow min-h-fit">
-          <div className="w-full flex flex-col justify-center items-center">
-            <h4 className="text-4xl font-bold text-navy-700 dark:text-white text-center">{`${user.firstName} ${user.lastName}, ${user.age} ${user.gender}`}</h4>
-            <div className="mt-1 pt-4 border-t border-gray-500 w-full flex justify-center md:w-3/4">
-              <p className="text-xl dark:text-gray-200">
-                Lives in: {user.location}
+
+        <div className="flex flex-col gap-8 bg-white dark:bg-[#343030] h-full w-full mt-[-2rem] rounded-t-[2rem] rounded-lg px-12 pt-10 pb-10 z-10">
+          <h2 className="text-3xl font-semibold dark:text-red-500">
+            {user.firstName} {user.lastName}, {user.age}
+          </h2>
+          <section>
+            <h3 className="font-semibold mb-1">Location</h3>
+            <p className="font-light dark:text-gray-300">{user.location}</p>
+          </section>
+          <section>
+            <h3 className="font-semibold mb-1">About</h3>
+            <p className="font-light dark:text-gray-300">{user.description}</p>
+          </section>
+
+          <section>
+            <h3 className="font-semibold mb-2">Tags</h3>
+            <div className="font-light dark:text-gray-300 flex flex-wrap w-full gap-4">
+              {matchedTags.map((tag, index) => (
+                <Tag key={index} tag={tag} />
+              ))}
+            </div>
+          </section>
+          <section>
+            <h3 className="font-semibold mb-1">Favorite song</h3>
+            {isSpotifySong ? (
+              <Spotify wide link={user.favouriteSong} />
+            ) : (
+              <p className="font-light dark:text-gray-300">
+                {user.favouriteSong}
               </p>
-            </div>
-            <p className="text-3xl font-bold mt-4">
-              About {`${user.firstName}`}
-            </p>
-            <div className="flex justify-center items-center mt-1 text-gray-400">
-              <p className="flex align-middle text-center text-lg sm:text-xl text-gray-300 ">
-                {user.description}
-              </p>
-            </div>
-            <div className="flex flex-row gap-2 justify-center items-center">
-              <p className=" text-lg text-gray-300">Favorite song:</p>
-              <p className=" text-lg text-gray-300">{user.favouriteSong}</p>
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <div className="w-full flex flex-col items-center">
-              <p className="mt-4 border-t border-gray-500  text-center">TAGS</p>
-              <div className="mt-1">{user.tags.map((tag) => `#${tag}`)}</div>
-            </div>
-            <button
-              className="mb-7 text-gray-500 hover:text-gray-300"
-              onClick={onClose}
-            >
-              Close Profile
-            </button>
-          </div>
+            )}
+          </section>
         </div>
       </div>
     </div>
   );
 };
+
+interface TagProps {
+  tag: MatchedTag;
+}
+
+const Tag = ({ tag }: TagProps) => {
+  const tagClasses = cx(
+    "font-normal flex items-center gap-0.5 py-1 px-4 justify-center rounded-md border min-w-[4rem]",
+    {
+      "border-gray-400/40": !tag.matched,
+      "border-red-500 text-red-500": tag.matched,
+    }
+  );
+  return (
+    <div className={tagClasses}>
+      {tag.matched && <DoneAllIcon fontSize="inherit" />}
+      {tag.value}
+    </div>
+  );
+};
+
+export default ProfileCard;
