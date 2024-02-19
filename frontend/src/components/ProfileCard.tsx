@@ -5,10 +5,12 @@ import { useMemo } from "react";
 import { Spotify } from "react-spotify-embed";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import cx from "classnames";
+import TelegramIcon from "@mui/icons-material/Telegram";
 
 interface ProfileCardProps {
   user: ProjectedUser;
   onClose: () => void;
+  showChatIcon?: boolean;
 }
 
 interface MatchedTag {
@@ -16,12 +18,16 @@ interface MatchedTag {
   matched: boolean;
 }
 
-const ProfileCard = ({ user, onClose }: ProfileCardProps) => {
+const ProfileCard = ({
+  user,
+  onClose,
+  showChatIcon = false,
+}: ProfileCardProps) => {
   const loggedInUser = useCurrentUserContext();
-  const isSpotifySong = useMemo(
-    () => user.favouriteSong.search(/open.spotify.com/gi) !== -1,
-    [user.favouriteSong]
-  );
+  const isSpotifySong = useMemo(() => {
+    if (!user.favouriteSong) return false;
+    return user.favouriteSong?.search(/open.spotify.com/gi) !== -1;
+  }, [user.favouriteSong]);
 
   const matchedTags = useMemo<MatchedTag[]>(() => {
     const matchTags = user.tags.map((tag) => ({
@@ -31,55 +37,58 @@ const ProfileCard = ({ user, onClose }: ProfileCardProps) => {
     return matchTags.sort((a) => (a.matched ? -1 : 1));
   }, [user.tags, loggedInUser.tags]);
   return (
-    <div className="flex w-full flex-grow justify-center md:pb-8">
-      <div className="bg-white  dark:bg-[#343030] flex w-full sm:w-[27rem] flex-col h-fit items-center sm:rounded-lg sm:shadow-lg shadow-black border dark:border-[#343030]">
-        <div className="w-full sm:rounded-t-lg bg-[#f3f4f6] dark:bg-[#1e1e1e] flex-grow relative">
-          <button
-            type="button"
-            className="p-1 top-8 left-8 sm:top-4 sm:left-4 absolute rounded-lg border border-[#E8E6EA] font-semibold bg-white/20"
-            onClick={onClose}
-          >
-            <KeyboardArrowLeftIcon fontSize="large" />
-          </button>
-          <img
-            srcSet={user.profileImageUrl || "/Default_pfp.svg"}
-            className="w-full object-cover md:object-contain max-h-[33rem] md:max-h-[26rem] sm:rounded-t-lg"
-            loading="lazy"
-          />
-        </div>
+    <div className="bg-white dark:bg-[#343030] flex w-full sm:w-[27rem] flex-col h-fit items-center rounded-lg shadow-lg shadow-black border dark:border-[#343030]">
+      <div className="flex w-full p-2">
+        <button type="button" className="font-semibold " onClick={onClose}>
+          <KeyboardArrowLeftIcon fontSize="large" />
+        </button>
+      </div>
+      <div className="w-full sm:rounded-t-lg bg-[#f3f4f6] dark:bg-[#1e1e1e] flex-grow">
+        <img
+          srcSet={user.profileImageUrl || "/Default_pfp.svg"}
+          className="w-full object-cover md:object-contain max-h-[33rem] md:max-h-[26rem] sm:rounded-t-lg"
+          loading="lazy"
+        />
+      </div>
 
-        <div className="flex flex-col gap-8 bg-white dark:bg-[#343030] h-full w-full mt-[-2rem] rounded-t-[2rem] rounded-lg px-12 pt-10 pb-10 z-10">
-          <h2 className="text-3xl font-semibold dark:text-red-500">
+      <div className="flex flex-col gap-8 bg-white dark:bg-[#343030] h-full w-full mt-[-2rem] rounded-t-[2rem] rounded-lg px-12 pt-10 pb-10 z-10">
+        <div className="flex w-full justify-between">
+          <h2 className="text-2xl font-semibold dark:text-red-500">
             {user.firstName} {user.lastName}, {user.age}
           </h2>
-          <section>
-            <h3 className="font-semibold mb-1">Location</h3>
-            <p className="font-light dark:text-gray-300">{user.location}</p>
-          </section>
-          <section>
-            <h3 className="font-semibold mb-1">About</h3>
-            <p className="font-light dark:text-gray-300">{user.description}</p>
-          </section>
-
-          <section>
-            <h3 className="font-semibold mb-2">Tags</h3>
-            <div className="font-light dark:text-gray-300 flex flex-wrap w-full gap-4">
-              {matchedTags.map((tag, index) => (
-                <Tag key={index} tag={tag} />
-              ))}
-            </div>
-          </section>
-          <section>
-            <h3 className="font-semibold mb-1">Favorite song</h3>
-            {isSpotifySong ? (
-              <Spotify wide link={user.favouriteSong} />
-            ) : (
-              <p className="font-light dark:text-gray-300">
-                {user.favouriteSong}
-              </p>
-            )}
-          </section>
+          {showChatIcon && (
+            <button className="flex -mr-3 justify-center text-xl items-center px-2 py-2 rounded-lg border border-[#E8E6EA] dark:border-[#494343] font-semibold  text-red-500">
+              <TelegramIcon fontSize="inherit" />
+            </button>
+          )}
         </div>
+        <section>
+          <h3 className="font-semibold mb-1">Location</h3>
+          <p className="font-light dark:text-gray-300">{user.location}</p>
+        </section>
+        <section>
+          <h3 className="font-semibold mb-1">About</h3>
+          <p className="font-light dark:text-gray-300">{user.description}</p>
+        </section>
+
+        <section>
+          <h3 className="font-semibold mb-2">Tags</h3>
+          <div className="font-light dark:text-gray-300 flex flex-wrap w-full gap-4">
+            {matchedTags.map((tag, index) => (
+              <Tag key={index} tag={tag} />
+            ))}
+          </div>
+        </section>
+        <section>
+          <h3 className="font-semibold mb-1">Favorite song</h3>
+          {isSpotifySong ? (
+            <Spotify wide link={user.favouriteSong} />
+          ) : (
+            <p className="font-light dark:text-gray-300">
+              {user.favouriteSong}
+            </p>
+          )}
+        </section>
       </div>
     </div>
   );

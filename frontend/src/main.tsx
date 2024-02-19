@@ -10,7 +10,7 @@ import ProtectedRoutes from "./routes/ProtectedRoutes.tsx";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Root from "./views/Root.tsx";
-import MatchesPage from "./views/MatchesPage.tsx";
+import MatchesPage from "./views/Matches/MatchesPage.tsx";
 import UserPageLayout from "./views/UserPageLayout.tsx";
 import UserProfilePage from "./views/UserProfileForm.tsx";
 import UserPreferenceForm from "./views/UserPreferenceForm.tsx";
@@ -18,6 +18,7 @@ import ChatPage from "./views/ChatPage.tsx";
 import React from "react";
 import SetupPreferencesPage from "./views/SetupPreferences/SetupPreferencesPage.tsx";
 import ListOfMatchesForChatPage from "./views/ListOfMatchesForChatPage.tsx";
+import ProfileDetailed from "./views/Matches/ProfileDetailed.tsx";
 
 const router = createBrowserRouter([
   {
@@ -31,7 +32,11 @@ const router = createBrowserRouter([
         element: <MatchesPage />,
         errorElement: <ErrorPage />,
       },
-
+      {
+        path: "match-profile",
+        element: <ProfileDetailed />,
+        errorElement: <ErrorPage />,
+      },
       {
         path: "user",
         element: <UserPageLayout />,

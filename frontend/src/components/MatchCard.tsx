@@ -162,7 +162,11 @@ const MatchCard = () => {
           </div>
         </MatchCardContainer>
       )}
-      {isProfileOpen && <ProfileCard user={user} onClose={closeProfile} />}
+      {isProfileOpen && (
+        <div className="flex w-full flex-grow justify-center md:pb-8">
+          <ProfileCard user={user} onClose={closeProfile} />
+        </div>
+      )}
     </>
   );
 };
