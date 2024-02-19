@@ -16,7 +16,7 @@ const Navbar: React.FunctionComponent = () => {
   const userInitials = user.firstName[0] + user.lastName[0];
 
   return (
-    <nav className="flex items-center relative justify-between  px-5 py-6 min-w-[20rem] w-full border-b border-gray-300 dark:border-gray-700 sm:mb-8">
+    <nav className="flex items-center justify-between sticky top-0 Z-10 min-w-[20rem]   px-5 py-6 w-full border-b border-gray-300 dark:border-gray-700  sm:mb-8d dark:bg-[#1e1e1e] bg-white">
       <div>
         <RiMatchLogo />
       </div>

@@ -12,8 +12,10 @@ const ChatMessage = ({ text, username }: ChatMessageProps): JSX.Element => {
           <img src="./User_pfp.svg" />
         </div>
         <div className="flex flex-col ml-2">
-          <h3 className="text-sm font-medium">{username}</h3>
-          <p className="text-sm bg-[#3f3d3d] p-3 rounded-xl">{text}</p>
+          <h3 className="text-sm font-medium ">{username}</h3>
+          <p className="text-sm bg-[#3f3d3d] dark:text-white text-white p-3 rounded-xl">
+            {text}
+          </p>
         </div>
       </div>
     </div>

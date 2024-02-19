@@ -17,6 +17,7 @@ import UserPreferenceForm from "./views/UserPreferenceForm.tsx";
 import ChatPage from "./views/ChatPage.tsx";
 import React from "react";
 import SetupPreferencesPage from "./views/SetupPreferences/SetupPreferencesPage.tsx";
+import ListOfMatchesForChatPage from "./views/ListOfMatchesForChatPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,11 @@ const router = createBrowserRouter([
       {
         path: "chat",
         element: <ChatPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "listOfMatches",
+        element: <ListOfMatchesForChatPage />,
         errorElement: <ErrorPage />,
       },
     ],
