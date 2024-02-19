@@ -39,7 +39,9 @@ const MatchesPage = () => {
     <MatchHeader>
       <div className="grid grid-cols-2 sm:grid-cols-3 w-full gap-7 mt-3 lg:max-h-[33rem] lg:overflow-y-auto">
         {matches.map((user) => (
-          <MatchedUser key={user.id} user={user} />
+          <Link key={user.id} to="/match-profile" state={{ user }}>
+            <MatchedUser user={user} />
+          </Link>
         ))}
       </div>
     </MatchHeader>
