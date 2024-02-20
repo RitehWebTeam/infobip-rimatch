@@ -31,12 +31,11 @@
   background-color: #b9b9b9;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
+  :root.dark {
     color: rgba(255, 255, 255, 0.87);
     background-color: #1e1e1e;
   }
-  #red-to-black {
+  .dark #red-to-black {
     background: radial-gradient(
       farthest-corner at 40px 100px,
       rgba(223, 68, 68, 0.616) 10%,
@@ -44,7 +43,6 @@
     );
     background-color: #1e1e1e;
   }
-}
 
 html,
 body,

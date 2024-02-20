@@ -6,7 +6,6 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as Avatar from "@radix-ui/react-avatar";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 const Navbar: React.FunctionComponent = () => {
@@ -63,9 +62,9 @@ const Navbar: React.FunctionComponent = () => {
                 className="px-3 py-3 text-sm font-medium  hover:bg-slate-200  dark:hover:bg-slate-600 focus-visible:outline-1 focus-visible:outline focus-visible:outline-slate-400 rounded-md"
                 asChild
               >
-                <Link to="/user/profile" className="flex items-center gap-4">
+                <Link to="/settings" className="flex items-center gap-4">
                   <SettingsOutlinedIcon />
-                  <span>Profile</span>
+                  <span>Settings</span>
                 </Link>
               </DropdownMenu.Item>
 
@@ -76,18 +75,6 @@ const Navbar: React.FunctionComponent = () => {
                 <Link to="/matches" className="flex items-center gap-4">
                   <PeopleAltIcon />
                   <span>My Matches</span>
-                </Link>
-              </DropdownMenu.Item>
-              <DropdownMenu.Item
-                className="px-3  py-3  text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-600 focus-visible:outline-1 focus-visible:outline focus-visible:outline-slate-400 rounded-md"
-                asChild
-              >
-                <Link
-                  to="/user/preferences"
-                  className="flex items-center gap-4"
-                >
-                  <FavoriteBorderIcon />
-                  <span> Preferences </span>
                 </Link>
               </DropdownMenu.Item>
               <DropdownMenu.Item

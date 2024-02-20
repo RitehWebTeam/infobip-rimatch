@@ -35,5 +35,7 @@ public class UserUpdateDTO {
 
     private String favouriteSong;
 
+    private String profileImageUrl;
+
     private List<String> tags = new ArrayList<>();
 }

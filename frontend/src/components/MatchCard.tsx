@@ -51,7 +51,7 @@ const MatchCard = () => {
         queryKey: ["UsersService.getPotentialUsers"],
       });
     };
-  }, []);
+  }, [queryClient]);
 
   const user = useMemo(() => {
     if (!result.data) return undefined;
