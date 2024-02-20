@@ -63,9 +63,9 @@ const Navbar: React.FunctionComponent = () => {
                 className="px-3 py-3 text-sm font-medium  hover:bg-slate-200  dark:hover:bg-slate-600 focus-visible:outline-1 focus-visible:outline focus-visible:outline-slate-400 rounded-md"
                 asChild
               >
-                <Link to="/user/profile" className="flex items-center gap-4">
+                <Link to="/settings" className="flex items-center gap-4">
                   <SettingsOutlinedIcon />
-                  <span>Profile</span>
+                  <span>Settings</span>
                 </Link>
               </DropdownMenu.Item>
 
