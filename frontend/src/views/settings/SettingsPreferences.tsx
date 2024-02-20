@@ -3,12 +3,9 @@ import useCurrentUserContext from "@/hooks/useCurrentUser";
 import { Form, Formik, FormikHelpers } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
-import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { UsersService } from "@/api/users";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
-import { CircularProgress } from "@mui/material";
 import SimpleField from "@/components/forms/SimpleField";
+import SaveCancelButtons from "@/components/forms/SaveCancelButtons";
 
 const updatePreferenceSchema = Yup.object({
   preferences: Yup.object({
@@ -42,8 +39,8 @@ const SettingsPreferences = () => {
     },
   };
 
-  type UpdatePreferenceValues = typeof initialValues;
-  type ResetFormFunction = FormikHelpers<UpdatePreferenceValues>["resetForm"];
+  type UserPrefrenceUpdateData = typeof initialValues;
+  type ResetFormFunction = FormikHelpers<UserPrefrenceUpdateData>["resetForm"];
 
   const handleCancleClick = (resetForm: ResetFormFunction) => {
     setEditMode(false);
@@ -51,8 +48,8 @@ const SettingsPreferences = () => {
   };
 
   const handleSaveClick = async (
-    values: UpdatePreferenceValues,
-    helpers: FormikHelpers<UpdatePreferenceValues>
+    values: UserPrefrenceUpdateData,
+    helpers: FormikHelpers<UserPrefrenceUpdateData>
   ) => {
     await updateUser(values);
     setEditMode(false);
@@ -66,41 +63,18 @@ const SettingsPreferences = () => {
         validationSchema={updatePreferenceSchema}
         onSubmit={handleSaveClick}
       >
-        {({ isSubmitting, resetForm }) => (
+        {({ isSubmitting, resetForm, submitForm }) => (
           <>
             <SettingsCard.Header title="Preferences">
-              <div className="flex gap-6">
-                {isSubmitting && editMode ? (
-                  <CircularProgress size="1.5rem" color="inherit" />
-                ) : !editMode ? (
-                  <button
-                    type="button"
-                    className="cursor-pointer hover:text-orange-400"
-                    onClick={() => setEditMode(true)}
-                  >
-                    <ModeEditIcon color="inherit" fontSize="inherit" />
-                  </button>
-                ) : (
-                  <>
-                    <button type="submit">
-                      <CheckIcon
-                        color="inherit"
-                        fontSize="inherit"
-                        className="hover:text-green-500"
-                      />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleCancleClick(resetForm)}
-                      className="hover:text-red-700"
-                    >
-                      <CloseIcon color="inherit" fontSize="inherit" />
-                    </button>
-                  </>
-                )}
-              </div>
+              <SaveCancelButtons
+                editMode={editMode}
+                isSubmitting={isSubmitting}
+                handleCancelClick={() => handleCancleClick(resetForm)}
+                handleEditClick={() => setEditMode(true)}
+                handleSubmitClick={submitForm}
+              />
             </SettingsCard.Header>
-            <Form className="flex flex-col px-4 w-full">
+            <Form className="flex flex-col px-4 w-full" autoComplete="off">
               <div className="flex flex-col gap-2 mb-3 w-full">
                 <SimpleField
                   label="Min Age"

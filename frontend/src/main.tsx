@@ -11,9 +11,6 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Root from "./views/Root.tsx";
 import MatchesPage from "./views/Matches/MatchesPage.tsx";
-import UserPageLayout from "./views/UserPageLayout.tsx";
-import UserProfilePage from "./views/UserProfileForm.tsx";
-import UserPreferenceForm from "./views/UserPreferenceForm.tsx";
 import ChatPage from "./views/ChatPage.tsx";
 import React from "react";
 import SetupPreferencesPage from "./views/SetupPreferences/SetupPreferencesPage.tsx";
@@ -22,6 +19,7 @@ import ProfileDetailed from "./views/Matches/ProfileDetailed.tsx";
 import SettingsList from "./views/settings/SettingsList.tsx";
 import SettingsPreferences from "./views/settings/SettingsPreferences.tsx";
 import SettingsLayout from "./views/settings/SettingsLayout.tsx";
+import SettingsProfile from "./views/settings/SettingsProfile.tsx";
 
 const router = createBrowserRouter([
   {
@@ -42,21 +40,13 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "user",
-        element: <UserPageLayout />,
-        errorElement: <ErrorPage />,
-        children: [
-          { path: "profile", element: <UserProfilePage /> },
-          { path: "preferences", element: <UserPreferenceForm /> },
-        ],
-      },
-      {
         path: "settings",
         errorElement: <ErrorPage />,
         element: <SettingsLayout />,
         children: [
           { index: true, element: <SettingsList /> },
           { path: "preferences", element: <SettingsPreferences /> },
+          { path: "profile", element: <SettingsProfile /> },
         ],
       },
       {

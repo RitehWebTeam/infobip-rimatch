@@ -24,7 +24,7 @@ const SettingsList = () => {
         >
           <button type="button" className="flex items-center gap-4">
             <AccountBoxIcon />
-            <span> Profile </span>
+            <span> User Settings </span>
           </button>
         </Link>
         <Link
