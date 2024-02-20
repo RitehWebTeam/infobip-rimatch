@@ -9,7 +9,7 @@ const ProfileDetailed = () => {
 
   const user = state?.user as ProjectedUser;
   const goBackToMatches = () => {
-    navigate("/matches");
+    navigate("../");
   };
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const ProfileDetailed = () => {
   }
 
   return (
-    <div className="flex w-full flex-grow justify-center md:pb-8">
+    <div className="flex w-full justify-center flex-grow md:pb-8">
       <ProfileCard user={user} onClose={goBackToMatches} showChatIcon />
     </div>
   );

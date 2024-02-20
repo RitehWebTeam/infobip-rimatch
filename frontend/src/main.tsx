@@ -29,13 +29,14 @@ const router = createBrowserRouter([
       { index: true, element: <MatchCard /> },
       {
         path: "matches",
-        element: <MatchesPage />,
         errorElement: <ErrorPage />,
-      },
-      {
-        path: "match-profile",
-        element: <ProfileDetailed />,
-        errorElement: <ErrorPage />,
+        children: [
+          { index: true, element: <MatchesPage /> },
+          {
+            path: "profile",
+            element: <ProfileDetailed />,
+          },
+        ],
       },
       {
         path: "user",
