@@ -21,6 +21,8 @@ import SettingsPreferences from "./views/settings/SettingsPreferences.tsx";
 import SettingsLayout from "./views/settings/SettingsLayout.tsx";
 import SettingsProfile from "./views/settings/SettingsProfile.tsx";
 import SettingsProfilePicture from "./views/settings/SettingsProfilePicture.tsx";
+import { ThemeProvider } from "./context/ThemeProvider.tsx";
+import SettingsTheme from "./views/settings/SettingsTheme.tsx";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +51,7 @@ const router = createBrowserRouter([
           { path: "preferences", element: <SettingsPreferences /> },
           { path: "profile", element: <SettingsProfile /> },
           { path: "picture", element: <SettingsProfilePicture /> },
+          { path: "theme", element: <SettingsTheme /> },
         ],
       },
       {
@@ -86,7 +89,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <RouterProvider router={router} />
+        <ThemeProvider>
+          <RouterProvider router={router} />
+        </ThemeProvider>
       </AuthProvider>
       <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
     </QueryClientProvider>
