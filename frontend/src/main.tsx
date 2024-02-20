@@ -19,8 +19,9 @@ import React from "react";
 import SetupPreferencesPage from "./views/SetupPreferences/SetupPreferencesPage.tsx";
 import ListOfMatchesForChatPage from "./views/ListOfMatchesForChatPage.tsx";
 import ProfileDetailed from "./views/Matches/ProfileDetailed.tsx";
-import SettingsLayout from "./views/settings/SettingsLayout.tsx";
 import SettingsList from "./views/settings/SettingsList.tsx";
+import SettingsPreferences from "./views/settings/SettingsPreferences.tsx";
+import SettingsLayout from "./views/settings/SettingsLayout.tsx";
 
 const router = createBrowserRouter([
   {
@@ -51,9 +52,12 @@ const router = createBrowserRouter([
       },
       {
         path: "settings",
-        element: <SettingsLayout />,
         errorElement: <ErrorPage />,
-        children: [{ index: true, element: <SettingsList /> }],
+        element: <SettingsLayout />,
+        children: [
+          { index: true, element: <SettingsList /> },
+          { path: "preferences", element: <SettingsPreferences /> },
+        ],
       },
       {
         path: "chat",

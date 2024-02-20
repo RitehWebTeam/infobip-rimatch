@@ -83,7 +83,7 @@ const Navbar: React.FunctionComponent = () => {
                 asChild
               >
                 <Link
-                  to="/user/preferences"
+                  to="/settings/preferences"
                   className="flex items-center gap-4"
                 >
                   <FavoriteBorderIcon />
