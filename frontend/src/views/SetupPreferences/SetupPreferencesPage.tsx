@@ -10,6 +10,7 @@ import useAuth from "@/hooks/useAuth";
 import { useEffect } from "react";
 import * as Yup from "yup";
 import useLogout from "@/hooks/useLogout";
+import { toBase64 } from "@/utils";
 
 const initialValues = {
   description: "",
@@ -62,7 +63,11 @@ const Step3ValidationSchema = Yup.object({
 });
 
 const Step4ValidationSchema = Yup.object({
-  profileImageUrl: Yup.string().required("Required"),
+  profileImageUrl: Yup.mixed<File>()
+    .required("Required")
+    .test("fileSize", "File size must be smaller than 500KB", (value) => {
+      return value && value.size <= 500 * 1024;
+    }),
 });
 
 type SetupPreferencesValues = typeof initialValues & {
@@ -80,14 +85,6 @@ const mapPreferenceValues = async (
     partnerGender: values.preferences.partnerGender,
   },
 });
-
-const toBase64 = (file: File): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-  });
 
 const SetupPreferencesPage = () => {
   const navigate = useNavigate();

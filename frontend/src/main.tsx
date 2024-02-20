@@ -20,6 +20,7 @@ import SettingsList from "./views/settings/SettingsList.tsx";
 import SettingsPreferences from "./views/settings/SettingsPreferences.tsx";
 import SettingsLayout from "./views/settings/SettingsLayout.tsx";
 import SettingsProfile from "./views/settings/SettingsProfile.tsx";
+import SettingsProfilePicture from "./views/settings/SettingsProfilePicture.tsx";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,7 @@ const router = createBrowserRouter([
           { index: true, element: <SettingsList /> },
           { path: "preferences", element: <SettingsPreferences /> },
           { path: "profile", element: <SettingsProfile /> },
+          { path: "picture", element: <SettingsProfilePicture /> },
         ],
       },
       {

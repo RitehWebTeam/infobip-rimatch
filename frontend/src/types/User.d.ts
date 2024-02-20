@@ -43,6 +43,7 @@ export type UserUpdateData = Partial<{
   lastName: string;
   gender: string;
   favouriteSong: string;
+  profileImageUrl: string;
   tags: string[];
 }>;
 
