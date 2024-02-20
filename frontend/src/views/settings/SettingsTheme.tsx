@@ -10,16 +10,16 @@ interface RadioItemProps {
 }
 
 const RadioItem = ({ value, id, label }: RadioItemProps) => (
-  <div className="flex items-center gap-4 justify-between">
-    <label htmlFor={id}>{label}</label>
+  <label htmlFor={id} className="flex items-center gap-4 justify-between">
+    {label}
     <RadioGroup.Item
       value={value}
       id={id}
-      className="bg-white w-[25px] h-[25px] border border-[#E8E6EA] dark:border-[#494343] rounded-full"
+      className="bg-white w-6 h-6 border border-[#E8E6EA] dark:border-neutral-800 rounded-full flex justify-center items-center p-0.5"
     >
-      <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:block after:w-[11px] after:h-[11px] after:rounded-full after:bg-red-500" />
+      <RadioGroup.Indicator className="flex items-center justify-center w-full h-full rounded-full bg-red-500" />
     </RadioGroup.Item>
-  </div>
+  </label>
 );
 
 const SettingsTheme = () => {
