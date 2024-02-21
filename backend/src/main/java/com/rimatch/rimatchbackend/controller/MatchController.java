@@ -90,6 +90,9 @@ public class MatchController {
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);
         List<DisplayUserDto> list = matchService.getAllSuccessfulMatchedUsers(user);
+        for (DisplayUserDto userDto : list) {
+            userDto.setChatId(matchService.findMatch(user.getId(),userDto.getId()).getId());
+        }
         return ResponseEntity.ok(list);
     }
 }

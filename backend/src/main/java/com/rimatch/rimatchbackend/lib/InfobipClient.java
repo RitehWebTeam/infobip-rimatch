@@ -3,10 +3,7 @@ package com.rimatch.rimatchbackend.lib;
 import com.infobip.*;
 import com.infobip.api.EmailApi;
 import com.infobip.api.SmsApi;
-import com.infobip.model.SmsAdvancedTextualRequest;
-import com.infobip.model.SmsDestination;
-import com.infobip.model.SmsResponse;
-import com.infobip.model.SmsTextualMessage;
+import com.infobip.model.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -71,24 +68,20 @@ public class InfobipClient {
 
     public void sendEmail(List<String> recepientEmailAddress, String subject, String text) throws ApiException {
         var sendEmailApi = initEmailApi();
-
-
-
-        try {
             var emailResponse = sendEmailApi.sendEmail(recepientEmailAddress)
                     .from(getSenderEmail())
                     .subject(subject)
                     .text(text)
-                    .execute();
+                    .executeAsync(new ApiCallback<EmailSendResponse>() {
+                        @Override
+                        public void onSuccess(EmailSendResponse emailSendResponse, int i, Map<String, List<String>> map) {
 
-            System.out.println("Response body: " + emailResponse);
+                        }
 
-            var reportsResponse = sendEmailApi.getEmailDeliveryReports().execute();
-            System.out.println(reportsResponse.getResults());
-        } catch (ApiException e) {
-            System.out.println("HTTP status code: " + e.responseStatusCode());
-            System.out.println("Response body: " + e.rawResponseBody());
-            throw e;
-        }
+                        @Override
+                        public void onFailure(ApiException e, int i, Map<String, List<String>> map) {
+
+                        }
+                    });
     }
 }
