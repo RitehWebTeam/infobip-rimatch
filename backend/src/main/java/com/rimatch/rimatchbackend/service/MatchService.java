@@ -51,14 +51,14 @@ public class MatchService {
         return matchRepository.save(new Match(id1, id2));
     }
 
-    public Match findMatch(String user1, String user2) {
-        Optional<Match> match1 = matchRepository.findByFirstUserIdAndSecondUserId(user1, user2);
+    public Match findMatch(String userId1, String userId2) {
+        Optional<Match> match1 = matchRepository.findByFirstUserIdAndSecondUserId(userId1, userId2);
 
         if (match1.isPresent()) {
             return match1.get();
         }
 
-        Optional<Match> match2 = matchRepository.findByFirstUserIdAndSecondUserId(user2, user1);
+        Optional<Match> match2 = matchRepository.findByFirstUserIdAndSecondUserId(userId2, userId1);
 
         return match2.orElse(null);
 
