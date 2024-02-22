@@ -66,7 +66,7 @@ const ChatPage = () => {
 
   return (
     <ChatPageHeader user={user}>
-      <div className="flex flex-col-reverse overflow-y-scroll min-h-[10rem] sm:h-[60vh] flex-grow w-full">
+      <div className="flex flex-col-reverse overflow-y-scroll min-h-[10rem] sm:h-[60vh] flex-grow w-full px-3 py-2">
         {query.data.content.map((message) => {
           if (dummy.current) {
             dummy.current.scrollIntoView({ behavior: "smooth" });
@@ -80,7 +80,7 @@ const ChatPage = () => {
           } else {
             return (
               <div className="flex flex-col items-end" key={message.id}>
-                <ChatMessageSent text={message.content} user={currentUser} />
+                <ChatMessageSent message={message} user={currentUser} />
               </div>
             );
           }
@@ -94,7 +94,7 @@ const ChatPage = () => {
       >
         {() => (
           <Form
-            className="flex w-full items-center p-1 dark:bg-[#242121] gap-4 pr-4"
+            className="flex w-full items-center p-1 dark:bg-[#242121] gap-4 pr-4 border-t border-[#E8E6EA] dark:border-[#554e4e]"
             autoComplete="off"
           >
             <Field
@@ -103,9 +103,9 @@ const ChatPage = () => {
               id="message"
               as="textarea"
               placeholder="Write a message..."
-              className="dark:bg-[#242121] w-full resize-none p-2 text-sm sm:text-base focus-visible:outline-1 focus-visible:outline-red-500 focus-visible:outline rounded-lg h-10"
+              className="bg-white dark:bg-[#242121] w-full resize-none p-2 text-sm sm:text-base focus-visible:outline-1 focus-visible:outline-red-500 focus-visible:outline rounded-lg h-10 sm:h-14"
             />
-            <button type="submit" className="">
+            <button type="submit" className="text-red-500">
               <SendIcon />
             </button>
           </Form>
@@ -122,10 +122,10 @@ interface ChatPageHeaderProps {
 
 const ChatPageHeader = ({ children, user }: ChatPageHeaderProps) => (
   <div className="bg-white dark:bg-[#343030] flex w-full flex-grow sm:w-[27rem] flex-col items-center sm:rounded-lg shadow-lg shadow-black navbar-max-h">
-    <div className="flex w-full items-center justify-between text-3xl py-2 dark:bg-[#242121] px-5 sm:rounded-t-lg">
+    <div className="flex w-full items-center justify-between text-2xl py-2 dark:bg-[#242121] pl-4 pr-3 sm:rounded-t-lg border-b border-[#E8E6EA] dark:border-[#554e4e]">
       <div className="flex items-center gap-6">
-        <Link to=".." type="button" className="font-semibold">
-          <KeyboardArrowLeftIcon fontSize="large" />
+        <Link to=".." type="button" className="font-semibold text-4xl">
+          <KeyboardArrowLeftIcon fontSize="inherit" />
         </Link>
         <div className="text-black dark:text-red-500 font-bold">
           {user.firstName}

@@ -37,7 +37,7 @@ export const MessagesService = {
             senderId: "",
             receiverId,
             chatId,
-            timestamp: new Date(),
+            timestamp: new Date().toISOString(),
           });
           return { ...oldData, content: newContent };
         }
