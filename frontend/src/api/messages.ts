@@ -32,7 +32,7 @@ export const MessagesService = {
         (oldData: Page<Message>) => {
           const newContent = [...oldData.content];
           newContent.unshift({
-            id: "temp",
+            id: new Date().getTime().toString() + content,
             content,
             senderId: "",
             receiverId,

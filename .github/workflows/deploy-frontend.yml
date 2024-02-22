@@ -12,6 +12,7 @@ env:
   AWS_S3_BUCKET: rimatch-app
   build-folder: ./dist
   VITE_BACKEND_URL: ${{ vars.BACKEND_URL}}
+  VITE_BACKEND_WS_URL: ${{ vars.BACKEND_WS_URL }}
 jobs:
   Build:
     runs-on: ubuntu-latest

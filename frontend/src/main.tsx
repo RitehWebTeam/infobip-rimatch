@@ -89,7 +89,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ThemeProvider>
-          <StompSessionProvider url="ws://localhost:8080/ws">
+          <StompSessionProvider
+            url={`${import.meta.env.VITE_BACKEND_WS_URL}/ws`}
+          >
             <RouterProvider router={router} />
           </StompSessionProvider>
         </ThemeProvider>
