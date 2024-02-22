@@ -1,15 +1,16 @@
 import { MessagesService } from "@/api/messages";
-import ChatMessageRecived from "@/components/ChatMessageRecived";
-import ChatMessageSent from "@/components/ChatMessageSent";
 import UserAvatar from "@/components/UserAvatar";
 import useCurrentUserContext from "@/hooks/useCurrentUser";
 import { MatchedUser, ProjectedUser } from "@/types/User";
 import { Form, Field, Formik, FormikHelpers } from "formik";
-import { useEffect, useRef } from "react";
+import { KeyboardEvent, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import SendIcon from "@mui/icons-material/Send";
+import React from "react";
+import ChatMessage from "@/components/chat/ChatMessage";
+import ChatHistory from "@/components/chat/ChatHistory";
 
 const chatValidation = Yup.object({
   message: Yup.string().required(),
@@ -30,7 +31,7 @@ const ChatPage = () => {
   const navigate = useNavigate();
 
   const user = state?.user as MatchedUser;
-  const query = MessagesService.useGetMessages(user?.chatId ?? "");
+  const recentMessages = MessagesService.useGetMessages(user?.chatId ?? "");
 
   MessagesService.useSubscribeToMessages(user.chatId ?? "", currentUser.id);
 
@@ -46,6 +47,16 @@ const ChatPage = () => {
     navigate("/messages");
   };
 
+  const submitOnEnter = (
+    e: React.KeyboardEvent<HTMLTextAreaElement>,
+    submitForm: () => Promise<void>
+  ) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      submitForm();
+    }
+  };
+
   useEffect(() => {
     if (!user) {
       goBackToMessages();
@@ -56,35 +67,36 @@ const ChatPage = () => {
     return null;
   }
 
-  if (query.isLoading) {
+  if (recentMessages.isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (query.isError || !query.isSuccess) {
+  if (recentMessages.isError || !recentMessages.isSuccess) {
     return <div>Error...</div>;
   }
 
   return (
     <ChatPageHeader user={user}>
       <div className="flex flex-col-reverse overflow-y-scroll min-h-[10rem] sm:h-[60vh] flex-grow w-full px-3 py-2">
-        {query.data.content.map((message) => {
+        {recentMessages.data.content.map((message) => {
           if (dummy.current) {
             dummy.current.scrollIntoView({ behavior: "smooth" });
           }
-          if (message.receiverId === currentUser.id) {
-            return (
-              <div className="flex flex-col items-start" key={message.id}>
-                <ChatMessageRecived text={message.content} user={user} />
-              </div>
-            );
-          } else {
-            return (
-              <div className="flex flex-col items-end" key={message.id}>
-                <ChatMessageSent message={message} user={currentUser} />
-              </div>
-            );
-          }
+          return (
+            <ChatMessage
+              key={message.id}
+              message={message}
+              matchedUser={user}
+            />
+          );
         })}
+        {!recentMessages.data.last && (
+          <ChatHistory
+            lastMessageId={recentMessages.data.content.at(-1)?.id ?? ""}
+            chatId={user.chatId}
+            matchedUser={user}
+          />
+        )}
       </div>
       <span ref={dummy}></span>
       <Formik
@@ -92,7 +104,7 @@ const ChatPage = () => {
         validationSchema={chatValidation}
         onSubmit={handleSubmit}
       >
-        {() => (
+        {({ submitForm }) => (
           <Form
             className="flex w-full items-center p-1 dark:bg-[#242121] gap-4 pr-4 border-t border-[#E8E6EA] dark:border-[#554e4e]"
             autoComplete="off"
@@ -104,6 +116,9 @@ const ChatPage = () => {
               as="textarea"
               placeholder="Write a message..."
               className="bg-white dark:bg-[#242121] w-full resize-none p-2 text-sm sm:text-base focus-visible:outline-1 focus-visible:outline-red-500 focus-visible:outline rounded-lg h-10 sm:h-14"
+              onKeyPress={(e: KeyboardEvent<HTMLTextAreaElement>) =>
+                submitOnEnter(e, submitForm)
+              }
             />
             <button type="submit" className="text-red-500">
               <SendIcon />
