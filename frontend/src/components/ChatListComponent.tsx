@@ -2,6 +2,7 @@ import { MessagesService } from "@/api/messages";
 import useCurrentUserContext from "@/hooks/useCurrentUser";
 import { MatchedUser } from "@/types/User";
 import { Link } from "react-router-dom";
+import UserAvatar from "./UserAvatar";
 
 interface ChatListComponentProps {
   matchedUser: MatchedUser;
@@ -20,11 +21,8 @@ const ChatListComponent = ({ matchedUser }: ChatListComponentProps) => {
       className="flex flex-row items-center justify-between h-min-10 p-4 border-b-2 border-gray-500 dark:hover:bg-gray-900 hover:bg-gray-200 cursor-pointer"
     >
       <div className="flex gap-4 items-center">
-        <div className="flex items-center justify-center rounded-full">
-          <img
-            srcSet={matchedUser.profileImageUrl}
-            className="w-16 h-16 object-cover rounded-full"
-          />
+        <div className="flex items-center justify-center rounded-full w-16 h-16">
+          <UserAvatar user={matchedUser} />
         </div>
         <div className="flex flex-col ">
           <div>

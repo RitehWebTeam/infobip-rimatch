@@ -1,14 +1,15 @@
 import { MessagesService } from "@/api/messages";
-import { SentIcon } from "@/assets/SentIcon";
 import ChatMessageRecived from "@/components/ChatMessageRecived";
 import ChatMessageSent from "@/components/ChatMessageSent";
+import UserAvatar from "@/components/UserAvatar";
 import useCurrentUserContext from "@/hooks/useCurrentUser";
-import { MatchedUser } from "@/types/User";
-import { ArrowBack } from "@mui/icons-material";
+import { MatchedUser, ProjectedUser } from "@/types/User";
 import { Form, Field, Formik, FormikHelpers } from "formik";
 import { useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import SendIcon from "@mui/icons-material/Send";
 
 const chatValidation = Yup.object({
   message: Yup.string().required(),
@@ -64,43 +65,21 @@ const ChatPage = () => {
   }
 
   return (
-    <div>
-      <div className="flex flex-col  w-full sticky top-24 z-1  dark:bg-[#1e1e1e] bg-white ">
-        <div className="flex justify-between items-center h-16 px-4 border-b-2 border-gray-300">
-          <div className="flex items-center">
-            <Link to="../">
-              <ArrowBack />
-            </Link>
-          </div>
-
-          <div className="flex items-center">
-            <h1 className="text-xl font-bold">{user.firstName}</h1>
-          </div>
-          <div className="flex items-center">
-            <div className="flex items-center justify-center w-12 h-12 bg-gray-300 rounded-full">
-              <img
-                srcSet={user.profileImageUrl}
-                loading="lazy"
-                className="w-12 h-12 rounded-full object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-col-reverse">
+    <ChatPageHeader user={user}>
+      <div className="flex flex-col-reverse overflow-y-scroll min-h-[10rem] sm:h-[60vh] flex-grow w-full">
         {query.data.content.map((message) => {
           if (dummy.current) {
             dummy.current.scrollIntoView({ behavior: "smooth" });
           }
           if (message.receiverId === currentUser.id) {
             return (
-              <div className="flex flex-col items-start z-0" key={message.id}>
+              <div className="flex flex-col items-start" key={message.id}>
                 <ChatMessageRecived text={message.content} user={user} />
               </div>
             );
           } else {
             return (
-              <div className="flex flex-col items-end " key={message.id}>
+              <div className="flex flex-col items-end" key={message.id}>
                 <ChatMessageSent text={message.content} user={currentUser} />
               </div>
             );
@@ -108,33 +87,56 @@ const ChatPage = () => {
         })}
       </div>
       <span ref={dummy}></span>
-      <div className="flex pb-16">
-        <Formik
-          initialValues={initialValues}
-          validationSchema={chatValidation}
-          onSubmit={handleSubmit}
-        >
-          {() => (
-            <Form className="flex w-full fixed bottom-0 " autoComplete="off">
-              <Field
-                type="text"
-                name="message"
-                id="message"
-                placeholder="Write a message..."
-                className="w-full h-12 px-4 border-2 border-gray-300 rounded-full mr-2"
-              />
-              <button
-                type="submit"
-                className="h-12 w-12  bg-gradient-to-r from-red-400 to-pink-600 rounded-full mr-2 p-2"
-              >
-                <SentIcon />
-              </button>
-            </Form>
-          )}
-        </Formik>
-      </div>
-    </div>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={chatValidation}
+        onSubmit={handleSubmit}
+      >
+        {() => (
+          <Form
+            className="flex w-full items-center p-1 dark:bg-[#242121] gap-4 pr-4"
+            autoComplete="off"
+          >
+            <Field
+              type="text"
+              name="message"
+              id="message"
+              as="textarea"
+              placeholder="Write a message..."
+              className="dark:bg-[#242121] w-full resize-none p-2 text-sm sm:text-base focus-visible:outline-1 focus-visible:outline-red-500 focus-visible:outline rounded-lg h-10"
+            />
+            <button type="submit" className="">
+              <SendIcon />
+            </button>
+          </Form>
+        )}
+      </Formik>
+    </ChatPageHeader>
   );
 };
+
+interface ChatPageHeaderProps {
+  children: React.ReactNode;
+  user: ProjectedUser;
+}
+
+const ChatPageHeader = ({ children, user }: ChatPageHeaderProps) => (
+  <div className="bg-white dark:bg-[#343030] flex w-full flex-grow sm:w-[27rem] flex-col items-center sm:rounded-lg shadow-lg shadow-black navbar-max-h">
+    <div className="flex w-full items-center justify-between text-3xl py-2 dark:bg-[#242121] px-5 sm:rounded-t-lg">
+      <div className="flex items-center gap-6">
+        <Link to=".." type="button" className="font-semibold">
+          <KeyboardArrowLeftIcon fontSize="large" />
+        </Link>
+        <div className="text-black dark:text-red-500 font-bold">
+          {user.firstName}
+        </div>
+      </div>
+      <div className="flex items-center justify-center w-12 h-12 bg-gray-300 rounded-full">
+        <UserAvatar user={user} />
+      </div>
+    </div>
+    {children}
+  </div>
+);
 
 export default ChatPage;

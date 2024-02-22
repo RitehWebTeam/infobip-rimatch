@@ -1,17 +1,17 @@
 import { ProjectedUser } from "@/types/User";
+import UserAvatar from "./UserAvatar";
 
 interface ChatMessageProps {
   text: string;
   user: ProjectedUser;
 }
 
-const ChatMessage = ({ text, user }: ChatMessageProps): JSX.Element => {
+const ChatMessage = ({ text, user }: ChatMessageProps) => {
   return (
     <div className="items-end">
-      {" "}
       <div className="flex  my-2">
         <div className="flex items-center justify-center w-10 h-10 bg-gray-300 rounded-full">
-          <img srcSet={user.profileImageUrl} loading="lazy" />
+          <UserAvatar user={user} />
         </div>
         <div className="flex flex-col ml-2">
           <h3 className="text-sm font-medium ">{user.firstName}</h3>

@@ -3,16 +3,14 @@ import useLogout from "@/hooks/useLogout";
 import useCurrentUserContext from "@/hooks/useCurrentUser";
 import { Link } from "react-router-dom";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import * as Avatar from "@radix-ui/react-avatar";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ChatIcon from "@mui/icons-material/Chat";
+import UserAvatar from "./UserAvatar";
 const Navbar: React.FunctionComponent = () => {
   const logout = useLogout();
   const user = useCurrentUserContext();
-
-  const userInitials = user.firstName[0] + user.lastName[0];
 
   return (
     <nav className="flex items-center justify-between sticky top-0 sm:mb-4 px-5 py-6 w-full border-b border-gray-300 dark:border-gray-700  sm:mb-8d dark:bg-[#1e1e1e] bg-white">
@@ -35,20 +33,11 @@ const Navbar: React.FunctionComponent = () => {
             asChild
             className="flex justify-center items-center focus-visible:outline-2 focus-visible:outline focus-visible:outline-slate-400 rounded-full"
           >
-            <button type="button">
-              <Avatar.Root className="inline-flex items-center justify-center h-12 w-12 md:h-14 md:w-14 hover:ring-2 ring-red-400 select-none rounded-full">
-                <Avatar.Image
-                  src={user.profileImageUrl}
-                  alt="User profile picture"
-                  className="w-full h-full bg-cover bg-center rounded-full"
-                />
-                <Avatar.AvatarFallback
-                  className="w-full h-full flex items-center justify-center text-red-500 bg-gray-100 rounded-full border-2 border-red-500"
-                  delayMs={600}
-                >
-                  {userInitials}
-                </Avatar.AvatarFallback>
-              </Avatar.Root>
+            <button
+              type="button"
+              className="h-12 w-12 md:h-14 md:w-14 hover:ring-2 ring-red-600"
+            >
+              <UserAvatar user={user} />
             </button>
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
