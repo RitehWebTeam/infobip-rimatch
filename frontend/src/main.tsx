@@ -24,6 +24,7 @@ import SettingsProfilePicture from "./views/settings/SettingsProfilePicture.tsx"
 import { ThemeProvider } from "./context/ThemeProvider.tsx";
 import SettingsTheme from "./views/settings/SettingsTheme.tsx";
 import { StompSessionProvider } from "react-stomp-hooks";
+import ChatLayout from "./views/chat/ChatLayout.tsx";
 
 const router = createBrowserRouter([
   {
@@ -57,6 +58,7 @@ const router = createBrowserRouter([
       },
       {
         path: "messages",
+        element: <ChatLayout />,
         errorElement: <ErrorPage />,
         children: [
           { index: true, element: <ListOfMatchesForChatPage /> },

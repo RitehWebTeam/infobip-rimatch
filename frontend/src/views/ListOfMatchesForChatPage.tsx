@@ -1,6 +1,7 @@
 import { UsersService } from "@/api/users";
 import ChatListComponent from "@/components/ChatListComponent";
 import { CircularProgress } from "@mui/material";
+import * as MessagesCard from "@/components/GenericCard";
 
 const ListOfMatchesForChatPage = () => {
   const query = UsersService.useGetMatches();
@@ -23,20 +24,20 @@ const ListOfMatchesForChatPage = () => {
 
   return (
     <MessagesHeader>
-      <h1 className="text-center text-4xl mb-3">Messages</h1>
       <div className="flex flex-col px-4 w-full">
-        {matches.map((user) => {
-          return <ChatListComponent key={user.id} matchedUser={user} />;
-        })}
+        {matches.map((user) => (
+          <ChatListComponent key={user.id} matchedUser={user} />
+        ))}
       </div>
     </MessagesHeader>
   );
 };
 
 const MessagesHeader = ({ children }: { children: React.ReactNode }) => (
-  <div className="bg-white dark:bg-[#343030] flex w-full flex-grow sm:w-[27rem] flex-col items-center p-4 sm:rounded-lg shadow-lg shadow-black">
+  <MessagesCard.Root>
+    <MessagesCard.Header title="Messages" />
     {children}
-  </div>
+  </MessagesCard.Root>
 );
 
 export default ListOfMatchesForChatPage;

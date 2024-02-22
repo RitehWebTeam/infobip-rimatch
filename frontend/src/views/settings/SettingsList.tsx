@@ -2,7 +2,7 @@ import PaletteIcon from "@mui/icons-material/Palette";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { Link } from "react-router-dom";
-import * as SettingsCard from "@/components/SettingsCard";
+import * as SettingsCard from "@/components/GenericCard";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 
 const SettingsList = () => {

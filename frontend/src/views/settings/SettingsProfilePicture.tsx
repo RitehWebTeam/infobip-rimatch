@@ -1,5 +1,5 @@
 import { UsersService } from "@/api/users";
-import * as SettingsCard from "@/components/SettingsCard";
+import * as SettingsCard from "@/components/GenericCard";
 import Dropzone from "@/components/forms/Dropzone";
 import useCurrentUserContext from "@/hooks/useCurrentUser";
 import { dataURLtoFile, toBase64 } from "@/utils";
