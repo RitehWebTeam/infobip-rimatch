@@ -8,9 +8,10 @@ import {
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { Page } from "@/types/Page";
 import useAuth from "@/hooks/useAuth";
+import { MatchedUser } from "@/types/User";
 
-const HISTORY_PAGE_SIZE = 20;
-const MESSAGE_PAGE_SIZE = 15;
+export const HISTORY_PAGE_SIZE = 20;
+export const MESSAGE_PAGE_SIZE = 15;
 
 export const MessagesService = {
   useSendMessage: () => {
@@ -87,12 +88,33 @@ export const MessagesService = {
     });
   },
 
-  useSubscribeToMessages: (chatId: string, receiverId: string) => {
+  useSubscribeToMessages: (receiverId: string) => {
     const queryClient = useQueryClient();
-    useSubscription(`${receiverId}/queue/messages`, () => {
-      queryClient.invalidateQueries({
-        queryKey: ["messages", chatId],
-      });
+    useSubscription(`${receiverId}/queue/messages`, (message) => {
+      const newMessage = JSON.parse(message.body) as Message;
+      queryClient.setQueryData(
+        ["messages", newMessage.chatId],
+        (oldData: Page<Message>) => {
+          const newContent = [...oldData.content];
+          newContent.unshift(newMessage);
+          return { ...oldData, content: newContent };
+        }
+      );
+      queryClient.setQueryData(
+        ["UsersService.getMatches"],
+        (oldData: Array<MatchedUser>) =>
+          oldData
+            ? [...oldData].sort((a, b) => {
+                if (a.chatId === newMessage.chatId) {
+                  return -1;
+                }
+                if (b.chatId === newMessage.chatId) {
+                  return 1;
+                }
+                return 0;
+              })
+            : oldData
+      );
     });
   },
 };

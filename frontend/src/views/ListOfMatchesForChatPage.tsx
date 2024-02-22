@@ -3,8 +3,15 @@ import ChatListComponent from "@/components/ChatListComponent";
 import { CircularProgress } from "@mui/material";
 import * as MessagesCard from "@/components/GenericCard";
 
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import useCurrentUserContext from "@/hooks/useCurrentUser";
+import { MessagesService } from "@/api/messages";
+
 const ListOfMatchesForChatPage = () => {
   const query = UsersService.useGetMatches();
+  const [parent] = useAutoAnimate();
+  const currentUser = useCurrentUserContext();
+  MessagesService.useSubscribeToMessages(currentUser.id);
 
   if (query.isLoading) {
     return (
@@ -20,12 +27,10 @@ const ListOfMatchesForChatPage = () => {
     return <div>Error</div>;
   }
 
-  const matches = query.data;
-
   return (
     <MessagesHeader>
-      <div className="flex flex-col px-4 w-full">
-        {matches.map((user) => (
+      <div ref={parent} className="flex flex-col px-4 w-full">
+        {query.data.map((user) => (
           <ChatListComponent key={user.id} matchedUser={user} />
         ))}
       </div>
