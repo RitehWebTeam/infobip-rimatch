@@ -5,28 +5,24 @@ import com.rimatch.rimatchbackend.model.Match;
 import com.rimatch.rimatchbackend.model.Preferences;
 import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.repository.MatchRepository;
+import com.rimatch.rimatchbackend.repository.MessageRepository;
 import com.rimatch.rimatchbackend.repository.UserRepository;
 import com.rimatch.rimatchbackend.util.DisplayUserConverter;
 
-import lombok.Builder;
 import lombok.Getter;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.ComparisonOperators;
 import org.springframework.data.mongodb.core.aggregation.ConditionalOperators;
-import org.springframework.data.mongodb.core.aggregation.Fields;
-import org.springframework.data.mongodb.core.aggregation.LookupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,6 +37,8 @@ public class MatchService {
 
     @Autowired
     MatchRepository matchRepository;
+
+    @Autowired MessageRepository messageRepository;
 
     @Autowired
     public MatchService(MongoTemplate mongoTemplate) {
@@ -145,7 +143,31 @@ public class MatchService {
             .map(matchedUserDTO -> matchedUserDTO.getMatchedUserId())
             .collect(Collectors.toList());
 
-        return DisplayUserConverter.convertToDtoList(userRepository.findAllById(matchedUserIds));
+        List<DisplayUserDto> userDtos = DisplayUserConverter.convertToDtoList(userRepository.findAllById(matchedUserIds));
+
+        for (DisplayUserDto userDto : userDtos) {
+            userDto.setChatId(findMatch(user.getId(), userDto.getId()).getId());
+        }
+
+        userDtos.sort((user1, user2) -> {
+            if (user1.getChatId() == null || user2.getChatId() == null) {
+                return 0;
+            }
+            var user1Message = messageRepository.findFirstByChatIdOrderByTimestampDesc(user1.getChatId());
+            var user2Message = messageRepository.findFirstByChatIdOrderByTimestampDesc(user2.getChatId());
+
+            if (user1Message == null && user2Message != null) {
+                return 1;
+            } else if (user1Message != null && user2Message == null) {
+                return -1;
+            } else if (user1Message == null) {
+                return 0;
+            }
+
+            return user2Message.getTimestamp().compareTo(user1Message.getTimestamp());
+        });
+
+        return userDtos;
     }
 
     @Getter

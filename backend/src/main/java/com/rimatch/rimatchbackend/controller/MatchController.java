@@ -29,14 +29,17 @@ public class MatchController {
     @Autowired
     UserService userService;
 
-    /*@Autowired
-    private SendEmailLib sendEmailLib;*/
+    /*
+     * @Autowired
+     * private SendEmailLib sendEmailLib;
+     */
 
     @Autowired
     private InfobipClient infobipClient;
 
     @GetMapping("/potential")
-    public List<DisplayUserDto> getPotentialMatch(HttpServletRequest request, @RequestParam(value = "skip", required = false) Integer skip) {
+    public List<DisplayUserDto> getPotentialMatch(HttpServletRequest request,
+            @RequestParam(value = "skip", required = false) Integer skip) {
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);
         int skipValue = skip != null ? skip : 0;
@@ -45,54 +48,54 @@ public class MatchController {
     }
 
     @PostMapping("/accept")
-    public ResponseEntity<Match> accept(HttpServletRequest request, @Valid @RequestBody MatchDto matchDto) throws ApiException {
+    public ResponseEntity<Match> accept(HttpServletRequest request, @Valid @RequestBody MatchDto matchDto)
+            throws ApiException {
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);
-        userService.insertToSeenUserIds(user,matchDto.getUserId());
+        userService.insertToSeenUserIds(user, matchDto.getUserId());
 
         Optional<User> matchedUser = userService.getUserById(matchDto.getUserId());
 
-        Match match = matchService.findMatch(user.getId(),matchedUser.get().getId());
+        Match match = matchService.findMatch(user.getId(), matchedUser.get().getId());
 
-        if(match != null){
+        if (match != null) {
 
             var recepients = new ArrayList<>(List.of("dominikkovacevic6@gmail.com"));
-            var string = String.format("Hello %s you just matched with %s %s!",matchedUser.get().getFirstName(),user.getFirstName(),user.getLastName());
-            infobipClient.sendEmail(recepients,"You got a match!", string);
+            var string = String.format("Hello %s you just matched with %s %s!", matchedUser.get().getFirstName(),
+                    user.getFirstName(), user.getLastName());
+            infobipClient.sendEmail(recepients, "You got a match!", string);
             infobipClient.sendSms(string);
-            return ResponseEntity.ok(matchService.finishMatch(match,true));
+            return ResponseEntity.ok(matchService.finishMatch(match, true));
         }
 
-        return ResponseEntity.ok(matchService.saveMatch(user.getId(),matchDto.getUserId()));
+        return ResponseEntity.ok(matchService.saveMatch(user.getId(), matchDto.getUserId()));
     }
 
     @PostMapping("/reject")
-    public ResponseEntity<?> reject(HttpServletRequest request, @Valid @RequestBody MatchDto matchDto){
+    public ResponseEntity<?> reject(HttpServletRequest request, @Valid @RequestBody MatchDto matchDto) {
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);
 
-        userService.insertToSeenUserIds(user,matchDto.getUserId());
+        userService.insertToSeenUserIds(user, matchDto.getUserId());
         Optional<User> matchedUser = userService.getUserById(matchDto.getUserId());
         matchedUser.ifPresent(value -> userService.insertToSeenUserIds(value, user.getId()));
 
-        Match match = matchService.findMatch(user.getId(),matchedUser.get().getId());
+        Match match = matchService.findMatch(user.getId(), matchedUser.get().getId());
 
-        if(match != null){
-            return ResponseEntity.ok(matchService.finishMatch(match,false));
+        if (match != null) {
+            return ResponseEntity.ok(matchService.finishMatch(match, false));
         }
 
         return ResponseEntity.ok("Test");
     }
 
-    // all matches for user sending the reuqest 
+    // all matches for user sending the reuqest
     @GetMapping("/all")
-    public ResponseEntity<List<DisplayUserDto>> getAllMatches(HttpServletRequest request){
+    public ResponseEntity<List<DisplayUserDto>> getAllMatches(HttpServletRequest request,
+            @RequestParam(required = false, defaultValue = "false") Boolean sortByRecentMessages) {
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);
         List<DisplayUserDto> list = matchService.getAllSuccessfulMatchedUsers(user);
-        for (DisplayUserDto userDto : list) {
-            userDto.setChatId(matchService.findMatch(user.getId(),userDto.getId()).getId());
-        }
         return ResponseEntity.ok(list);
     }
 }

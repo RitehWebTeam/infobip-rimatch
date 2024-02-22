@@ -14,7 +14,7 @@ const useLogout = () => {
       setAuth(null);
       setRefreshToken("");
       navigate("/login");
-      queryClient.invalidateQueries();
+      queryClient.clear();
     },
   });
 

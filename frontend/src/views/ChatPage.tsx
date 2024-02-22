@@ -1,6 +1,5 @@
 import { MessagesService } from "@/api/messages";
 import UserAvatar from "@/components/UserAvatar";
-import useCurrentUserContext from "@/hooks/useCurrentUser";
 import { MatchedUser, ProjectedUser } from "@/types/User";
 import { FormikHelpers } from "formik";
 import { useEffect, useRef } from "react";
@@ -13,6 +12,7 @@ import { CircularProgress } from "@mui/material";
 import ChatInput from "@/components/chat/ChatInput";
 import { useInView } from "react-intersection-observer";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 const initialValues = {
   message: "",
 };
@@ -22,8 +22,7 @@ type ChatValues = typeof initialValues;
 const ChatPage = () => {
   const [messagesStartRef, messagesStartInView] = useInView();
   const startRef = useRef<HTMLDivElement | null>(null);
-
-  const currentUser = useCurrentUserContext();
+  const [parent] = useAutoAnimate();
   const sendMessage = MessagesService.useSendMessage();
 
   const { state } = useLocation();
@@ -31,7 +30,6 @@ const ChatPage = () => {
   const user = state?.user as MatchedUser;
 
   const recentMessages = MessagesService.useGetMessages(user?.chatId ?? "");
-  MessagesService.useSubscribeToMessages(user.chatId ?? "", currentUser.id);
 
   const handleSubmit = (
     values: ChatValues,
@@ -39,6 +37,7 @@ const ChatPage = () => {
   ) => {
     sendMessage(values.message, user.id, user.chatId);
     helpers.resetForm();
+    startRef?.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const goBackToMessages = () => {
@@ -89,7 +88,10 @@ const ChatPage = () => {
         </button>
       )}
 
-      <div className="flex flex-col-reverse overflow-y-scroll min-h-[10rem] sm:h-[60vh] flex-grow w-full px-3 py-2 relative">
+      <div
+        ref={parent}
+        className="flex flex-col-reverse overflow-y-scroll min-h-[10rem] sm:h-[60vh] flex-grow w-full px-3 py-2 relative"
+      >
         <span ref={messagesStartRef}></span>
         <div ref={startRef}></div>
         {recentMessages.data.content.map((message) => (

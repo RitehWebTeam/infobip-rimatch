@@ -48,12 +48,12 @@ const Navbar: React.FunctionComponent = () => {
               alignOffset={-5}
             >
               <DropdownMenu.Item
-                className="px-3 py-3 text-sm font-medium  hover:bg-slate-200  dark:hover:bg-slate-600 focus-visible:outline-1 focus-visible:outline focus-visible:outline-slate-400 rounded-md"
+                className="px-3 py-3 text-sm font-medium  hover:bg-slate-200 dark:hover:bg-slate-600  focus-visible:outline-1 focus-visible:outline focus-visible:outline-slate-400 rounded-md"
                 asChild
               >
-                <Link to="/settings" className="flex items-center gap-4">
-                  <SettingsOutlinedIcon />
-                  <span>Settings</span>
+                <Link to="/messages" className="flex items-center gap-4">
+                  <ChatIcon />
+                  <span>Messages</span>
                 </Link>
               </DropdownMenu.Item>
 
@@ -67,12 +67,12 @@ const Navbar: React.FunctionComponent = () => {
                 </Link>
               </DropdownMenu.Item>
               <DropdownMenu.Item
-                className="px-3 py-3 text-sm font-medium  hover:bg-slate-200 dark:hover:bg-slate-600  focus-visible:outline-1 focus-visible:outline focus-visible:outline-slate-400 rounded-md"
+                className="px-3 py-3 text-sm font-medium  hover:bg-slate-200  dark:hover:bg-slate-600 focus-visible:outline-1 focus-visible:outline focus-visible:outline-slate-400 rounded-md"
                 asChild
               >
-                <Link to="/messages" className="flex items-center gap-4">
-                  <ChatIcon />
-                  <span>Messages</span>
+                <Link to="/settings" className="flex items-center gap-4">
+                  <SettingsOutlinedIcon />
+                  <span>Settings</span>
                 </Link>
               </DropdownMenu.Item>
               <DropdownMenu.Item
