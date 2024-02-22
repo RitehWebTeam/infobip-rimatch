@@ -7,7 +7,7 @@ import * as Avatar from "@radix-ui/react-avatar";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import LogoutIcon from "@mui/icons-material/Logout";
-
+import ChatIcon from "@mui/icons-material/Chat";
 const Navbar: React.FunctionComponent = () => {
   const logout = useLogout();
   const user = useCurrentUserContext();
@@ -75,6 +75,15 @@ const Navbar: React.FunctionComponent = () => {
                 <Link to="/matches" className="flex items-center gap-4">
                   <PeopleAltIcon />
                   <span>My Matches</span>
+                </Link>
+              </DropdownMenu.Item>
+              <DropdownMenu.Item
+                className="px-3 py-3 text-sm font-medium  hover:bg-slate-200 dark:hover:bg-slate-600  focus-visible:outline-1 focus-visible:outline focus-visible:outline-slate-400 rounded-md"
+                asChild
+              >
+                <Link to="/messages" className="flex items-center gap-4">
+                  <ChatIcon />
+                  <span>Messages</span>
                 </Link>
               </DropdownMenu.Item>
               <DropdownMenu.Item
