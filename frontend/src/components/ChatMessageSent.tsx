@@ -1,19 +1,21 @@
+import { ProjectedUser } from "@/types/User";
+
 interface ChatMessageProps {
   text: string;
-  username: string;
+  user: ProjectedUser;
 }
 
-const ChatMessage = ({ text, username }: ChatMessageProps): JSX.Element => {
+const ChatMessage = ({ text, user }: ChatMessageProps): JSX.Element => {
   return (
     <div className="items-end">
       {" "}
       <div className="flex  my-2">
         <div className="flex flex-col items-end mr-2">
-          <h3 className="text-sm font-medium ">{username}</h3>
+          <h3 className="text-sm font-medium ">{user.firstName}</h3>
           <p className="text-sm bg-red-500 p-3 rounded-xl">{text}</p>
         </div>
         <div className="flex items-center justify-center w-10 h-10 bg-red-300 rounded-full">
-          <img src="./User_pfp.svg" />
+          <img srcSet={user.profileImageUrl} />
         </div>
       </div>
     </div>
