@@ -26,7 +26,7 @@ const ListOfMatchesForChatPage = () => {
       <h1 className="text-center text-4xl mb-3">Messages</h1>
       <div className="flex flex-col px-4 w-full">
         {matches.map((user) => {
-          return <ChatListComponent key={user.id} user={user} />;
+          return <ChatListComponent key={user.id} matchedUser={user} />;
         })}
       </div>
     </MessagesHeader>
