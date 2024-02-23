@@ -1,18 +1,14 @@
 package com.rimatch.rimatchbackend.controller;
 
-import com.fasterxml.jackson.databind.ser.std.StdArraySerializers;
 import com.rimatch.rimatchbackend.model.Message;
 import com.rimatch.rimatchbackend.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.Query;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -30,7 +26,7 @@ public class MessageController {
                                            @RequestParam(required = false) Integer pageSize,
                                            @RequestParam(required = false) String messageId) {
         if(page == null) page = 0;
-        if(pageSize == null) pageSize = 20;
+        if(pageSize == null) pageSize = 5;
         Pageable p = PageRequest.of(page,pageSize);
         if (messageId != null) {
 

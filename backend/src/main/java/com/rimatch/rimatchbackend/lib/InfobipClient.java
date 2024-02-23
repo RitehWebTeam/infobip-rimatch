@@ -4,6 +4,7 @@ import com.infobip.*;
 import com.infobip.api.EmailApi;
 import com.infobip.api.SmsApi;
 import com.infobip.model.*;
+import com.rimatch.rimatchbackend.util.EmailCreator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -42,14 +43,14 @@ public class InfobipClient {
         return ApiClient.forApiKey(ApiKey.from(API_KEY)).withBaseUrl(BaseUrl.from(BASE_URL)).build();
     }
 
-    public void sendSms(String text){
+    public void sendSms(String user,String matchedUser){
 
         var smsApi = initSmsApi();
-
+        String message = "🔔 New Match Alert! Congratulations, " + user + "! You've matched with " + matchedUser + "! Check out your latest match on Rimatch now and start the conversation! 💌";
         SmsTextualMessage smsMessage = new SmsTextualMessage()
                 .from("InfoSMS")
                 .addDestinationsItem(new SmsDestination().to(PHONE_NUMBER))
-                .text(text);
+                .text(message);
 
         SmsAdvancedTextualRequest smsMessageRequest = new SmsAdvancedTextualRequest()
                 .messages(List.of(smsMessage));
@@ -71,7 +72,7 @@ public class InfobipClient {
             var emailResponse = sendEmailApi.sendEmail(recepientEmailAddress)
                     .from(getSenderEmail())
                     .subject(subject)
-                    .text(text)
+                    .html(EmailCreator.createEmailHTML(text))
                     .executeAsync(new ApiCallback<EmailSendResponse>() {
                         @Override
                         public void onSuccess(EmailSendResponse emailSendResponse, int i, Map<String, List<String>> map) {
