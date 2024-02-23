@@ -119,38 +119,46 @@ public class MatchService {
 
     public List<DisplayUserDto> getAllSuccessfulMatchedUsers(User user) {
         MatchOperation matchOperation = Aggregation.match(
-            Criteria.where("finished").is(true)
-                .and("accepted").is(true)
-                .andOperator(
-                    new Criteria().orOperator(
-                        Criteria.where("firstUserId").is(user.getId().toString()),
-                        Criteria.where("secondUserId").is(user.getId().toString()))));
+                Criteria.where("finished").is(true)
+                        .and("accepted").is(true)
+                        .andOperator(
+                                new Criteria().orOperator(
+                                        Criteria.where("firstUserId").is(user.getId().toString()),
+                                        Criteria.where("secondUserId").is(user.getId().toString()))));
 
         ProjectionOperation projectionOperation = Aggregation.project().and(
-            ConditionalOperators
-                .when(ComparisonOperators.Eq.valueOf("firstUserId").equalToValue(user.getId().toString()))
-                .thenValueOf("secondUserId")
-                .otherwiseValueOf("firstUserId"))
-            .as("matchedUserId");
+                        ConditionalOperators
+                                .when(ComparisonOperators.Eq.valueOf("firstUserId").equalToValue(user.getId().toString()))
+                                .thenValueOf("secondUserId")
+                                .otherwiseValueOf("firstUserId"))
+                .as("matchedUserId");
 
         Aggregation aggregation = Aggregation.newAggregation(matchOperation, projectionOperation);
 
         List<MatchedUserIdDTO> matchedIds = mongoTemplate.aggregate(aggregation, "matches", MatchedUserIdDTO.class).getMappedResults();
 
         List<String> matchedUserIds = matchedIds.stream()
-            .map(matchedUserDTO -> matchedUserDTO.getMatchedUserId())
-            .collect(Collectors.toList());
+                .map(matchedUserDTO -> matchedUserDTO.getMatchedUserId())
+                .collect(Collectors.toList());
 
-        List<DisplayUserDto> matchedUsers = DisplayUserConverter.convertToDtoList(userRepository.findAllById(matchedUserIds));
+        List<DisplayUserDto> userDtos = DisplayUserConverter.convertToDtoList(userRepository.findAllById(matchedUserIds));
 
-        matchedUsers.forEach(userDto -> userDto.setChatId(findMatch(user.getId(), userDto.getId()).getId()));
+        for (DisplayUserDto userDto : userDtos) {
+            userDto.setChatId(findMatch(user.getId(), userDto.getId()).getId());
+        }
 
-        matchedUsers.sort(Comparator.comparing((DisplayUserDto userDto) -> {
-            Message userMessage = messageRepository.findFirstByChatIdOrderByTimestampDesc(userDto.getChatId());
-            return (userMessage != null) ? userMessage.getTimestamp() : null;
+        Map<String, Message> lastMessages = new HashMap<>();
+        for (DisplayUserDto userDto : userDtos) {
+            lastMessages.put(userDto.getId(), messageRepository.findFirstByChatIdOrderByTimestampDesc(userDto.getChatId()));
+        }
+
+        // Sort userDtos based on last message timestamp
+        userDtos.sort(Comparator.comparing((DisplayUserDto userDto) -> {
+            Message lastMessage = lastMessages.get(userDto.getId());
+            return (lastMessage != null) ? lastMessage.getTimestamp() : null;
         }, Comparator.nullsLast(Comparator.reverseOrder())));
 
-        return matchedUsers;
+        return userDtos;
     }
 
     @Getter
