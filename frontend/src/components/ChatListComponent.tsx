@@ -8,16 +8,30 @@ interface ChatListComponentProps {
   matchedUser: MatchedUser;
 }
 
+const formatMessage = (message: string) => {
+  return message.slice(0, 30) + (message.length > 30 ? "..." : "");
+};
+
 const ChatListComponent = ({ matchedUser }: ChatListComponentProps) => {
   const { data } = MessagesService.useGetMessages(matchedUser.chatId);
-  const timestamp = useMemo(() => {
-    const timestamp = data?.content.at(0)?.timestamp;
-    if (timestamp) {
-      const date = new Date(timestamp);
-      // retunt hh:mm
-      return date.toLocaleTimeString().slice(0, 5);
+  const { timestamp, message } = useMemo(() => {
+    const lastMessage = data?.content.at(0);
+    if (!lastMessage) {
+      return {
+        timestamp: "",
+        message: "",
+      };
     }
-    return "";
+    const sentByCurrentUser = lastMessage.receiverId === matchedUser.id;
+    const prefix = sentByCurrentUser ? "You: " : "";
+    const date = new Date(lastMessage.timestamp);
+    return {
+      timestamp: date.toLocaleTimeString("de-DE", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      message: `${prefix}${formatMessage(lastMessage.content)}`,
+    };
   }, [data?.content]);
   return (
     <Link
@@ -26,7 +40,7 @@ const ChatListComponent = ({ matchedUser }: ChatListComponentProps) => {
       className="flex flex-row items-center justify-between h-min-10 p-4 border-b-2 border-gray-500 dark:hover:bg-gray-900 hover:bg-gray-200 cursor-pointer"
     >
       <div className="flex gap-4 items-start">
-        <div className="flex items-center justify-center rounded-full w-16 h-16">
+        <div className="flex items-center justify-center rounded-full w-16 h-16 flex-shrink-0">
           <UserAvatar user={matchedUser} />
         </div>
         <div className="flex flex-col">
@@ -34,7 +48,7 @@ const ChatListComponent = ({ matchedUser }: ChatListComponentProps) => {
             <h1 className="text-2xl font-bold">{matchedUser.firstName}</h1>
           </div>
           <div className="flex">
-            <h3 className="text-gray-500">{data?.content.at(0)?.content}</h3>
+            <h3 className="text-gray-500">{message}</h3>
           </div>
         </div>
       </div>
