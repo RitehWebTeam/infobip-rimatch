@@ -79,7 +79,7 @@ export const MessagesService = {
     };
 
     return useInfiniteQuery<Page<Message>>({
-      queryKey: ["messages.history", chatId],
+      queryKey: ["messages", chatId, "history"],
       queryFn: fetchMessages,
       initialPageParam: 0,
       getNextPageParam: (lastPage) =>
