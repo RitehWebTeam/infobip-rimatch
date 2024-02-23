@@ -12,6 +12,7 @@ import { CircularProgress } from "@mui/material";
 import ChatInput from "@/components/chat/ChatInput";
 import { useInView } from "react-intersection-observer";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 const initialValues = {
   message: "",
 };
@@ -19,7 +20,9 @@ const initialValues = {
 type ChatValues = typeof initialValues;
 
 const ChatPage = () => {
-  const [messagesStartRef, messagesStartInView] = useInView();
+  const [messagesStartRef, messagesStartInView] = useInView({ delay: 500 });
+  const [messagesEndRef, messagesEndInView] = useInView({ triggerOnce: true });
+  const [parent] = useAutoAnimate();
   const startRef = useRef<HTMLDivElement | null>(null);
   const sendMessage = MessagesService.useSendMessage();
 
@@ -35,7 +38,6 @@ const ChatPage = () => {
   ) => {
     sendMessage(values.message, user.id, user.chatId);
     helpers.resetForm();
-    startRef?.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const goBackToMessages = () => {
@@ -49,10 +51,20 @@ const ChatPage = () => {
   }, [user]);
 
   useEffect(() => {
-    if (recentMessages.isSuccess) {
+    if (!recentMessages.isSuccess) {
       startRef?.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [recentMessages.isSuccess]);
+
+  useEffect(() => {
+    if (messagesStartInView && recentMessages.isSuccess) {
+      startRef?.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [
+    messagesStartInView,
+    recentMessages.data?.content,
+    recentMessages.isSuccess,
+  ]);
 
   if (!user) {
     return null;
@@ -86,13 +98,17 @@ const ChatPage = () => {
         </button>
       )}
 
-      <div className="flex flex-col-reverse overflow-y-scroll min-h-[10rem] sm:h-[60vh] flex-grow w-full px-3 py-2 relative">
+      <div
+        ref={parent}
+        className="flex flex-col-reverse overflow-y-scroll min-h-[10rem] sm:h-[60vh] flex-grow w-full px-3 py-2"
+      >
         <span ref={messagesStartRef}></span>
         <div ref={startRef}></div>
         {recentMessages.data.content.map((message) => (
           <ChatMessage key={message.id} message={message} matchedUser={user} />
         ))}
-        {!recentMessages.data.last && (
+        <div ref={messagesEndRef}></div>
+        {!recentMessages.data.last && messagesEndInView && (
           <ChatHistory
             lastMessageId={recentMessages.data.content.at(-1)?.id ?? ""}
             chatId={user.chatId}
