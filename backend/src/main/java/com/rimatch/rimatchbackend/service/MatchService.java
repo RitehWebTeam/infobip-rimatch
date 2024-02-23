@@ -2,6 +2,7 @@ package com.rimatch.rimatchbackend.service;
 
 import com.rimatch.rimatchbackend.dto.DisplayUserDto;
 import com.rimatch.rimatchbackend.model.Match;
+import com.rimatch.rimatchbackend.model.Message;
 import com.rimatch.rimatchbackend.model.Preferences;
 import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.repository.MatchRepository;
@@ -22,9 +23,7 @@ import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -118,7 +117,6 @@ public class MatchService {
         }
     }
 
-
     public List<DisplayUserDto> getAllSuccessfulMatchedUsers(User user) {
         MatchOperation matchOperation = Aggregation.match(
             Criteria.where("finished").is(true)
@@ -143,31 +141,16 @@ public class MatchService {
             .map(matchedUserDTO -> matchedUserDTO.getMatchedUserId())
             .collect(Collectors.toList());
 
-        List<DisplayUserDto> userDtos = DisplayUserConverter.convertToDtoList(userRepository.findAllById(matchedUserIds));
+        List<DisplayUserDto> matchedUsers = DisplayUserConverter.convertToDtoList(userRepository.findAllById(matchedUserIds));
 
-        for (DisplayUserDto userDto : userDtos) {
-            userDto.setChatId(findMatch(user.getId(), userDto.getId()).getId());
-        }
+        matchedUsers.forEach(userDto -> userDto.setChatId(findMatch(user.getId(), userDto.getId()).getId()));
 
-        userDtos.sort((user1, user2) -> {
-            if (user1.getChatId() == null || user2.getChatId() == null) {
-                return 0;
-            }
-            var user1Message = messageRepository.findFirstByChatIdOrderByTimestampDesc(user1.getChatId());
-            var user2Message = messageRepository.findFirstByChatIdOrderByTimestampDesc(user2.getChatId());
+        matchedUsers.sort(Comparator.comparing((DisplayUserDto userDto) -> {
+            Message userMessage = messageRepository.findFirstByChatIdOrderByTimestampDesc(userDto.getChatId());
+            return (userMessage != null) ? userMessage.getTimestamp() : null;
+        }, Comparator.nullsLast(Comparator.reverseOrder())));
 
-            if (user1Message == null && user2Message != null) {
-                return 1;
-            } else if (user1Message != null && user2Message == null) {
-                return -1;
-            } else if (user1Message == null) {
-                return 0;
-            }
-
-            return user2Message.getTimestamp().compareTo(user1Message.getTimestamp());
-        });
-
-        return userDtos;
+        return matchedUsers;
     }
 
     @Getter

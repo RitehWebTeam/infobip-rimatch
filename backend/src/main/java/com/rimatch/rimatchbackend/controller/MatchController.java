@@ -29,11 +29,6 @@ public class MatchController {
     @Autowired
     UserService userService;
 
-    /*
-     * @Autowired
-     * private SendEmailLib sendEmailLib;
-     */
-
     @Autowired
     private InfobipClient infobipClient;
 
@@ -61,10 +56,8 @@ public class MatchController {
         if (match != null) {
 
             var recepients = new ArrayList<>(List.of("dominikkovacevic6@gmail.com"));
-            var string = String.format("Hello %s you just matched with %s %s!", matchedUser.get().getFirstName(),
-                    user.getFirstName(), user.getLastName());
-            infobipClient.sendEmail(recepients, "You got a match!", string);
-            infobipClient.sendSms(string);
+            infobipClient.sendEmail(recepients, "You got a match!", user.getFirstName());
+            infobipClient.sendSms(matchedUser.get().getFirstName(),user.getFirstName());
             return ResponseEntity.ok(matchService.finishMatch(match, true));
         }
 
