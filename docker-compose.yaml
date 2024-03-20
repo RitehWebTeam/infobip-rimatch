@@ -21,23 +21,24 @@ services:
     ports:
       - 8080:8080
       - 5005:5005
-  mobile-native:
+  react_native_app:
     build:
       context: ./mobile
       dockerfile: Dockerfile.dev
-    container_name: mobile-native
-    ports:
-      - 19000:19000
-      - 19001:19001
-      - 19002:19002
-      - 19006:19006
-      - 3000:3000
+      args:
+        - NODE_ENV=development
     environment:
       - NODE_ENV=development
-      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
-      - REACT_NATIVE_PACKAGER_HOSTNAME=192.168.1.25
+    tty: true
+    ports:
+      - '19006:19006'
+      - '19001:19001'
+      - '19002:19002'
     volumes:
       - ./mobile:/app
+    network_mode: "host"  # Use the host network mode
+    healthcheck:
+      disable: true
     
 secrets:
   secrets.properties:
