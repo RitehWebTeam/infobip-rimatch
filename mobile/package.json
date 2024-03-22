@@ -19,6 +19,8 @@
     ]
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.28.6",
+    "axios": "^1.6.8",
     "expo": "~50.0.14",
     "expo-dev-client": "~3.3.11",
     "expo-status-bar": "~1.11.1",
