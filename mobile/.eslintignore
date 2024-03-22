@@ -25,6 +25,9 @@ dist-ssr
 
 .eslintrc.*js
 
+babel.config.js
+tailwind.config.js
+
 .expo/
 android/
 

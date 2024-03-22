@@ -1,6 +1,10 @@
-import { useMutation } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useMutation,
+} from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
-import { Alert, Button, StyleSheet, Text, View } from "react-native";
+import { Alert, Button, Text, View } from "react-native";
 import { axiosPublic } from "./src/api/config/axios";
 
 interface LoginData {
@@ -19,7 +23,9 @@ const user = {
   password: "Password",
 };
 
-export default function App() {
+const client = new QueryClient();
+
+function AppInternal() {
   const mutation = useMutation({
     mutationFn: async ({ email, password }: LoginData) => {
       const response = await axiosPublic.post<LoginResponse>("/auth/login", {
@@ -35,19 +41,18 @@ export default function App() {
       ),
   });
   return (
-    <View style={styles.container}>
+    <View className="flex-1 items-center justify-center bg-white">
       <Text>Open up App.tsx to start working on your app!</Text>
       <Button title="Login" onPress={() => mutation.mutate(user)}></Button>
       <StatusBar style="auto" />
     </View>
   );
 }
-const $white = "#fff";
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    backgroundColor: $white,
-    flex: 1,
-    justifyContent: "center",
-  },
-});
+
+export default function App() {
+  return (
+    <QueryClientProvider client={client}>
+      <AppInternal />
+    </QueryClientProvider>
+  );
+}
