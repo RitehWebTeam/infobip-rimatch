@@ -21,6 +21,7 @@ services:
     ports:
       - 8080:8080
       - 5005:5005
+    
 secrets:
   secrets.properties:
     file: ./backend/secrets.properties
