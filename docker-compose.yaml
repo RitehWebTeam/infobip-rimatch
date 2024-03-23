@@ -9,6 +9,7 @@ services:
       - "5173:5173"
     volumes:
       - ./frontend:/app
+      - /app/node_modules
   backend-spring:
     build:
       context: ./backend
@@ -21,6 +22,7 @@ services:
     ports:
       - 8080:8080
       - 5005:5005
+    
 secrets:
   secrets.properties:
     file: ./backend/secrets.properties
