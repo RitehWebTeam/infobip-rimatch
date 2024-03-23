@@ -118,9 +118,16 @@ The simplest way to start the app is using [Docker][docker-url] so make sure you
    ```sh
    git clone https://github.com/RitehWebTeam/infobip-rimatch.git
    ```
-2. Install NPM packages
+2. Build and run the docker
    ```sh
    docker compose up --build
+   ```
+
+### Possible problems
+
+- When installing or removing dependencies in the frontend the docker should be built with -V flag
+   ```sh
+   docker compose up -V
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
