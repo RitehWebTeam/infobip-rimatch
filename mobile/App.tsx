@@ -6,7 +6,6 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { Alert, Button, Text, View } from "react-native";
 import { axiosPublic } from "./src/api/config/axios";
-
 interface LoginData {
   email: string;
   password: string;
@@ -34,16 +33,23 @@ function AppInternal() {
       });
       return response.data;
     },
+    onError: (error) => {
+      console.log("Error", error);
+    },
     onSuccess: ({ active, refreshToken, token }) =>
       Alert.alert(
         "Login success",
         `Token: ${token}, Active: ${active}, Refresh Token: ${refreshToken}`
       ),
   });
+  const handlePress = () => {
+    console.log("Pressed");
+    mutation.mutate(user);
+  };
   return (
     <View className="flex-1 items-center justify-center bg-white">
       <Text>Open up App.tsx to start working on your app!</Text>
-      <Button title="Login" onPress={() => mutation.mutate(user)}></Button>
+      <Button title="Login" onPress={handlePress}></Button>
       <StatusBar style="auto" />
     </View>
   );
