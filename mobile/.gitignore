@@ -16,6 +16,10 @@ web-build/
 *.key
 *.mobileprovision
 
+# Android Build
+*.apk
+*.aab
+
 # Metro
 .metro-health-check*
 
