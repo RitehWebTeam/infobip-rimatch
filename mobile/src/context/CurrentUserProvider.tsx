@@ -13,10 +13,6 @@ const CurrentUserContextProvider = ({
     return null;
   }
 
-  if (currentUserQuery.isError) {
-    return <pre>{JSON.stringify(currentUserQuery.error)}</pre>;
-  }
-
   return (
     <CurrentUserContext.Provider value={currentUserQuery.data ?? null}>
       {children}

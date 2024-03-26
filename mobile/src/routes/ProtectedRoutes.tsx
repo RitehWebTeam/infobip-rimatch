@@ -4,12 +4,10 @@ import useAuth from "../hooks/useAuth";
 import { View, ActivityIndicator } from "react-native";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
-import Details from "../components/Details";
+import index from "../app/(tabs)/index";
 
 import Login from "../components/Login";
-
-import Layout from "../views/Layout";
+import LayoutTest from "../components/LayoutTest";
 
 const ProtectedRoutes = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -51,21 +49,18 @@ const ProtectedRoutes = () => {
   }
   const Stack = createNativeStackNavigator();
 
-  if (!auth?.accessToken)
+  if (!auth?.accessToken) {
     return <Stack.Screen name="Login" component={Login} />;
+  }
 
-  return (
-    <Stack.Navigator>
-      {auth?.active ? (
-        <Stack.Screen name="Layout" component={Layout} />
-      ) : (
-        <Stack.Screen
-          name="Preferences"
-          component={Details}
-          options={{ headerShown: false }} // Hide header for the login screen
-        />
-      )}
-    </Stack.Navigator>
+  return auth?.active ? (
+    <Stack.Screen name="Layout" component={index} />
+  ) : (
+    <Stack.Screen
+      name="Preferences"
+      component={LayoutTest}
+      options={{ headerShown: false }} // Hide header for the login screen
+    />
   );
 };
 
