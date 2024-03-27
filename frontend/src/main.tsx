@@ -23,6 +23,7 @@ import SettingsProfile from "./views/settings/SettingsProfile.tsx";
 import SettingsProfilePicture from "./views/settings/SettingsProfilePicture.tsx";
 import { ThemeProvider } from "./context/ThemeProvider.tsx";
 import SettingsTheme from "./views/settings/SettingsTheme.tsx";
+import SettingsGallery from "./views/settings/SettingsGallery.tsx";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,7 @@ const router = createBrowserRouter([
           { path: "profile", element: <SettingsProfile /> },
           { path: "picture", element: <SettingsProfilePicture /> },
           { path: "theme", element: <SettingsTheme /> },
+          { path: "gallery", element: <SettingsGallery /> },
         ],
       },
       {
