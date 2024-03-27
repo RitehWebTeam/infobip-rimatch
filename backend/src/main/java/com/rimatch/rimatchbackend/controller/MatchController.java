@@ -12,6 +12,7 @@ import com.rimatch.rimatchbackend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,9 @@ public class MatchController {
 
     @Autowired
     private InfobipClient infobipClient;
+
+    @Value("${infobip.active}")
+    private boolean isInfobipActive;
 
     @GetMapping("/potential")
     public List<DisplayUserDto> getPotentialMatch(HttpServletRequest request,
@@ -54,11 +58,13 @@ public class MatchController {
         Match match = matchService.findMatch(user.getId(), matchedUser.get().getId());
 
         if (match != null) {
-
-            var recepients = new ArrayList<>(List.of("dominikkovacevic6@gmail.com"));
-            infobipClient.sendEmail(recepients, "You got a match!", user.getFirstName());
-            infobipClient.sendSms(matchedUser.get().getFirstName(),user.getFirstName());
+            if(isInfobipActive) {
+                var recepients = new ArrayList<>(List.of("dominikkovacevic6@gmail.com"));
+                infobipClient.sendEmail(recepients, "You got a match!", user.getFirstName());
+                infobipClient.sendSms(matchedUser.get().getFirstName(), user.getFirstName());
+            }
             return ResponseEntity.ok(matchService.finishMatch(match, true));
+
         }
 
         return ResponseEntity.ok(matchService.saveMatch(user.getId(), matchDto.getUserId()));
