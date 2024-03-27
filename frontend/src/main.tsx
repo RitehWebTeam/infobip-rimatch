@@ -25,6 +25,7 @@ import SettingsTheme from "./views/settings/SettingsTheme.tsx";
 import { StompSessionProvider } from "react-stomp-hooks";
 import ChatLayout from "./views/chat/ChatLayout.tsx";
 import PotentialUsers from "./views/PotentialUsers.tsx";
+import SettingsGallery from "./views/settings/SettingsGallery.tsx";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +55,7 @@ const router = createBrowserRouter([
           { path: "profile", element: <SettingsProfile /> },
           { path: "picture", element: <SettingsProfilePicture /> },
           { path: "theme", element: <SettingsTheme /> },
+          { path: "gallery", element: <SettingsGallery /> },
         ],
       },
       {
