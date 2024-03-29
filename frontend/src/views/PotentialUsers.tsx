@@ -128,9 +128,9 @@ const PotentialUsersContainer = ({
   ...props
 }: PotentialUsersContainerProps) => {
   return (
-    <div className="flex flex-col items-center  flex-grow sm:pb-12 min-h-fit max-h-[800px]  md:max-h-[700px]">
+    <div className="flex flex-col items-center flex-grow sm:pb-12 min-h-fit max-h-[800px] md:max-h-[700px] ">
       <div
-        className="flex flex-col items-center rounded-[25px] border-[1px] border-black-200 flex-grow w-full sm:w-[24rem] p-4 bg-white dark:bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black"
+        className="flex flex-col items-center sm:rounded-[25px] border-[1px] border-black-200 flex-grow w-full sm:w-[26rem] p-4 bg-white dark:bg-[#343030] bg-clip-border border-[#acabab33] shadow-xl shadow-black"
         {...props}
       >
         {children}
