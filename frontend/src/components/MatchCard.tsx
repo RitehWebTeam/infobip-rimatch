@@ -23,16 +23,15 @@ const MatchCard = ({
     }
     return user.description;
   }, [user.description]);
-
   return (
     <>
       <div
-        className="flex flex-col justify-end gap-2 rounded-xl relative bg-cover w-[95%] sm:w-[90%]
+        className="flex flex-col justify-end gap-2 rounded-xl relative bg-cover bg-center w-[95%] sm:w-[90%]
         min-h-[60vh] sm:min-h-[32rem] mb-4 flex-grow"
-        style={{ backgroundImage: `url(${user.profileImageUrl}}` }}
+        style={{ backgroundImage: `url(${user.profileImageUrl})` }}
       >
         <div className="absolute h-full w-full bg-gradient-to-t rounded-xl from-black from-0% to-40%"></div>
-        <div className="top-5 left-4 absolute flex items-center justify-center gap-1 bg-gray-500/30 p-2 rounded-lg text-sm text-white">
+        <div className="top-5 left-4 absolute flex items-center justify-center gap-1 bg-gray-500/60 p-2 rounded-lg text-sm text-white">
           <LocationOnIcon color="inherit" fontSize="inherit" />
           <span>{user.location}</span>
         </div>
