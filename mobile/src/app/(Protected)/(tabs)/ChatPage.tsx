@@ -1,10 +1,11 @@
 import { View, Text } from "react-native";
-const Login = () => {
+
+const ChatPage = () => {
   return (
     <View>
-      <Text>Login</Text>
+      <Text>ChatPage</Text>
     </View>
   );
 };
 
-export default Login;
+export default ChatPage;

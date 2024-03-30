@@ -1,18 +1,13 @@
+import { Redirect, Stack, useNavigation } from "expo-router";
 import { useState, useEffect } from "react";
-import useRefreshToken from "../hooks/useRefreshToken";
-import useAuth from "../hooks/useAuth";
+import useRefreshToken from "../../hooks/useRefreshToken";
+import useAuth from "../../hooks/useAuth";
 import { View, ActivityIndicator } from "react-native";
-
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import index from "../app/(Protected)/(tabs)/index";
-
-import LayoutTest from "../components/LayoutTest";
-import { Redirect } from "expo-router";
 
 const ProtectedRoutes = () => {
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useRefreshToken();
-
+  const navigation = useNavigation();
   const { auth } = useAuth();
 
   useEffect(() => {
@@ -47,20 +42,21 @@ const ProtectedRoutes = () => {
       </View>
     );
   }
-  const Stack = createNativeStackNavigator();
 
   if (!auth?.accessToken) {
-    return <Redirect href="/login" />;
+    return <Redirect href="/LoginForm" />;
   }
+  console.log(auth);
 
   return auth?.active ? (
-    <Stack.Screen name="Layout" component={index} />
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    </Stack>
   ) : (
-    <Stack.Screen
-      name="Preferences"
-      component={LayoutTest}
-      options={{ headerShown: false }} // Hide header for the login screen
-    />
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "SetupPreferences" as never }],
+    })
   );
 };
 

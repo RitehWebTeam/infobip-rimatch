@@ -1,16 +1,16 @@
 import CurrentUserContextProvider from "../context/CurrentUserProvider";
-import { Stack } from "expo-router";
-
+import { Slot } from "expo-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider } from "../context/AuthProvider";
 
 const client = new QueryClient();
 const Layout = () => {
   return (
     <QueryClientProvider client={client}>
       <CurrentUserContextProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" />
-        </Stack>
+        <AuthProvider>
+          <Slot />
+        </AuthProvider>
       </CurrentUserContextProvider>
     </QueryClientProvider>
   );
