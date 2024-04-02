@@ -12,6 +12,7 @@ import com.rimatch.rimatchbackend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,11 +30,11 @@ public class MatchController {
     @Autowired
     UserService userService;
 
-    /*@Autowired
-    private SendEmailLib sendEmailLib;*/
-
     @Autowired
     private InfobipClient infobipClient;
+
+    @Value("${infobip.sender-email}")
+    private String SENDER_EMAIL_ADDRESS;
 
     @GetMapping("/potential")
     public List<DisplayUserDto> getPotentialMatch(HttpServletRequest request, @RequestParam(value = "skip", required = false) Integer skip) {
@@ -56,7 +57,7 @@ public class MatchController {
 
         if(match != null){
 
-            var recepients = new ArrayList<>(List.of("dominikkovacevic6@gmail.com"));
+            var recepients = new ArrayList<>(List.of(SENDER_EMAIL_ADDRESS));
             var string = String.format("Hello %s you just matched with %s %s!",matchedUser.get().getFirstName(),user.getFirstName(),user.getLastName());
             infobipClient.sendEmail(recepients,"You got a match!", string);
             infobipClient.sendSms(string);
