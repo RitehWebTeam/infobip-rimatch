@@ -1,5 +1,6 @@
+import useLogout from "../../../hooks/useLogout";
 import useAuth from "../../../hooks/useAuth";
-import { Text, View } from "react-native";
+import { Button, Text, View } from "react-native";
 
 export default function App() {
   return <AuthLayout />;
@@ -7,10 +8,12 @@ export default function App() {
 
 export const AuthLayout = () => {
   const { auth } = useAuth();
+  const logout = useLogout();
   console.log(auth);
   return auth ? (
     <View>
       <Text>Loged in</Text>
+      <Button title="Log Out" onPress={() => logout()} />
     </View>
   ) : (
     <View>

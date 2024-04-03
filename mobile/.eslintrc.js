@@ -12,10 +12,9 @@ module.exports = {
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    sourceType: 'module',
+    sourceType: "module",
     // eslint-disable-next-line no-undef
     tsconfigRootDir: __dirname,
-    
   },
   settings: {
     react: {
@@ -28,5 +27,7 @@ module.exports = {
       "warn",
       { allowConstantExport: true },
     ],
+    "react-native/no-inline-styles": "off",
+    "react-native/no-color-literals": "off",
   },
 };

@@ -1,7 +1,7 @@
-import React from 'react';
+/* import React from 'react';
 import { View, Text, Button } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
-
+import { Image } from 'react-native';
 const Step4Preferences = () => {
   const [profileImageUrl, setProfileImageUrl] = React.useState(null);
 
@@ -16,7 +16,7 @@ const Step4Preferences = () => {
       maxHeight: 500,
     };
 
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.showImagePicker(options, (response: { didCancel: unknown; error: unknown; uri: string ; }) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -27,6 +27,8 @@ const Step4Preferences = () => {
       }
     });
   };
+
+ 
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -47,3 +49,4 @@ const Step4Preferences = () => {
 };
 
 export default Step4Preferences;
+ */
