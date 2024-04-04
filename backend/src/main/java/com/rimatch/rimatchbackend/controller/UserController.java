@@ -98,6 +98,14 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PutMapping("/block/{id}")
+    public ResponseEntity<User> blockUser(@PathVariable String id, HttpServletRequest request) {
+        String authToken = request.getHeader("Authorization");
+        User user = userService.getUserByToken(authToken);
+        userService.blockUser(user, id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     /*ExceptionHandler for requests with bad Arguments - should be moved to different file*/
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
