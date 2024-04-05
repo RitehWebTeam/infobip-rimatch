@@ -29,14 +29,13 @@ public class S3Service {
         return s3Client.getUrl(bucketName, fileName).toString();
     }
 
-    /*public String uploadFile(MultipartFile multipartFile) throws IOException {
-        File file = convertMultiPartFileToFile(multipartFile);
-        String fileName = generateFileName(multipartFile);
-        amazonS3.putObject(new PutObjectRequest(bucketName, fileName, file)
-                .withCannedAcl(com.amazonaws.services.s3.model.CannedAccessControlList.PublicRead));
-        file.delete(); // Delete the temporary file
-        return generatePublicUrl(fileName);
-    }*/
+    public void removeFile(String fileName) {
+        try {
+            s3Client.deleteObject(bucketName, fileName);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not delete file " + fileName + ". Please try again!");
+        }
+    }
 
     private File convertMultiPartFileToFile(MultipartFile multipartFile) throws IOException {
         File file = new File(multipartFile.getOriginalFilename());
@@ -46,6 +45,10 @@ public class S3Service {
 
     private String generateFileName(MultipartFile multiPart) {
         return new Date().getTime() + "-" + multiPart.getOriginalFilename().replace(" ", "_");
+    }
+
+    public String getObjectFromURL(String objectURL){
+        return objectURL.substring(objectURL.lastIndexOf("/")+1);
     }
 }
 
