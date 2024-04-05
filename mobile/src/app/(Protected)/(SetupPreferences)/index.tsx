@@ -1,13 +1,11 @@
 import { useEffect } from "react";
-import Step1Preferences from "./(steps)/Step1Preference";
-//import Step2Preferences from "./(steps)/Step2Preference";
-import Step3Preferences from "./(steps)/Step3Preference";
-/* import Step4Preferences from "./(steps)/Step4Preference"; */
+
 import useAuth from "../../../hooks/useAuth";
 import { useNavigation } from "@react-navigation/native";
-import { createStackNavigator as createStack } from "@react-navigation/stack";
 
-const Stack = createStack();
+import { View } from "react-native";
+
+import { Text } from "react-native";
 const SetupPreferencesPage = () => {
   const { auth } = useAuth();
 
@@ -42,13 +40,26 @@ const SetupPreferencesPage = () => {
   }; */
 
   return (
-    <Stack.Navigator initialRouteName="SetupPreferences">
-      <Stack.Screen name="Step1" component={Step1Preferences} />
-      {/* <Stack.Screen name="Step2" component={Step2Preferences} /> */}
-      <Stack.Screen name="Step3" component={Step3Preferences} />
-      {/* <Stack.Screen name="Step4" component={Step4Preferences} /> */}
-    </Stack.Navigator>
+    <PreferencesHeader>
+      <Text>Jes</Text>
+    </PreferencesHeader>
   );
 };
-
+interface PreferencesHeaderProps {
+  children: React.ReactNode;
+}
+const PreferencesHeader = ({ children }: PreferencesHeaderProps) => {
+  return (
+    <View
+      className="flex flex-col justify-center items-center flex-grow"
+      id="red-to-black"
+    >
+      <View className="flex w-full flex-grow justify-center md:pb-8 sm:max-h-[50rem]">
+        <View className="bg-white dark:bg-[#343030] flex w-[30rem] flex-col h-full items-center px-10 py-8 sm:rounded-lg shadow-lg shadow-black min-h-fit">
+          {children}
+        </View>
+      </View>
+    </View>
+  );
+};
 export default SetupPreferencesPage;

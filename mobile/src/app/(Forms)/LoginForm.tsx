@@ -4,7 +4,7 @@ import { Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import AuthService from "../../api/auth";
 import { AxiosError } from "axios";
-import { useNavigation } from "@react-navigation/native";
+
 /* import {  LockIcon, EmailAtIcon } from '../../../assets/SVG'; */
 import { StyleSheet } from "react-native";
 import { router } from "expo-router";
@@ -23,7 +23,7 @@ const initialValues = {
 type LoginValues = typeof initialValues;
 const LoginForm = () => {
   const [loginError, setLoginError] = useState("");
-  const navigation = useNavigation();
+
   const { mutate: login } = AuthService.useLogin();
   const handleSubmit = (
     values: LoginValues,
@@ -33,10 +33,7 @@ const LoginForm = () => {
     setLoginError("");
     login(values, {
       onSuccess: () => {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "(Protected)" as never }],
-        });
+        router.replace("/");
       },
       onError: (error) => {
         if (error instanceof AxiosError && error.response?.status === 401) {

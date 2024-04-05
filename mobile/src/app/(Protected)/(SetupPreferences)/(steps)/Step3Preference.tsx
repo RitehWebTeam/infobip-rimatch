@@ -1,7 +1,11 @@
 import React from "react";
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, Button } from "react-native";
+import { NavigationProp } from "@react-navigation/native";
 
-const Step3Preferences = () => {
+type PreferencesProps = {
+  navigation: NavigationProp<object>;
+};
+const Step3Preferences = ({ navigation }: PreferencesProps) => {
   const [favoriteSong, setFavoriteSong] = React.useState("");
   const [tags, setTags] = React.useState("");
 
@@ -38,6 +42,10 @@ const Step3Preferences = () => {
           onChangeText={(text) => setTags(text)}
         />
       </View>
+      <Button
+        title="Next"
+        onPress={() => navigation.navigate("Step4" as never)}
+      ></Button>
     </View>
   );
 };

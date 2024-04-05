@@ -1,13 +1,14 @@
-import { Redirect, Stack, useNavigation } from "expo-router";
+import { Stack } from "expo-router";
 import { useState, useEffect } from "react";
 import useRefreshToken from "../../hooks/useRefreshToken";
 import useAuth from "../../hooks/useAuth";
 import { View, ActivityIndicator } from "react-native";
 
-const ProtectedRoutes = () => {
+const Layout = () => {
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useRefreshToken();
-  const navigation = useNavigation();
+
+  //const [isReady, setIsReady] = useState(false);
   const { auth } = useAuth();
 
   useEffect(() => {
@@ -33,6 +34,22 @@ const ProtectedRoutes = () => {
     };
   }, [auth?.accessToken, refresh]);
 
+  /* useEffect(() => {
+    if(isReady) {
+      if (!auth?.accessToken) {
+        console.log("Redirecting to login");
+        router.navigate("/LoginForm");
+      } else if (!auth?.active) {
+        console.log("Redirecting to preferences")
+        router.navigate("SetupPreferences");
+      } else {
+        console.log("Redirecting to tabs");
+        router.navigate("(tabs)");
+      }
+    }
+   
+  }, [auth]); */
+  console.log("loading", isLoading);
   // TODO: Add loading spinner
   if (isLoading) {
     return (
@@ -42,22 +59,16 @@ const ProtectedRoutes = () => {
       </View>
     );
   }
-
-  if (!auth?.accessToken) {
-    return <Redirect href="/LoginForm" />;
-  }
-  console.log(auth);
-
-  return auth?.active ? (
+  console.log("loading finished", isLoading);
+  return auth?.accessToken ? (
     <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(SetupPreferences)" />
     </Stack>
   ) : (
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "SetupPreferences" as never }],
-    })
+    <Stack>
+      <Stack.Screen name="(tabs)" />
+    </Stack>
   );
 };
 
-export default ProtectedRoutes;
+export default Layout;
