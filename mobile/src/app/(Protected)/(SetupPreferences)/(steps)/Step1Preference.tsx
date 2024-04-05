@@ -32,7 +32,7 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
     description: string;
   }) => {
     WizardStore.update((s) => {
-      s.progress = 33;
+      s.progress = 25;
       s.phoneNumber = data.phoneNumber;
       s.location = data.location;
       s.description = data.description;

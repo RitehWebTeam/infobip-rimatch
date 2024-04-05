@@ -1,10 +1,13 @@
-import { NavigationProp } from "@react-navigation/native";
-import React from "react";
-import { View, Text, Button, Image } from "react-native";
+import { NavigationProp, useIsFocused } from "@react-navigation/native";
+import React, { useEffect } from "react";
+import { View, Text, Image } from "react-native";
 import ImagePicker, {
   ImageLibraryOptions,
   MediaType,
 } from "react-native-image-picker"; // Import MediaType
+import { WizardStore } from "../store";
+import { useForm } from "react-hook-form";
+import { Button } from "react-native-paper";
 
 type Step1PreferencesProps = {
   navigation: NavigationProp<object>;
@@ -14,7 +17,26 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
   const [profileImageUrl, setProfileImageUrl] = React.useState<string | null>(
     null
   ); // Specify the type of profileImageUrl
+  const { handleSubmit } = useForm({
+    defaultValues: WizardStore.useState((s) => s),
+  });
+  const isFocused = useIsFocused();
 
+  useEffect(() => {
+    isFocused &&
+      WizardStore.update((s) => {
+        s.progress = 75;
+      });
+  }, [isFocused]);
+
+  const onSubmit = (data: { profileImageUrl: string }) => {
+    WizardStore.update((s) => {
+      s.progress = 100;
+      s.profileImageUrl = data.profileImageUrl;
+    });
+    navigation.navigate("Step2" as never);
+    console.log(data);
+  };
   const options: ImageLibraryOptions = {
     // Use ImageLibraryOptions
 
@@ -38,7 +60,9 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
       <Text style={{ fontSize: 12, color: "gray", marginBottom: 8 }}>
         Max size: 500 KB
       </Text>
-      <Button title="Select Picture" onPress={showCameraRoll} />
+      <Button onPress={showCameraRoll}>
+        <Text>hoose Image</Text>
+      </Button>
       {profileImageUrl && (
         <View style={{ marginTop: 20 }}>
           <Text>Selected Image:</Text>
@@ -48,10 +72,9 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
           />
         </View>
       )}
-      <Button
-        title="Next"
-        onPress={() => navigation.navigate("Confirmation" as never)}
-      ></Button>
+      <Button onPress={handleSubmit(onSubmit)} mode="outlined">
+        <Text>GOTO STEP TWO</Text>
+      </Button>
     </View>
   );
 };

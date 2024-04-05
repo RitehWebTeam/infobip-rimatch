@@ -3,41 +3,43 @@ import { View, Text } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
 import { WizardStore } from "../store";
-import { useIsFocused } from "@react-navigation/native";
-import { MD3Colors, ProgressBar } from "react-native-paper";
+import { NavigationProp, useIsFocused } from "@react-navigation/native";
+import { TextInput, MD3Colors, ProgressBar, Button } from "react-native-paper";
 import { StyleSheet } from "react-native";
-/* type Step1PreferencesProps = {
+type Step1PreferencesProps = {
   navigation: NavigationProp<object>;
-}; */
+};
 
-const Step2Preferences = () => {
-  const { control } = useForm({
+const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
     defaultValues: WizardStore.useState((s) => s),
   });
   const isFocused = useIsFocused();
-
   useEffect(() => {
     isFocused &&
       WizardStore.update((s) => {
-        s.progress = 0;
+        s.progress = 25;
       });
   }, [isFocused]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  /* const onSubmit = (data: {
-    phoneNumber: string;
-    location: string;
-    description: string;
+  const onSubmit = (data: {
+    ageGroupMax: string;
+    ageGroupMin: string;
+    partnerGender: string;
   }) => {
     WizardStore.update((s) => {
-      s.progress = 33;
-      s.phoneNumber = data.phoneNumber;
-      s.location = data.location;
-      s.description = data.description;
+      s.progress = 50;
+      s.ageGroupMax = data.ageGroupMax;
+      s.ageGroupMin = data.ageGroupMin;
+      s.partnerGender = data.partnerGender;
     });
-    
+    navigation.navigate("Step2" as never);
     console.log(data);
-  }; */
+  };
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <ProgressBar
@@ -56,11 +58,70 @@ const Step2Preferences = () => {
               <Picker.Item label="Female" value="F" />
             </Picker>
           )}
-          name="preferences.partnerGender"
+          name="partnerGender"
         />
       </View>
       {/* Similarly integrate Controller for other fields */}
-      {/* <Button  onPress={handleSubmit(onSubmit)} /> */}
+
+      {/* //TODO Change this to sliders  */}
+      <View style={styles.formEntry}>
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({ field: { onChange, onBlur, value = "" } }) => (
+            <TextInput
+              mode="outlined"
+              label="Maximal Partner Age"
+              placeholder="Enter Partner Age"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              keyboardType="numeric"
+            />
+          )}
+          name="ageGroupMax"
+        />
+        {errors.ageGroupMax && (
+          <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
+            This is a required field.
+          </Text>
+        )}
+      </View>
+      <View style={styles.formEntry}>
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({ field: { onChange, onBlur, value = "" } }) => (
+            <TextInput
+              mode="outlined"
+              label="Minimal Partner Age"
+              placeholder="Enter Partner Age"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              keyboardType="numeric"
+            />
+          )}
+          name="ageGroupMin"
+        />
+        {errors.ageGroupMin && (
+          <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
+            This is a required field.
+          </Text>
+        )}
+      </View>
+
+      <Button
+        onPress={handleSubmit(onSubmit)}
+        mode="outlined"
+        style={styles.button}
+      >
+        <Text>GOTO STEP TWO</Text>
+      </Button>
     </View>
   );
 };

@@ -1,53 +1,116 @@
-import React from "react";
-import { View, Text, TextInput, Button } from "react-native";
-import { NavigationProp } from "@react-navigation/native";
-
+import { useEffect } from "react";
+import { View, Text } from "react-native";
+import { NavigationProp, useIsFocused } from "@react-navigation/native";
+import { WizardStore } from "../store";
+import { Controller, useForm } from "react-hook-form";
+import { TextInput, Button } from "react-native-paper";
+import { StyleSheet } from "react-native";
 type PreferencesProps = {
   navigation: NavigationProp<object>;
 };
 const Step3Preferences = ({ navigation }: PreferencesProps) => {
-  const [favoriteSong, setFavoriteSong] = React.useState("");
-  const [tags, setTags] = React.useState("");
+  //const [tags, setTags] = React.useState("");
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({ defaultValues: WizardStore.useState((s) => s) });
+  const isFocused = useIsFocused();
 
+  useEffect(() => {
+    isFocused &&
+      WizardStore.update((s) => {
+        s.progress = 50;
+      });
+  }, [isFocused]);
+
+  const onSubmit = (data: { favouriteSong: string; tags: string }) => {
+    WizardStore.update((s) => {
+      s.progress = 75;
+      s.favouriteSong = data.favouriteSong;
+      s.tags = data.tags;
+    });
+    navigation.navigate("Step2" as never);
+    console.log(data);
+  };
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <View style={{ marginBottom: 12 }}>
-        <Text>What is your favorite song?</Text>
-        <TextInput
-          style={{
-            borderWidth: 1,
-            borderColor: "gray",
-            padding: 8,
-            borderRadius: 5,
+      <View style={styles.formEntry}>
+        <Controller
+          control={control}
+          rules={{
+            required: true,
           }}
-          placeholder="Input your favorite song"
-          value={favoriteSong}
-          onChangeText={(text) => setFavoriteSong(text)}
+          render={({ field: { onChange, onBlur, value = "" } }) => (
+            <TextInput
+              mode="outlined"
+              label="What is your favourite song?"
+              placeholder="Enter song name"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              keyboardType="numeric"
+            />
+          )}
+          name="favouriteSong"
         />
+        {errors.favouriteSong && (
+          <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
+            This is a required field.
+          </Text>
+        )}
       </View>
-      <View style={{ marginBottom: 12 }}>
-        <Text>Enter some tags:</Text>
-        <Text style={{ fontSize: 12, color: "gray", marginBottom: 8 }}>
-          (separate with spaces)
-        </Text>
-        <TextInput
-          style={{
-            borderWidth: 1,
-            borderColor: "gray",
-            padding: 8,
-            borderRadius: 5,
+      <View style={styles.formEntry}>
+        <Controller
+          control={control}
+          rules={{
+            required: true,
           }}
-          placeholder="Enter tags"
-          value={tags}
-          onChangeText={(text) => setTags(text)}
+          render={({ field: { onChange, onBlur, value = "" } }) => (
+            <TextInput
+              mode="outlined"
+              label="Enter Some Tags"
+              placeholder="(separate with spaces)"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value} // Ovdje ce biti problema garant
+              keyboardType="numeric"
+            />
+          )}
+          name="tags"
         />
+        {errors.tags && (
+          <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
+            This is a required field.
+          </Text>
+        )}
       </View>
+
       <Button
-        title="Next"
-        onPress={() => navigation.navigate("Step4" as never)}
-      ></Button>
+        onPress={handleSubmit(onSubmit)}
+        mode="outlined"
+        style={styles.button}
+      >
+        <Text>GOTO STEP TWO</Text>
+      </Button>
     </View>
   );
 };
-
+const styles = StyleSheet.create({
+  button: {
+    margin: 8,
+  },
+  // eslint-disable-next-line react-native/no-unused-styles
+  container: {
+    flex: 1,
+  },
+  formEntry: {
+    margin: 8,
+  },
+  // eslint-disable-next-line react-native/no-unused-styles
+  progressBar: {
+    marginBottom: 16,
+    paddingHorizontal: 0,
+  },
+});
 export default Step3Preferences;
