@@ -138,7 +138,15 @@ public class UserService {
         }
         return userRepository.save(user);
     }
+    public User addPhotos(User user,List<String> photos){
+        user.getPhotos().addAll(photos);
+        return userRepository.save(user);
+    }
 
+    public User removePhotos(User user,List<String> photos){
+        user.getPhotos().removeAll(photos);
+        return userRepository.save(user);
+    }
     public User updatePreferences(User user, PreferencesUpdateDTO preferencesUpdateDTO) throws IllegalArgumentException{
         modelMapper.map(preferencesUpdateDTO,user.getPreferences());
         if(user.getPreferences().getAgeGroupMin() > user.getPreferences().getAgeGroupMax()){
