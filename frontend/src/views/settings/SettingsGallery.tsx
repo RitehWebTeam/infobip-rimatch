@@ -8,9 +8,14 @@ import image5 from "@/images/image5.jpg";
 import image6 from "@/images/image6.jpg";
 import * as Dialog from "@radix-ui/react-dialog";
 import MoreVert from "@mui/icons-material/MoreVert";
-import { common } from "@mui/material/colors";
+import { common, amber } from "@mui/material/colors";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
 const userImages = [image1, image2, image3, image4, image5, image6];
+
+function handleSubmit() {
+  console.log("The image is deleted!");
+}
 
 const SettingsGallery = () => {
   return (
@@ -20,10 +25,9 @@ const SettingsGallery = () => {
           <Dialog.Root>
             <Dialog.Trigger asChild>
               <button>
-                {" "}
                 <AddCircle
-                  color="inherit"
-                  className="border-20 rounded-full hover:bg-amber-500"
+                  sx={{ "&:hover": { color: amber[500] } }}
+                  className="border-20 rounded-full"
                 ></AddCircle>
               </button>
             </Dialog.Trigger>
@@ -47,13 +51,28 @@ const SettingsGallery = () => {
                 src={image}
                 className="flex-initial w-46 h-48 rounded-[1rem]"
               />
-              <button>
-                <MoreVert
-                  fontSize="medium"
-                  sx={{ color: common.white }}
-                  className="top-2 right-0 absolute rounded-full hover:bg-zinc-400/40"
-                ></MoreVert>
-              </button>
+
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger asChild>
+                  <MoreVert
+                    fontSize="medium"
+                    sx={{ color: common.white }}
+                    className="top-2 right-0 absolute rounded-full hover:bg-zinc-400/40"
+                  ></MoreVert>
+                </DropdownMenu.Trigger>
+
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content className="group static outline-none bg-gray-100 p-2 h-10 w-20 rounded-md hover:bg-red-500">
+                    <DropdownMenu.Item className="flex text-black text-center text-sm pl-2 rounded-md group-hover:text-white outline-none">
+                      <button type="button" onClick={handleSubmit}>
+                        {" "}
+                        Delete{" "}
+                      </button>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Arrow className="fill-gray-100 group-hover:fill-red-500" />
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
             </div>
           ))}
         </div>
