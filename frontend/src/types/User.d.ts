@@ -33,10 +33,6 @@ export type ProjectedUser = Pick<
   | "tags"
 >;
 
-export interface MatchedUser extends ProjectedUser {
-  chatId: string;
-}
-
 export type UserUpdateData = Partial<{
   age: number;
   description: string;

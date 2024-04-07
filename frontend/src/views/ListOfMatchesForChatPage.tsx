@@ -1,48 +1,61 @@
-import { UsersService } from "@/api/users";
 import ChatListComponent from "@/components/ChatListComponent";
-import { CircularProgress } from "@mui/material";
-import * as MessagesCard from "@/components/GenericCard";
 
-import { useAutoAnimate } from "@formkit/auto-animate/react";
-import useCurrentUserContext from "@/hooks/useCurrentUser";
-import { MessagesService } from "@/api/messages";
+const mockData = [
+  {
+    username: "John",
+    lastMessage: "Hello",
+    time: "12:00",
+    numberOfMessages: 1,
+    picture: "./Default_pfp.svg",
+  },
+  {
+    username: "Jasmin",
+    lastMessage: "hola",
+    time: "14:00",
+    numberOfMessages: 5,
+    picture: "./Default_pfp.svg",
+  },
+  {
+    username: "John ceena",
+    lastMessage: "pa pa pa paaaa",
+    time: "1:00",
+    numberOfMessages: 2,
+    picture: "./Default_pfp.svg",
+  },
+  {
+    username: "John krasinski",
+    lastMessage: "splendid",
+    time: "2:00",
+    numberOfMessages: 1,
+    picture: "./Default_pfp.svg",
+  },
+  {
+    username: "John wick",
+    lastMessage: "and for dessert",
+    time: "19:00",
+    numberOfMessages: 1,
+    picture: "./Default_pfp.svg",
+  },
+];
 
 const ListOfMatchesForChatPage = () => {
-  const query = UsersService.useGetMatches();
-  const [parent] = useAutoAnimate();
-  const currentUser = useCurrentUserContext();
-  MessagesService.useSubscribeToMessages(currentUser.id);
-
-  if (query.isLoading) {
-    return (
-      <MessagesHeader>
-        <div className="flex justify-center items-center h-full w-full text-red-500">
-          <CircularProgress size="3rem" color="inherit" />
-        </div>
-      </MessagesHeader>
-    );
-  }
-
-  if (query.isError || !query.isSuccess) {
-    return <div>Error</div>;
-  }
-
   return (
-    <MessagesHeader>
-      <div ref={parent} className="flex flex-col px-4 w-full">
-        {query.data.map((user) => (
-          <ChatListComponent key={user.id} matchedUser={user} />
-        ))}
-      </div>
-    </MessagesHeader>
+    <div>
+      <div className=" text-center text-4xl mb-3">Messages</div>
+      {mockData.map((data) => {
+        return (
+          <ChatListComponent
+            key={data.username}
+            username={data.username}
+            lastMessage={data.lastMessage}
+            time={data.time}
+            numberOfMessages={data.numberOfMessages}
+            picture={data.picture}
+          />
+        );
+      })}
+    </div>
   );
 };
-
-const MessagesHeader = ({ children }: { children: React.ReactNode }) => (
-  <MessagesCard.Root>
-    <MessagesCard.Header title="Messages" />
-    {children}
-  </MessagesCard.Root>
-);
 
 export default ListOfMatchesForChatPage;

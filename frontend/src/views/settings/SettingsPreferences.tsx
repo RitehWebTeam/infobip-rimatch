@@ -1,4 +1,4 @@
-import * as SettingsCard from "@/components/GenericCard";
+import * as SettingsCard from "@/components/SettingsCard";
 import useCurrentUserContext from "@/hooks/useCurrentUser";
 import { Form, Formik, FormikHelpers } from "formik";
 import { useState } from "react";

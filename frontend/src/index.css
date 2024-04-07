@@ -1,12 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: Montserrat, Inter, system-ui, Avenir, Helvetica, Arial,
-    sans-serif;
+  font-family: Montserrat, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -32,18 +31,18 @@
   background-color: #b9b9b9;
 }
 
-:root.dark {
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #1e1e1e;
-}
-.dark #red-to-black {
-  background: radial-gradient(
-    farthest-corner at 40px 100px,
-    rgba(223, 68, 68, 0.616) 10%,
-    rgb(41, 32, 32) 40%
-  );
-  background-color: #1e1e1e;
-}
+  :root.dark {
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #1e1e1e;
+  }
+  .dark #red-to-black {
+    background: radial-gradient(
+      farthest-corner at 40px 100px,
+      rgba(223, 68, 68, 0.616) 10%,
+      rgb(41, 32, 32) 40%
+    );
+    background-color: #1e1e1e;
+  }
 
 html,
 body,
@@ -54,14 +53,4 @@ body,
   flex-direction: column;
   scroll-behavior: smooth;
   box-sizing: border-box;
-}
-
-.navbar-max-h {
-  max-height: auto;
-}
-@media (max-width: 640px) {
-  .navbar-max-h {
-    max-height: calc(100vh - 97px);
-    margin-top: 0;
-  }
 }

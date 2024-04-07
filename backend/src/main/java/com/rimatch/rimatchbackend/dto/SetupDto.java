@@ -4,13 +4,11 @@ import com.rimatch.rimatchbackend.model.Preferences;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 public class SetupDto {
 
     @Valid
@@ -18,7 +16,7 @@ public class SetupDto {
     @NotNull(message = "Description cannot be null")
     private String description;
 
-    //@NotNull(message = "Profile Image URL cannot be null")
+    @NotNull(message = "Profile Image URL cannot be null")
     private String profileImageUrl;
 
     @NotNull(message = "Phone Number cannot be null")

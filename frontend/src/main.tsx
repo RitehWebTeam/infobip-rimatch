@@ -23,8 +23,6 @@ import SettingsProfilePicture from "./views/settings/SettingsProfilePicture.tsx"
 import { ThemeProvider } from "./context/ThemeProvider.tsx";
 import SettingsTheme from "./views/settings/SettingsTheme.tsx";
 import PotentialUsers from "./views/PotentialUsers.tsx";
-import { StompSessionProvider } from "react-stomp-hooks";
-import ChatLayout from "./views/chat/ChatLayout.tsx";
 
 const router = createBrowserRouter([
   {
@@ -57,13 +55,14 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "messages",
-        element: <ChatLayout />,
+        path: "chat",
+        element: <ChatPage />,
         errorElement: <ErrorPage />,
-        children: [
-          { index: true, element: <ListOfMatchesForChatPage /> },
-          { path: "chat", element: <ChatPage /> },
-        ],
+      },
+      {
+        path: "listOfMatches",
+        element: <ListOfMatchesForChatPage />,
+        errorElement: <ErrorPage />,
       },
     ],
   },
@@ -91,14 +90,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ThemeProvider>
-          <StompSessionProvider
-            url={`${import.meta.env.VITE_BACKEND_WS_URL}/ws`}
-          >
-            <RouterProvider router={router} />
-          </StompSessionProvider>
+          <RouterProvider router={router} />
         </ThemeProvider>
       </AuthProvider>
-      <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-left" />
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
     </QueryClientProvider>
   </React.StrictMode>
 );

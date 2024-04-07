@@ -6,11 +6,7 @@ import type {
   TokenResponse,
 } from "@/types/Auth";
 import { axiosPublic } from "./config/axios";
-import {
-  UseMutationOptions,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { UseMutationOptions, useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import useAuth from "@/hooks/useAuth";
@@ -24,7 +20,6 @@ const AuthService = {
   ) => {
     const [, setRefreshToken] = useLocalStorage<string>("refreshToken", "");
     const { setAuth } = useAuth();
-    const queryClient = useQueryClient();
     return useMutation<RefreshTokenResponse, Error, LoginData>({
       mutationFn: async ({ email, password }) => {
         const response = await axiosPublic.post<RefreshTokenResponse>(
@@ -35,7 +30,6 @@ const AuthService = {
         return response.data;
       },
       onSuccess: ({ token, active, refreshToken }, { email }) => {
-        queryClient.clear();
         setAuth({
           user: {
             email,

@@ -35,15 +35,14 @@ const MatchCard = ({
           <LocationOnIcon color="inherit" fontSize="inherit" />
           <span>{user.location}</span>
         </div>
-        <div
-          className="flex z-10 items-center gap-2 px-5 pb-4 text-white cursor-pointer"
-          onClick={openDetailedProfile}
-        >
+        <div className="flex z-10 items-center gap-2 px-5 pb-4 text-white cursor-pointer" onClick={openDetailedProfile}>
           <div className="flex flex-col gap-2">
             <h2 className="text-white font-bold text-2xl">
               {user.firstName}, {user.age}
             </h2>
-            <p className="m-0 text-sm text-gray-300">{truncatedDescription}</p>
+            <p className="m-0 text-sm text-gray-300">
+              {truncatedDescription}
+            </p>
           </div>
           <InfoIcon />
         </div>

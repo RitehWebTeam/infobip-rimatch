@@ -1,21 +1,21 @@
-import { ProjectedUser } from "@/types/User";
-import { Message } from "@/types/Message";
-
 interface ChatMessageProps {
-  message: Message;
-  user: ProjectedUser;
+  text: string;
+  username: string;
 }
 
-const ChatMessage = ({ message }: ChatMessageProps): JSX.Element => {
-  // const timestamp = useMemo(() => {
-  //   const date = new Date(message.timestamp);
-  //   return `${date.getHours()}:${date.getMinutes()}`;
-  // }, [message.timestamp]);
+const ChatMessage = ({ text, username }: ChatMessageProps): JSX.Element => {
   return (
-    <div className="flex flex-col items-end mr-2 mt-2 ml-12">
-      <p className="text-white text-sm bg-red-500 py-2 px-4 rounded-xl">
-        {message.content}
-      </p>
+    <div className="items-end">
+      {" "}
+      <div className="flex  my-2">
+        <div className="flex flex-col items-end mr-2">
+          <h3 className="text-sm font-medium ">{username}</h3>
+          <p className="text-sm bg-red-500 p-3 rounded-xl">{text}</p>
+        </div>
+        <div className="flex items-center justify-center w-10 h-10 bg-red-300 rounded-full">
+          <img src="./User_pfp.svg" />
+        </div>
+      </div>
     </div>
   );
 };
