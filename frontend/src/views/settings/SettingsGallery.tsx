@@ -1,5 +1,8 @@
 import * as SettingsCard from "@/components/SettingsCard";
+import GalleryDropzone from "@/components/forms/GalleryDropzone";
 import AddCircle from "@mui/icons-material/AddCircle";
+import MoreVert from "@mui/icons-material/MoreVert";
+import { common, amber } from "@mui/material/colors";
 import image1 from "@/images/image1.jpg";
 import image2 from "@/images/image2.jpg";
 import image3 from "@/images/image3.jpg";
@@ -7,14 +10,13 @@ import image4 from "@/images/image4.jpg";
 import image5 from "@/images/image5.jpg";
 import image6 from "@/images/image6.jpg";
 import * as Dialog from "@radix-ui/react-dialog";
-import MoreVert from "@mui/icons-material/MoreVert";
-import { common, amber } from "@mui/material/colors";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { Form, Formik } from "formik";
 
 const userImages = [image1, image2, image3, image4, image5, image6];
 
 function handleSubmit() {
-  console.log("The image is deleted!");
+  console.log("The image is added.");
 }
 
 const SettingsGallery = () => {
@@ -34,11 +36,26 @@ const SettingsGallery = () => {
 
             <Dialog.Portal>
               <Dialog.Overlay className="fixed" />
+              <Dialog.Content className="fixed p-6 bg-gray-100 dark:bg-[#343030] w-90 h-90 top-2/4 left-2/4 rounded-md -translate-x-2/4 -translate-y-2/4">
+                <div className="justify-between flex m-0 pb-3">
+                  <div className="text-black dark:text-white font-semibold">
+                    Upload an image
+                  </div>
+                  <button
+                    type="submit"
+                    onClick={handleSubmit}
+                    className="flex items-center justify-center text-sm bg-red-500 transition duration-300 ease-in-out  hover:bg-red-800 py-2 rounded-xl px-4 text-white font-semibold w-16 h-8"
+                  >
+                    {" "}
+                    Upload
+                  </button>
+                </div>
 
-              <Dialog.Content className="fixed p-6 bg-gray-100 w-80 h-80 top-2/4 left-2/4 rounded-md -translate-x-2/4 -translate-y-2/4">
-                <Dialog.Title className="m-0 text-black font-medium">
-                  Upload an image
-                </Dialog.Title>
+                <Formik initialValues={{ files: null }} onSubmit={handleSubmit}>
+                  <Form>
+                    <GalleryDropzone name="galleryImage" />
+                  </Form>
+                </Formik>
               </Dialog.Content>
             </Dialog.Portal>
           </Dialog.Root>
@@ -63,10 +80,14 @@ const SettingsGallery = () => {
 
                 <DropdownMenu.Portal>
                   <DropdownMenu.Content className="group static outline-none bg-gray-100 p-2 h-10 w-20 rounded-md hover:bg-red-500">
-                    <DropdownMenu.Item className="flex text-black text-center text-sm pl-2 rounded-md group-hover:text-white outline-none">
-                      <button type="button" onClick={handleSubmit}>
-                        {" "}
-                        Delete{" "}
+                    <DropdownMenu.Item className="flex text-black text-center text-sm pl-2 rounded-md transition duration-300 ease-in-out group-hover:text-white outline-none">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          console.log("Image " + image + " is deleted.")
+                        }
+                      >
+                        Delete
                       </button>
                     </DropdownMenu.Item>
                     <DropdownMenu.Arrow className="fill-gray-100 group-hover:fill-red-500" />
