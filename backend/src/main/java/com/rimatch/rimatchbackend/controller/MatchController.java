@@ -33,6 +33,9 @@ public class MatchController {
     @Autowired
     private InfobipClient infobipClient;
 
+    @Value("${infobip.sender-email}")
+    private String SENDER_EMAIL_ADDRESS;
+
     @Value("${infobip.active}")
     private boolean isInfobipActive;
 
@@ -59,7 +62,7 @@ public class MatchController {
 
         if (match != null) {
             if(isInfobipActive) {
-                var recepients = new ArrayList<>(List.of("dominikkovacevic6@gmail.com"));
+                var recepients = new ArrayList<>(List.of(SENDER_EMAIL_ADDRESS));
                 infobipClient.sendEmail(recepients, "You got a match!", user.getFirstName());
                 infobipClient.sendSms(matchedUser.get().getFirstName(), user.getFirstName());
             }

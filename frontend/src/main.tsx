@@ -2,7 +2,6 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthProvider.tsx";
-import MatchCard from "./components/MatchCard.tsx";
 import ErrorPage from "./ErrorPage.tsx";
 import LoginForm from "./views/LoginForm.tsx";
 import RegisterForm from "./views/RegisterForm.tsx";
@@ -23,6 +22,7 @@ import SettingsProfile from "./views/settings/SettingsProfile.tsx";
 import SettingsProfilePicture from "./views/settings/SettingsProfilePicture.tsx";
 import { ThemeProvider } from "./context/ThemeProvider.tsx";
 import SettingsTheme from "./views/settings/SettingsTheme.tsx";
+import PotentialUsers from "./views/PotentialUsers.tsx";
 import { StompSessionProvider } from "react-stomp-hooks";
 import ChatLayout from "./views/chat/ChatLayout.tsx";
 
@@ -32,7 +32,7 @@ const router = createBrowserRouter([
     element: <ProtectedRoutes layout={<Root />} />,
     errorElement: <ErrorPage />,
     children: [
-      { index: true, element: <MatchCard /> },
+      { index: true, element: <PotentialUsers /> },
       {
         path: "matches",
         errorElement: <ErrorPage />,
