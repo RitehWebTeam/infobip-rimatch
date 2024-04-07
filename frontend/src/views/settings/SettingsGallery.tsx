@@ -2,6 +2,7 @@ import * as SettingsCard from "@/components/SettingsCard";
 import GalleryDropzone from "@/components/forms/GalleryDropzone";
 import AddCircle from "@mui/icons-material/AddCircle";
 import MoreVert from "@mui/icons-material/MoreVert";
+import CloseIcon from "@mui/icons-material/Close";
 import { common, amber } from "@mui/material/colors";
 import image1 from "@/images/image1.jpg";
 import image2 from "@/images/image2.jpg";
@@ -35,16 +36,22 @@ const SettingsGallery = () => {
             </Dialog.Trigger>
 
             <Dialog.Portal>
-              <Dialog.Overlay className="fixed" />
-              <Dialog.Content className="fixed p-6 bg-gray-100 dark:bg-[#343030] w-90 h-90 top-2/4 left-2/4 rounded-md -translate-x-2/4 -translate-y-2/4">
-                <div className="justify-between flex m-0 pb-3">
+              <Dialog.Overlay className="fixed inset-0 bg-black/40" />
+              <Dialog.Content className="fixed p-6 bg-gray-100 dark:bg-[#343030] w-100 h-100 top-2/4 left-2/4 rounded-md -translate-x-2/4 -translate-y-2/4">
+                <Dialog.Close asChild>
+                  <button className="absolute top-2 right-2">
+                    <CloseIcon fontSize="small" />
+                  </button>
+                </Dialog.Close>
+
+                <div className="justify-between flex m-0 pt-5 pb-3">
                   <div className="text-black dark:text-white font-semibold">
                     Upload an image
                   </div>
                   <button
                     type="submit"
                     onClick={handleSubmit}
-                    className="flex items-center justify-center text-sm bg-red-500 transition duration-300 ease-in-out  hover:bg-red-800 py-2 rounded-xl px-4 text-white font-semibold w-16 h-8"
+                    className="flex items-center justify-center text-sm bg-red-500 transition duration-300 ease-in-out hover:bg-red-800 py-2 rounded-xl px-4 text-white font-semibold w-16 h-8"
                   >
                     {" "}
                     Upload
