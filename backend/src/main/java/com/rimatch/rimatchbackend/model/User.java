@@ -68,6 +68,8 @@ public class User {
 
     private List<String> seenUserIds = new ArrayList<>();
 
+    private List<String> photos = new ArrayList<>();
+
     private Date lastSeen;
 
     @CreatedDate

@@ -30,6 +30,8 @@ public class DisplayUserDto {
 
     private List<String> tags = new ArrayList<>();
 
+    private String chatId;
+
     public static DisplayUserDto fromUser(User user){
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(user, DisplayUserDto.class);

@@ -9,7 +9,7 @@ const ProfileDetailed = () => {
 
   const user = state?.user as ProjectedUser;
   const goBackToMatches = () => {
-    navigate("../");
+    navigate(-1);
   };
 
   useEffect(() => {
