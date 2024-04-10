@@ -6,6 +6,7 @@ import { Spotify } from "react-spotify-embed";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import cx from "classnames";
 import TelegramIcon from "@mui/icons-material/Telegram";
+import { Link } from "react-router-dom";
 
 interface ProfileCardProps {
   user: ProjectedUser;
@@ -57,9 +58,13 @@ const ProfileCard = ({
             {user.firstName} {user.lastName}, {user.age}
           </h2>
           {showChatIcon && (
-            <button className="flex -mr-3 justify-center text-xl items-center px-2 py-2 rounded-lg border border-[#E8E6EA] dark:border-[#494343] font-semibold  text-red-500 max-h-10">
+            <Link
+              to="/messages/chat"
+              state={{ user }}
+              className="flex -mr-3 justify-center text-xl items-center px-2 py-2 rounded-lg border border-[#E8E6EA] dark:border-[#494343] font-semibold  text-red-500 max-h-10"
+            >
               <TelegramIcon fontSize="inherit" />
-            </button>
+            </Link>
           )}
         </div>
         <section>

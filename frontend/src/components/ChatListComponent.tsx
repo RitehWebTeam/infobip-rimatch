@@ -1,44 +1,61 @@
+import { MessagesService } from "@/api/messages";
+import { MatchedUser } from "@/types/User";
+import { Link } from "react-router-dom";
+import UserAvatar from "./UserAvatar";
+import { useMemo } from "react";
+
 interface ChatListComponentProps {
-  username: string;
-  lastMessage: string;
-  time: string;
-  numberOfMessages: number;
-  picture: string;
+  matchedUser: MatchedUser;
 }
 
-const ChatListComponent = ({
-  username,
-  lastMessage,
-  time,
-  numberOfMessages,
-  picture,
-}: ChatListComponentProps) => {
+const formatMessage = (message: string) => {
+  return message.slice(0, 30) + (message.length > 30 ? "..." : "");
+};
+
+const ChatListComponent = ({ matchedUser }: ChatListComponentProps) => {
+  const { data } = MessagesService.useGetMessages(matchedUser.chatId);
+  const { timestamp, message } = useMemo(() => {
+    const lastMessage = data?.content.at(0);
+    if (!lastMessage) {
+      return {
+        timestamp: "",
+        message: "",
+      };
+    }
+    const sentByCurrentUser = lastMessage.receiverId === matchedUser.id;
+    const prefix = sentByCurrentUser ? "You: " : "";
+    const date = new Date(lastMessage.timestamp);
+    return {
+      timestamp: date.toLocaleTimeString("de-DE", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      message: `${prefix}${formatMessage(lastMessage.content)}`,
+    };
+  }, [data?.content]);
   return (
-    <div className="flex flex-col space-y-4 justify-between ">
-      <div className="flex flex-row items-center justify-between  h-min-10 p-4 border-y-2 border-gray-500 dark:hover:bg-gray-900 hover:bg-gray-200 cursor-pointer">
-        <div className="flex flex-row">
-          <div className="flex items-center justify-center bg-gray-300 rounded-full">
-            <img src={picture} className="w-24 h-22 rounded-full" />
-          </div>
-          <div className="flex flex-row w-full items-center ml-4">
-            <div className="flex flex-col ">
-              <div>
-                <h1 className="text-2xl font-bold">{username}</h1>
-              </div>
-              <div className="flex">
-                <h3 className="text-gray-500">{lastMessage}</h3>
-              </div>
-            </div>
-          </div>
+    <Link
+      to="./chat"
+      state={{ user: matchedUser }}
+      className="flex flex-row items-center justify-between h-min-10 p-4 border-b-2 border-gray-500 dark:hover:bg-gray-900 hover:bg-gray-200 cursor-pointer"
+    >
+      <div className="flex gap-4 items-start">
+        <div className="flex items-center justify-center rounded-full w-16 h-16 flex-shrink-0">
+          <UserAvatar user={matchedUser} />
         </div>
-        <div className="flex flex-col items-center  whitespace-nowrap">
-          <h5 className="text-gray-500 ">{time}</h5>
-          <div className="flex items-center justify-center w-8 h-8 bg-red-400 rounded-full">
-            <h1 className="text-white">{numberOfMessages}</h1>
+        <div className="flex flex-col">
+          <div>
+            <h1 className="text-2xl font-bold">{matchedUser.firstName}</h1>
+          </div>
+          <div className="flex">
+            <h3 className="text-gray-500">{message}</h3>
           </div>
         </div>
       </div>
-    </div>
+      <div className="flex h-full flex-col justify-start  whitespace-nowrap">
+        <h5 className="text-gray-500 ">{timestamp}</h5>
+      </div>
+    </Link>
   );
 };
 

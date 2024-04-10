@@ -59,7 +59,7 @@ const ImageDisplay = ({ file }: ImageDisplayProps) => {
       <img
         src={fileUrl}
         alt="Upload your profile image here"
-        className="flex justify-center items-center text-center text-sm h-64 w-64 rounded-[3.5rem] bg-cover border-2 border-slate-800 shadow-lg cursor-pointer"
+        className="flex justify-center items-center text-center text-sm h-64 w-64 rounded-[3.5rem] object-cover border-2 border-slate-800 shadow-lg cursor-pointer"
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import * as SettingsCard from "@/components/SettingsCard";
+import * as SettingsCard from "@/components/GenericCard";
 import { Theme } from "@/context/ThemeProvider";
 import useTheme from "@/hooks/useTheme";
 import * as RadioGroup from "@radix-ui/react-radio-group";
