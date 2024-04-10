@@ -1,4 +1,4 @@
-import * as SettingsCard from "@/components/SettingsCard";
+import * as SettingsCard from "@/components/GenericCard";
 import GalleryDropzone from "@/components/forms/GalleryDropzone";
 import AddCircle from "@mui/icons-material/AddCircle";
 import MoreVert from "@mui/icons-material/MoreVert";
