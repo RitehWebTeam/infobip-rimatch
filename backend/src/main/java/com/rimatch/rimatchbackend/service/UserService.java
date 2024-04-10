@@ -3,7 +3,9 @@ import com.rimatch.rimatchbackend.dto.*;
 import com.rimatch.rimatchbackend.util.JWTUtils;
 import com.rimatch.rimatchbackend.util.JWTUtils.TokenType;
 import com.rimatch.rimatchbackend.model.User;
+import com.rimatch.rimatchbackend.model.Match;
 import com.rimatch.rimatchbackend.repository.UserRepository;
+import com.rimatch.rimatchbackend.repository.MatchRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 
@@ -28,6 +30,10 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MatchRepository matchRepository;
+
     /*
      * Should be implemented as @Bean in AppConfig but left like this for now
      */
@@ -37,6 +43,9 @@ public class UserService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private MatchService matchService;
     @Autowired
     public UserService(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
@@ -60,13 +69,13 @@ public class UserService {
 
     public LoginResponse loginUser(LoginDto loginInfo) {
         return Optional.ofNullable(userRepository.findByEmail(loginInfo.getEmail()))
-            .filter(user -> passwordEncoder.matches(loginInfo.getPassword(), user.getHashedPassword()))
-            .map(user -> new LoginResponse(
-                jwtUtils.generateAccessToken(user.getEmail()),
-                jwtUtils.generateRefreshToken(user.getEmail()),
-                user.isActive()
-            ))
-            .orElse(null);
+                .filter(user -> passwordEncoder.matches(loginInfo.getPassword(), user.getHashedPassword()))
+                .map(user -> new LoginResponse(
+                        jwtUtils.generateAccessToken(user.getEmail()),
+                        jwtUtils.generateRefreshToken(user.getEmail()),
+                        user.isActive()
+                ))
+                .orElse(null);
     }
 
     @Getter
@@ -153,6 +162,21 @@ public class UserService {
             throw new IllegalArgumentException("ageGroupMin should be lower then ageGroupMax");
         }
         return userRepository.save(user);
+    }
+
+    public void blockUser(User user, String id) {
+        Match match = matchService.findMatch(user.getId(), id);
+
+        if (match != null) {
+            user.getBlockedUsersIds().add(id);
+            match.setAccepted(false);
+
+            matchRepository.save(match);
+            userRepository.save(user);
+        } else {
+            System.out.println("Match not found");
+        }
+
     }
 
     // add more methods as per your requirements

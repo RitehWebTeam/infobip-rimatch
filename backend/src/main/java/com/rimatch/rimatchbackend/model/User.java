@@ -70,6 +70,8 @@ public class User {
 
     private List<String> photos = new ArrayList<>();
 
+    private List<String> blockedUsersIds = new ArrayList<>();
+
     private Date lastSeen;
 
     @CreatedDate
