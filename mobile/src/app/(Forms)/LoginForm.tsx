@@ -7,7 +7,7 @@ import { AxiosError } from "axios";
 
 /* import {  LockIcon, EmailAtIcon } from '../../../assets/SVG'; */
 import { StyleSheet } from "react-native";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 /* import CircularProgress from '@mui/material/CircularProgress'; */
 
 const LoginSchema = Yup.object().shape({
@@ -23,8 +23,9 @@ const initialValues = {
 type LoginValues = typeof initialValues;
 const LoginForm = () => {
   const [loginError, setLoginError] = useState("");
-
+  const navigation = useNavigation();
   const { mutate: login } = AuthService.useLogin();
+  console.log("Login");
   const handleSubmit = (
     values: LoginValues,
     helpers: FormikHelpers<LoginValues>
@@ -33,10 +34,13 @@ const LoginForm = () => {
     setLoginError("");
     login(values, {
       onSuccess: () => {
-        router.replace("/");
+        navigation.navigate("/" as never);
+        console.log("Login successful");
       },
       onError: (error) => {
+        console.log(error);
         if (error instanceof AxiosError && error.response?.status === 401) {
+          console.log(error);
           setLoginError(
             error.response?.data?.message ?? "Invalid email or password"
           );
@@ -56,7 +60,7 @@ const LoginForm = () => {
     },
   });
   return (
-    <View className="flex-1 justify-center items-center  bg-red-400">
+    <View className="flex-1   bg-red-400">
       <Formik
         initialValues={{ email: "", password: "" }}
         validationSchema={LoginSchema}
@@ -130,7 +134,6 @@ const LoginForm = () => {
                 onBlur={handleBlur("password")}
                 value={values.password}
                 placeholder="Password"
-                secureTextEntry
                 style={{ flex: 1, marginLeft: 10 }}
               />
             </View>

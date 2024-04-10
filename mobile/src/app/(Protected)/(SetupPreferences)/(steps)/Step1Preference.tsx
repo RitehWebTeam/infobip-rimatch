@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { Button, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
 
 import { StyleSheet } from "react-native";
+import useLogout from "../../../../hooks/useLogout";
 type Step1PreferencesProps = {
   navigation: NavigationProp<object>;
 };
@@ -17,6 +18,7 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
     control,
     formState: { errors },
   } = useForm({ defaultValues: WizardStore.useState((s) => s) });
+  const logout = useLogout();
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -42,12 +44,15 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
   };
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <ProgressBar
-        progress={WizardStore.getRawState().progress}
-        color={MD3Colors.primary60}
-      />
+      <View>
+        <ProgressBar
+          progress={WizardStore.getRawState().progress}
+          color={MD3Colors.primary60}
+        />
+      </View>
       <View style={{ paddingHorizontal: 16 }}>
         <View style={styles.formEntry}>
+          <Text>Please enter your phone number</Text>
           <Controller
             control={control}
             rules={{
@@ -56,7 +61,7 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
             render={({ field: { onChange, onBlur, value = "" } }) => (
               <TextInput
                 mode="outlined"
-                label="PhoneNumber"
+                label="091 123 4567"
                 placeholder="Enter Phone Number"
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -74,6 +79,7 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
         </View>
 
         <View style={styles.formEntry}>
+          <Text>Where are you from?</Text>
           <Controller
             control={control}
             rules={{
@@ -82,7 +88,6 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
             render={({ field: { onChange, onBlur, value = "" } }) => (
               <TextInput
                 mode="outlined"
-                label="Where are you from?"
                 placeholder="Enter Location"
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -97,13 +102,42 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
             </Text>
           )}
         </View>
+        <View style={styles.formEntry}>
+          <Text>Tell people about yourself</Text>
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value = "" } }) => (
+              <TextInput
+                mode="outlined"
+                multiline
+                numberOfLines={4}
+                placeholder="I like bees..."
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+            name="description"
+          />
+          {errors.description && (
+            <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
+              This is a required field.
+            </Text>
+          )}
+        </View>
 
         <Button
           onPress={handleSubmit(onSubmit)}
           mode="outlined"
           style={styles.button}
         >
-          <Text>GOTO STEP TWO</Text>
+          <Text>NEXT</Text>
+        </Button>
+        <Button onPress={() => logout()} mode="outlined" style={styles.button}>
+          <Text>Logout</Text>
         </Button>
       </View>
     </View>

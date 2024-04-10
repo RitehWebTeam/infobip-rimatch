@@ -5,8 +5,11 @@ import Step3Preferences from "./(steps)/Step3Preference";
 import Step4Preferences from "./(steps)/Step4Preference";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Provider as PaperProvider } from "react-native-paper";
+
+//!Layout for SetupPreferences and all of its steps
 const _layout = () => {
   const Stack = createStackNavigator();
+  console.log("Loading setup preferences");
   return (
     <PaperProvider>
       <Stack.Navigator>

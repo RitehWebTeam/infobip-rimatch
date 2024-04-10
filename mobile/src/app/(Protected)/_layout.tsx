@@ -1,16 +1,15 @@
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import { useState, useEffect } from "react";
 import useRefreshToken from "../../hooks/useRefreshToken";
 import useAuth from "../../hooks/useAuth";
 import { View, ActivityIndicator } from "react-native";
 
+//!Layout used for checking if user is authenticated
 const Layout = () => {
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useRefreshToken();
-
-  //const [isReady, setIsReady] = useState(false);
   const { auth } = useAuth();
-
+  console.log("Layout");
   useEffect(() => {
     let isMounted = true;
 
@@ -34,22 +33,6 @@ const Layout = () => {
     };
   }, [auth?.accessToken, refresh]);
 
-  /* useEffect(() => {
-    if(isReady) {
-      if (!auth?.accessToken) {
-        console.log("Redirecting to login");
-        router.navigate("/LoginForm");
-      } else if (!auth?.active) {
-        console.log("Redirecting to preferences")
-        router.navigate("SetupPreferences");
-      } else {
-        console.log("Redirecting to tabs");
-        router.navigate("(tabs)");
-      }
-    }
-   
-  }, [auth]); */
-  console.log("loading", isLoading);
   // TODO: Add loading spinner
   if (isLoading) {
     return (
@@ -59,14 +42,24 @@ const Layout = () => {
       </View>
     );
   }
-  console.log("loading finished", isLoading);
-  return auth?.accessToken ? (
-    <Stack>
-      <Stack.Screen name="(SetupPreferences)" />
+  console.log("Auth", auth);
+  if (!auth?.accessToken) {
+    //TODO: Return to if no access token
+    console.log("Redirecting to login", auth);
+    return router.navigate("/LoginForm");
+  }
+
+  return auth?.active ? (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="(tabs)" />
     </Stack>
   ) : (
     <Stack>
-      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="(SetupPreferences)" />
     </Stack>
   );
 };

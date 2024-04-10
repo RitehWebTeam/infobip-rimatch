@@ -11,16 +11,69 @@ import {
   Dialog,
 } from "react-native-paper";
 import { NavigationProp } from "@react-navigation/native";
+import { PreferencesInitData } from "../../../../types/User";
+//import { toBase64 } from "../../../../utils";
+import useAuth from "../../../../hooks/useAuth";
+import { UsersService } from "../../../../api/users";
+import { router } from "expo-router";
+
+const initialValues = {
+  description: "",
+  phoneNumber: "",
+  location: "",
+  favouriteSong: "",
+  //profileImageUrl: "",
+  tags: "",
+  preferences: {
+    ageGroupMin: "",
+    ageGroupMax: "",
+    partnerGender: "",
+  },
+};
+
 type PreferencesProps = {
   navigation: NavigationProp<object>;
 };
+
+type SetupPreferencesValues = typeof initialValues & {
+  //profileImageUrl: string | null;
+};
+
+const mapPreferenceValues = async (
+  values: SetupPreferencesValues
+): Promise<PreferencesInitData> => ({
+  ...values,
+  // profileImageUrl: await toBase64(values.profileImageUrl!),
+  preferences: {
+    ageGroupMin: parseInt(values.preferences.ageGroupMin, 10),
+    ageGroupMax: parseInt(values.preferences.ageGroupMax, 10),
+    partnerGender: values.preferences.partnerGender,
+  },
+});
+
 export default function Confirmation({ navigation }: PreferencesProps) {
-  // keep back arrow from showing
+  const { setAuth } = useAuth();
+  const { mutateAsync: initPreferences } = UsersService.useInitPreferences();
+
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => null,
     });
   }, [navigation]);
+
+  const handleSubmit = async (values: SetupPreferencesValues) => {
+    // TODO: Error handling
+
+    const mappedValues = await mapPreferenceValues(values);
+    const response = await initPreferences(mappedValues).then(() => {
+      console.log(response);
+    });
+    setAuth((prev) => ({
+      ...prev!,
+      active: true,
+    }));
+    router.replace("/");
+  };
 
   const information = WizardStore.useState();
 
@@ -34,15 +87,17 @@ export default function Confirmation({ navigation }: PreferencesProps) {
       phoneNumber: "",
       location: "",
       favouriteSong: "",
-      profileImageUrl: "",
-      tags: "", //* Promijeni nazad u []
-      ageGroupMin: "",
-      ageGroupMax: "",
-      partnerGender: "",
+      //profileImageUrl: null,
+      tags: "", //* PRomijeni nazad u []
+      preferences: {
+        ageGroupMin: "",
+        ageGroupMax: "",
+        partnerGender: "",
+      },
       progress: 0,
     });
     setVisible(false);
-    //navigation.replace("Step1");
+    navigation.navigate("Step1" as never);
   };
 
   return (
@@ -73,27 +128,30 @@ export default function Confirmation({ navigation }: PreferencesProps) {
           </Dialog>
         </Portal>
 
-        <SummaryEntry name={information.phoneNumber} label={"Full Name"} />
+        <SummaryEntry name={information.phoneNumber} label={"Phone Number"} />
 
-        <SummaryEntry name={information.description} label={"Age"} />
+        <SummaryEntry name={information.description} label={"Description"} />
 
-        <SummaryEntry name={information.location} label={"Birth Place"} />
+        <SummaryEntry name={information.location} label={"You are from "} />
 
         <SummaryEntry
           name={information.favouriteSong}
-          label={"Mother's Maiden Name"}
+          label={"Your favourite song is"}
         />
 
-        <SummaryEntry
+        {/*  <SummaryEntry
           name={information.profileImageUrl}
           label={"Accepted User Terms"}
-        />
+        /> */}
 
         <SummaryEntry
-          name={information.ageGroupMin}
-          label={"Accepted User Privacy Policy"}
+          name={information.preferences.ageGroupMin}
+          label={"Your minimal partner age is"}
         />
-
+        <SummaryEntry
+          name={information.preferences.ageGroupMin}
+          label={"Your maximum partner age is"}
+        />
         <Button
           style={styles.button}
           mode="outlined"
@@ -104,7 +162,7 @@ export default function Confirmation({ navigation }: PreferencesProps) {
         <Button
           style={styles.button}
           mode="outlined"
-          onPress={() => setVisible(true)}
+          onPress={() => handleSubmit(information)}
         >
           <Text>SaveData</Text>
         </Button>

@@ -5,11 +5,13 @@ export const WizardStore = new Store({
   phoneNumber: "",
   location: "",
   favouriteSong: "",
-  profileImageUrl: "",
+  //profileImageUrl: null,
   tags: "", //* PRomijeni nazad u []
-  ageGroupMin: "",
-  ageGroupMax: "",
-  partnerGender: "",
+  preferences: {
+    ageGroupMin: "",
+    ageGroupMax: "",
+    partnerGender: "",
+  },
   progress: 0,
 });
 

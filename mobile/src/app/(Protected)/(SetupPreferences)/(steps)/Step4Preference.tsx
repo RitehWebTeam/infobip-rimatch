@@ -7,8 +7,8 @@ import ImagePicker, {
 } from "react-native-image-picker"; // Import MediaType
 import { WizardStore } from "../store";
 import { useForm } from "react-hook-form";
-import { Button } from "react-native-paper";
-
+import { Button, MD3Colors, ProgressBar } from "react-native-paper";
+import { StyleSheet } from "react-native";
 type Step1PreferencesProps = {
   navigation: NavigationProp<object>;
 };
@@ -29,12 +29,14 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
       });
   }, [isFocused]);
 
-  const onSubmit = (data: { profileImageUrl: string }) => {
+  const onSubmit = (data: {
+    /* profileImageUrl: string */
+  }) => {
     WizardStore.update((s) => {
       s.progress = 100;
-      s.profileImageUrl = data.profileImageUrl;
+      //s.profileImageUrl = parse data.profileImageUrl;
     });
-    navigation.navigate("Step2" as never);
+    navigation.navigate("Confirmation" as never);
     console.log(data);
   };
   const options: ImageLibraryOptions = {
@@ -56,12 +58,17 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <ProgressBar
+        style={styles.progressBar}
+        progress={WizardStore.useState().progress / 100}
+        color={MD3Colors.primary60}
+      />
       <Text>Choose your profile picture</Text>
       <Text style={{ fontSize: 12, color: "gray", marginBottom: 8 }}>
         Max size: 500 KB
       </Text>
       <Button onPress={showCameraRoll}>
-        <Text>hoose Image</Text>
+        <Text>Choose Image</Text>
       </Button>
       {profileImageUrl && (
         <View style={{ marginTop: 20 }}>
@@ -73,10 +80,21 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
         </View>
       )}
       <Button onPress={handleSubmit(onSubmit)} mode="outlined">
-        <Text>GOTO STEP TWO</Text>
+        <Text>NEXT</Text>
       </Button>
     </View>
   );
 };
+const styles = StyleSheet.create({
+  // eslint-disable-next-line react-native/no-unused-styles
+  container: {
+    flex: 1,
+  },
 
+  // eslint-disable-next-line react-native/no-unused-styles
+  progressBar: {
+    marginBottom: 16,
+    paddingHorizontal: 0,
+  },
+});
 export default Step4Preferences;

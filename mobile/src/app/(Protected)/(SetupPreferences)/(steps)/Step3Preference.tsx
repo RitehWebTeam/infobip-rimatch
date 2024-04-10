@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import { NavigationProp, useIsFocused } from "@react-navigation/native";
 import { WizardStore } from "../store";
 import { Controller, useForm } from "react-hook-form";
-import { TextInput, Button } from "react-native-paper";
+import { TextInput, Button, ProgressBar, MD3Colors } from "react-native-paper";
 import { StyleSheet } from "react-native";
 type PreferencesProps = {
   navigation: NavigationProp<object>;
@@ -30,12 +30,18 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
       s.favouriteSong = data.favouriteSong;
       s.tags = data.tags;
     });
-    navigation.navigate("Step2" as never);
+    navigation.navigate("Step4" as never);
     console.log(data);
   };
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <ProgressBar
+        style={styles.progressBar}
+        progress={WizardStore.useState().progress / 100}
+        color={MD3Colors.primary60}
+      />
       <View style={styles.formEntry}>
+        <Text>What is your favourite song?</Text>
         <Controller
           control={control}
           rules={{
@@ -44,12 +50,10 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
           render={({ field: { onChange, onBlur, value = "" } }) => (
             <TextInput
               mode="outlined"
-              label="What is your favourite song?"
               placeholder="Enter song name"
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
-              keyboardType="numeric"
             />
           )}
           name="favouriteSong"
@@ -61,6 +65,7 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
         )}
       </View>
       <View style={styles.formEntry}>
+        <Text>Enter Some Tags</Text>
         <Controller
           control={control}
           rules={{
@@ -69,12 +74,10 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
           render={({ field: { onChange, onBlur, value = "" } }) => (
             <TextInput
               mode="outlined"
-              label="Enter Some Tags"
               placeholder="(separate with spaces)"
               onBlur={onBlur}
               onChangeText={onChange}
               value={value} // Ovdje ce biti problema garant
-              keyboardType="numeric"
             />
           )}
           name="tags"
@@ -91,7 +94,7 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
         mode="outlined"
         style={styles.button}
       >
-        <Text>GOTO STEP TWO</Text>
+        <Text>NEXT</Text>
       </Button>
     </View>
   );

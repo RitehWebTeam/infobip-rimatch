@@ -8,7 +8,7 @@ export interface User {
   age: number;
   active: boolean;
   description: string;
-  profileImageUrl: string;
+  //profileImageUrl: string;
   phoneNumber: string;
   location: string;
   preferences: UserPreferences;
@@ -55,10 +55,10 @@ interface UserPreferences {
 
 export interface PreferencesInitData {
   description: string;
-  profileImageUrl: string;
+  //profileImageUrl: string;
   phoneNumber: string;
   location: string;
   preferences: UserPreferences;
   favouriteSong: string;
-  tags: string[];
+  tags: string;
 }

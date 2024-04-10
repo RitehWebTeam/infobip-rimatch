@@ -27,17 +27,19 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
   }, [isFocused]);
 
   const onSubmit = (data: {
-    ageGroupMax: string;
-    ageGroupMin: string;
-    partnerGender: string;
+    preferences: {
+      ageGroupMax: string;
+      ageGroupMin: string;
+      partnerGender: string;
+    };
   }) => {
     WizardStore.update((s) => {
       s.progress = 50;
-      s.ageGroupMax = data.ageGroupMax;
-      s.ageGroupMin = data.ageGroupMin;
-      s.partnerGender = data.partnerGender;
+      s.preferences.ageGroupMax = data.preferences.ageGroupMax;
+      s.preferences.ageGroupMin = data.preferences.ageGroupMin;
+      s.preferences.partnerGender = data.preferences.partnerGender;
     });
-    navigation.navigate("Step2" as never);
+    navigation.navigate("Step3" as never);
     console.log(data);
   };
   return (
@@ -58,13 +60,14 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
               <Picker.Item label="Female" value="F" />
             </Picker>
           )}
-          name="partnerGender"
+          name="preferences.partnerGender"
         />
       </View>
       {/* Similarly integrate Controller for other fields */}
 
       {/* //TODO Change this to sliders  */}
       <View style={styles.formEntry}>
+        <Text>Maximal Partner Age</Text>
         <Controller
           control={control}
           rules={{
@@ -73,7 +76,6 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
           render={({ field: { onChange, onBlur, value = "" } }) => (
             <TextInput
               mode="outlined"
-              label="Maximal Partner Age"
               placeholder="Enter Partner Age"
               onBlur={onBlur}
               onChangeText={onChange}
@@ -81,15 +83,16 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
               keyboardType="numeric"
             />
           )}
-          name="ageGroupMax"
+          name="preferences.ageGroupMax"
         />
-        {errors.ageGroupMax && (
+        {errors.preferences?.ageGroupMax && (
           <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
             This is a required field.
           </Text>
         )}
       </View>
       <View style={styles.formEntry}>
+        <Text>Minimal Partner Age</Text>
         <Controller
           control={control}
           rules={{
@@ -98,7 +101,6 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
           render={({ field: { onChange, onBlur, value = "" } }) => (
             <TextInput
               mode="outlined"
-              label="Minimal Partner Age"
               placeholder="Enter Partner Age"
               onBlur={onBlur}
               onChangeText={onChange}
@@ -106,9 +108,9 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
               keyboardType="numeric"
             />
           )}
-          name="ageGroupMin"
+          name="preferences.ageGroupMin"
         />
-        {errors.ageGroupMin && (
+        {errors.preferences?.ageGroupMin && (
           <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
             This is a required field.
           </Text>
@@ -120,7 +122,7 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
         mode="outlined"
         style={styles.button}
       >
-        <Text>GOTO STEP TWO</Text>
+        <Text>NEXT</Text>
       </Button>
     </View>
   );

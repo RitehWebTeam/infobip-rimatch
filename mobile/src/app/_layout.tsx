@@ -5,8 +5,11 @@ import { AuthProvider } from "../context/AuthProvider";
 import { Slot } from "expo-router";
 
 const client = new QueryClient();
+//!Main/Root Layout component
 
 const Layout = () => {
+  console.log("Loading Root");
+
   return (
     <QueryClientProvider client={client}>
       <CurrentUserContextProvider>
