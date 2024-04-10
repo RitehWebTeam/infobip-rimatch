@@ -55,7 +55,7 @@ jobs:
           -e INFOBIP_BASE_URL="${{ secrets.INFOBIP_BASE_URL }}"
           -e INFOBIP_SENDER_EMAIL="${{ secrets.INFOBIP_SENDER_EMAIL }}"
           -e INFOBIP_PHONE_NUMBER="${{ secrets.INFOBIP_PHONE_NUMBER }}"
-          -e AWS_REGION=${{ secrets.AWS_REGION }}"
-          -e AWS_SECRETKEY=${{ secrets.AWS_SECRETKEY }}"
-          -e AWS_ACCESSKEY=${{ secrets.AWS_ACCESSKEY }}"
+          -e AWS_REGION="${{ secrets.AWS_REGION }}"
+          -e AWS_SECRETKEY="${{ secrets.AWS_SECRETKEY }}"
+          -e AWS_ACCESSKEY="${{ secrets.AWS_ACCESSKEY }}"
           --name rimatch-backend-container dominikkovacevic/rimatch
