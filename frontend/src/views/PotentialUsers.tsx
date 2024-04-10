@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { CircularProgress } from "@mui/material";
 import MatchCard from "@/components/MatchCard";
 import ProfileCard from "@/components/ProfileCard";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 
 const PAGE_SIZE = 5;
 
@@ -57,6 +58,9 @@ const PotentialUsers = () => {
     return result.data[currentUserIndex];
   }, [currentUserIndex, result.data]);
 
+  const x = useMotionValue(0);
+  const rotate = useTransform(x, [-10, 0, 10], [-30, 0, 30]);
+
   if (result.isLoading || result.isFetching) {
     return (
       <PotentialUsersContainer>
@@ -98,16 +102,29 @@ const PotentialUsers = () => {
     setIsProfileOpen(false);
   };
 
+  const handleDragEnd = () => {
+    x.set(0);
+  };
+
   return (
     <>
       {!isProfileOpen && (
         <PotentialUsersContainer>
-          <MatchCard
-            user={user}
-            handleNextUser={handleNextUser}
-            openDetailedProfile={openProfile}
-            loading={loading}
-          />
+          <motion.div
+            className="flex flex-col items-center"
+            style={{ x, rotate }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.01}
+            onDragEnd={handleDragEnd}
+          >
+            <MatchCard
+              user={user}
+              handleNextUser={handleNextUser}
+              openDetailedProfile={openProfile}
+              loading={loading}
+            />
+          </motion.div>
         </PotentialUsersContainer>
       )}
       {isProfileOpen && (
