@@ -70,7 +70,6 @@ public class AuthController {
         // TODO: Invalidate refresh token
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String,String> handleValidationException(MethodArgumentNotValidException ex){

@@ -22,7 +22,29 @@ services:
     ports:
       - 8080:8080
       - 5005:5005
-    
+    networks:
+      - backend-network
+
+  mongodb:
+    image: mongo:jammy
+    container_name: mongodb
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    profiles: [local-db]
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge
+volumes:
+  mongodb-data:
 secrets:
   secrets.properties:
     file: ./backend/secrets.properties

@@ -4,6 +4,7 @@ import com.rimatch.rimatchbackend.dto.PreferencesUpdateDTO;
 import com.rimatch.rimatchbackend.dto.SetupDto;
 import com.rimatch.rimatchbackend.dto.UserUpdateDTO;
 import com.rimatch.rimatchbackend.model.User;
+import com.rimatch.rimatchbackend.service.S3Service;
 import com.rimatch.rimatchbackend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -15,10 +16,13 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -27,6 +31,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+     @Autowired
+     private S3Service s3Service;
 
     @GetMapping("/potential")
     public ResponseEntity<?> getPotentinalMatch(HttpServletRequest request) {
@@ -63,7 +70,7 @@ public class UserController {
     }
 
     @PostMapping("/me/setup")
-    public ResponseEntity<?> setupUser(@Valid @RequestBody SetupDto setupDto,HttpServletRequest request){
+    public ResponseEntity<?> setupUser(@Valid @RequestPart("data") SetupDto setupDto, @RequestPart("photo") MultipartFile file, HttpServletRequest request) throws Exception {
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);
         if(user.isActive()){
@@ -74,6 +81,8 @@ public class UserController {
         if(setupDto.getPreferences().getAgeGroupMax() < setupDto.getPreferences().getAgeGroupMin()){
             return ResponseEntity.badRequest().body(createErrorMap("ageGroupMax must be higher or equal to ageGroupMin"));
         }
+        String url = s3Service.uploadFile(file);
+        setupDto.setProfileImageUrl(url);
         user = userService.finishUserSetup(user,setupDto);
         return ResponseEntity.ok(user);
     }
@@ -95,6 +104,58 @@ public class UserController {
         }catch (IllegalArgumentException ex){
             return ResponseEntity.badRequest().body(createErrorMap(ex.getMessage()));
         }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/me/profilePicture")
+    public ResponseEntity<?> changeProfilePicure(@RequestBody MultipartFile photo,HttpServletRequest request){
+        if (!photo.getContentType().startsWith("image/")) {
+            return ResponseEntity.badRequest().body(createErrorMap("File "+photo.getOriginalFilename()+" is not an image so it can't be used!"));
+        }
+        String authToken = request.getHeader("Authorization");
+        User user = userService.getUserByToken(authToken);
+        String newProfileImageUrl;
+        try {
+            newProfileImageUrl = s3Service.uploadFile(photo);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        String profileImageUrl = user.getProfileImageUrl();
+        s3Service.removeFile(s3Service.getObjectFromURL(profileImageUrl));
+        UserUpdateDTO update = new UserUpdateDTO();
+        update.setProfileImageUrl(newProfileImageUrl);
+        userService.updateUser(user,update);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/me/addPhotos")
+    public ResponseEntity<?> uploadPhotos(@RequestBody List<MultipartFile> photos,HttpServletRequest request) throws Exception {
+        for (MultipartFile photo : photos) {
+            if (!photo.getContentType().startsWith("image/")) {
+                return ResponseEntity.badRequest().body(createErrorMap("File "+photo.getOriginalFilename()+" is not an image so it can't be used!"));
+            }
+        }
+        String authToken = request.getHeader("Authorization");
+        User user = userService.getUserByToken(authToken);
+        List<String> urls = new ArrayList<>();
+        for (MultipartFile photo : photos) {
+            String url = s3Service.uploadFile(photo);
+            urls.add(url);
+        }
+        userService.addPhotos(user,urls);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/me/removePhotos")
+    public ResponseEntity<?> removePhotos(@RequestBody List<String> urls, HttpServletRequest request){
+        String authToken = request.getHeader("Authorization");
+        User user = userService.getUserByToken(authToken);
+        List<String> userPhotos = user.getPhotos();
+        urls.retainAll(userPhotos);
+        for(String url:urls){
+                s3Service.removeFile(s3Service.getObjectFromURL(url));
+        }
+        userService.removePhotos(user,urls);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

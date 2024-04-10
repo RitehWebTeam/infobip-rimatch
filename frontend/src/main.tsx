@@ -22,7 +22,10 @@ import SettingsProfile from "./views/settings/SettingsProfile.tsx";
 import SettingsProfilePicture from "./views/settings/SettingsProfilePicture.tsx";
 import { ThemeProvider } from "./context/ThemeProvider.tsx";
 import SettingsTheme from "./views/settings/SettingsTheme.tsx";
+import { StompSessionProvider } from "react-stomp-hooks";
+import ChatLayout from "./views/chat/ChatLayout.tsx";
 import PotentialUsers from "./views/PotentialUsers.tsx";
+import SettingsGallery from "./views/settings/SettingsGallery.tsx";
 
 const router = createBrowserRouter([
   {
@@ -52,17 +55,17 @@ const router = createBrowserRouter([
           { path: "profile", element: <SettingsProfile /> },
           { path: "picture", element: <SettingsProfilePicture /> },
           { path: "theme", element: <SettingsTheme /> },
+          { path: "gallery", element: <SettingsGallery /> },
         ],
       },
       {
-        path: "chat",
-        element: <ChatPage />,
+        path: "messages",
+        element: <ChatLayout />,
         errorElement: <ErrorPage />,
-      },
-      {
-        path: "listOfMatches",
-        element: <ListOfMatchesForChatPage />,
-        errorElement: <ErrorPage />,
+        children: [
+          { index: true, element: <ListOfMatchesForChatPage /> },
+          { path: "chat", element: <ChatPage /> },
+        ],
       },
     ],
   },
@@ -90,10 +93,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ThemeProvider>
-          <RouterProvider router={router} />
+          <StompSessionProvider
+            url={`${import.meta.env.VITE_BACKEND_WS_URL}/ws`}
+          >
+            <RouterProvider router={router} />
+          </StompSessionProvider>
         </ThemeProvider>
       </AuthProvider>
-      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-left" />
     </QueryClientProvider>
   </React.StrictMode>
 );
