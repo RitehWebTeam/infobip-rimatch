@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Service
@@ -66,7 +68,8 @@ public class S3Service {
     }
 
     private String generateFileName(MultipartFile multiPart) {
-        return new Date().getTime() + "-" + multiPart.getOriginalFilename().replace(" ", "_");
+        String encodedFileName = URLEncoder.encode(multiPart.getOriginalFilename(), StandardCharsets.UTF_8);
+        return new Date().getTime() + "-" + encodedFileName;
     }
 
     public String getObjectFromURL(String objectURL) {
