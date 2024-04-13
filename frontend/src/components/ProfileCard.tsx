@@ -7,6 +7,7 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import cx from "classnames";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import { Link } from "react-router-dom";
+import UserActionsDropdown from "./UserActionsDropdown";
 
 interface ProfileCardProps {
   user: ProjectedUser;
@@ -39,10 +40,11 @@ const ProfileCard = ({
   }, [user.tags, loggedInUser.tags]);
   return (
     <div className="bg-white dark:bg-[#343030] flex w-full sm:w-[27rem] flex-col h-fit items-center rounded-lg shadow-lg shadow-black border dark:border-[#343030]">
-      <div className="flex w-full p-2">
+      <div className="flex w-full p-2 items-center justify-between">
         <button type="button" className="font-semibold " onClick={onClose}>
           <KeyboardArrowLeftIcon fontSize="large" />
         </button>
+        <UserActionsDropdown />
       </div>
       <div className="w-full sm:rounded-t-lg bg-[#f3f4f6] dark:bg-[#1e1e1e] flex-grow">
         <img
