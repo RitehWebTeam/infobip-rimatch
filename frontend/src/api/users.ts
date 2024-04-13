@@ -75,4 +75,31 @@ export const UsersService = {
       ...mutationOptions,
     });
   },
+
+  useUpdateProfilePicture: <T = void>(
+    mutationOptions?: Omit<
+      UseMutationOptions<T, Error, File>,
+      "mutationFn" | "onSuccess"
+    >
+  ) => {
+    const axios = useAxiosPrivate();
+    const queryClient = useQueryClient();
+    return useMutation<T, Error, File>({
+      mutationFn: async (file) => {
+        const form = new FormData();
+        form.append("photo", file);
+        const response = await axios.postForm<T>(
+          "/users/me/profilePicture",
+          form
+        );
+        return response.data;
+      },
+      onSuccess: () => {
+        return queryClient.invalidateQueries({
+          queryKey: ["UsersService.getCurrentUser"],
+        });
+      },
+      ...mutationOptions,
+    });
+  },
 };

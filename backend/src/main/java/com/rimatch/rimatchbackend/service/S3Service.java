@@ -2,6 +2,7 @@ package com.rimatch.rimatchbackend.service;
 
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3Uri;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -75,6 +77,8 @@ public class S3Service {
     }
 
     public String getObjectFromURL(String objectURL) {
-        return objectURL.substring(objectURL.lastIndexOf("/") + 1);
+        URI objectUri = URI.create(objectURL);
+        S3Uri s3Uri = s3Client.utilities().parseUri(objectUri);
+        return s3Uri.key().orElseThrow(() -> new RuntimeException("Could not parse key from URL"));
     }
 }

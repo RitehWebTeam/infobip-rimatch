@@ -10,7 +10,7 @@ interface DropzoneProps {
 }
 
 function Dropzone({ name }: DropzoneProps) {
-  const [field, meta, helpers] = useField<File>(name);
+  const [field, meta, helpers] = useField<File | string>(name);
 
   const setValue = async (file: File | null) => {
     helpers.setTouched(true);
@@ -27,7 +27,7 @@ function Dropzone({ name }: DropzoneProps) {
         types={fileTypes}
         dropMessageStyle={{ opactity: 0 }}
       >
-        <ImageDisplay file={field.value} />
+        <ImageDisplay fileOrUrl={field.value} />
       </FileUploader>
       {meta.touched && (
         <div className="text-sm pl-2 text-red-500 mt-5">{meta.error}</div>
@@ -39,15 +39,16 @@ function Dropzone({ name }: DropzoneProps) {
 export default Dropzone;
 
 interface ImageDisplayProps {
-  file?: File;
+  fileOrUrl?: File | string;
   clearFile?: () => void;
 }
 
-const ImageDisplay = ({ file }: ImageDisplayProps) => {
-  const fileUrl = useMemo(
-    () => (file ? URL.createObjectURL(file) : ""),
-    [file]
-  );
+const ImageDisplay = ({ fileOrUrl }: ImageDisplayProps) => {
+  const fileUrl = useMemo(() => {
+    if (typeof fileOrUrl === "string") return fileOrUrl;
+    if (!fileOrUrl) return "";
+    return URL.createObjectURL(fileOrUrl);
+  }, [fileOrUrl]);
   return (
     <div className="relative">
       <button
