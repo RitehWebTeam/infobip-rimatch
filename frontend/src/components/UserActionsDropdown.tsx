@@ -4,13 +4,23 @@ import DoNotDisturbIcon from "@mui/icons-material/DoNotDisturb";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import React, { useState } from "react";
 import { ProjectedUser } from "@/types/User";
+import { useNavigate } from "react-router-dom";
+import { UsersService } from "@/api/users";
 
 interface UserActionsDropdownProps {
   user: ProjectedUser;
 }
 
 const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
+  const navigate = useNavigate();
+  const { mutate: blockUser } = UsersService.useBlockUser();
   const [open, setOpen] = useState(false);
+
+  const blockUserAction = () => {
+    blockUser(user.id);
+    setOpen(false);
+    navigate("..");
+  };
 
   return (
     <DropdownMenu.Root open={open} onOpenChange={setOpen}>
@@ -25,7 +35,7 @@ const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
           className="flex justify-center items-center group static outline-none bg-gray-100  dark:bg-[#585252] rounded-md min-w-16 max-w-[7rem] border border-gray-300 dark:border-[#343030] text-lg"
         >
           <DialogItem
-            action={() => console.log("Blocked")}
+            action={blockUserAction}
             dropdownSetOpen={setOpen}
             triggerChildren={
               <button

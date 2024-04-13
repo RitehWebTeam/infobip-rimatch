@@ -1,6 +1,11 @@
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-import type { PreferencesInitData, User, UserUpdateData } from "@/types/User";
+import type {
+  MatchedUser,
+  PreferencesInitData,
+  User,
+  UserUpdateData,
+} from "@/types/User";
 import {
   UseMutationOptions,
   useMutation,
@@ -156,6 +161,34 @@ export const UsersService = {
             };
           }
         );
+      },
+      ...mutationOptions,
+    });
+  },
+
+  useBlockUser: <T = void>(
+    mutationOptions?: Omit<UseMutationOptions<T, Error, string>, "mutationFn">
+  ) => {
+    const axios = useAxiosPrivate();
+    const queryClient = useQueryClient();
+    return useMutation<T, Error, string>({
+      mutationFn: async (userId) => {
+        const response = await axios.put<T>(`/users/block/${userId}`);
+        return response.data;
+      },
+      onMutate: (userId) => {
+        queryClient.setQueryData<MatchedUser[] | undefined>(
+          ["MatchesService.getMatches"],
+          (oldData) => {
+            if (!oldData?.length) return oldData;
+            return oldData.filter((user) => user.id !== userId);
+          }
+        );
+      },
+      onSettled: () => {
+        return queryClient.invalidateQueries({
+          queryKey: ["MatchesService.getMatches"],
+        });
       },
       ...mutationOptions,
     });
