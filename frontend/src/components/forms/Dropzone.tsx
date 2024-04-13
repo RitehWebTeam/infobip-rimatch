@@ -61,7 +61,7 @@ const ImageDisplay = ({ fileOrUrl }: ImageDisplayProps) => {
       <img
         src={fileUrl}
         alt="Upload your image here"
-        className="flex justify-center items-center text-center text-sm h-64 min-w-[16rem] rounded-[3.5rem] object-cover border-2 border-slate-800 shadow-lg cursor-pointer"
+        className="flex justify-center items-center text-center text-sm h-64 min-w-[16rem] w-[16rem] rounded-[3.5rem] object-cover border-2 border-slate-800 shadow-lg cursor-pointer"
       />
     </div>
   );
