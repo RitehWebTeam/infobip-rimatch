@@ -58,11 +58,13 @@ interface UserPreferences {
 }
 
 export interface PreferencesInitData {
-  description: string;
-  profileImageUrl: string;
-  phoneNumber: string;
-  location: string;
-  preferences: UserPreferences;
-  favouriteSong: string;
-  tags: string[];
+  data: {
+    description: string;
+    phoneNumber: string;
+    location: string;
+    preferences: UserPreferences;
+    favouriteSong: string;
+    tags: string[];
+  };
+  photo: File;
 }

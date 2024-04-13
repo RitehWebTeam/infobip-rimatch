@@ -101,7 +101,7 @@ export const MessagesService = {
         }
       );
       queryClient.setQueryData(
-        ["UsersService.getMatches"],
+        ["MatchesService.getMatches"],
         (oldData: Array<MatchedUser>) =>
           oldData
             ? [...oldData].sort((a, b) => {

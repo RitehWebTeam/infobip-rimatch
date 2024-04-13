@@ -1,12 +1,6 @@
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-import type { Match, MatchData } from "@/types/Match";
-import type {
-  MatchedUser,
-  PreferencesInitData,
-  User,
-  UserUpdateData,
-} from "@/types/User";
+import type { PreferencesInitData, User, UserUpdateData } from "@/types/User";
 import {
   UseMutationOptions,
   useMutation,
@@ -34,84 +28,19 @@ export const UsersService = {
     const axios = useAxiosPrivate();
     return useMutation<T, Error, PreferencesInitData>({
       mutationFn: async (data) => {
-        const response = await axios.post<T>("/users/me/setup", data, {
+        const form = new FormData();
+        form.append(
+          "data",
+          new Blob([JSON.stringify(data.data)], { type: "application/json" })
+        );
+        form.append("photo", data.photo);
+
+        const response = await axios.postForm<T>("/users/me/setup", form, {
           withCredentials: true,
         });
         return response.data;
       },
       ...mutationOptions,
-    });
-  },
-
-  useGetPotentailUsers: (page: number) => {
-    const axios = useAxiosPrivate();
-    return useQuery<User[], Error>({
-      queryKey: ["UsersService.getPotentialUsers", page],
-      queryFn: () => axios.get("/match/potential").then((res) => res.data),
-      staleTime: 60e3,
-    });
-  },
-
-  usePrefetchPotentialUsers: (page: number) => {
-    const axios = useAxiosPrivate();
-    const queryClient = useQueryClient();
-
-    const prefetch = () => {
-      queryClient.prefetchQuery({
-        queryKey: ["UsersService.getPotentialUsers", page + 1],
-        queryFn: () =>
-          axios.get(`/match/potential?skip=3`).then((res) => res.data),
-        staleTime: 60e3,
-      });
-    };
-
-    return prefetch;
-  },
-
-  useAcceptMatch: <T = Match>(
-    mutationOptions?: Omit<
-      UseMutationOptions<T, Error, MatchData>,
-      "mutationFn"
-    >
-  ) => {
-    const axios = useAxiosPrivate();
-    const queryClient = useQueryClient();
-    return useMutation<T, Error, MatchData>({
-      mutationFn: async (data) => {
-        const response = await axios.post<T>("/match/accept", data);
-        return response.data;
-      },
-      ...mutationOptions,
-      onSettled: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["UsersService.getMatches"],
-        });
-      },
-    });
-  },
-
-  useRejectMatch: <T = Match>(
-    mutationOptions?: Omit<
-      UseMutationOptions<T, Error, MatchData>,
-      "mutationFn"
-    >
-  ) => {
-    const axios = useAxiosPrivate();
-    return useMutation<T, Error, MatchData>({
-      mutationFn: async (data) => {
-        const response = await axios.post<T>("/match/reject", data);
-        return response.data;
-      },
-      ...mutationOptions,
-    });
-  },
-
-  useGetMatches: () => {
-    const axios = useAxiosPrivate();
-    return useQuery<MatchedUser[], Error>({
-      queryKey: ["UsersService.getMatches"],
-      queryFn: () => axios.get("/match/all").then((res) => res.data),
-      staleTime: 60e3,
     });
   },
 
@@ -125,7 +54,7 @@ export const UsersService = {
     const queryClient = useQueryClient();
     return useMutation<T, Error, UserUpdateData>({
       mutationFn: async (data) => {
-        // TODO: Please separate this into two different methods, I want to sleep now
+        // TODO: Separate this into two different methods
         const url = data?.preferences
           ? "/users/me/update/preferences"
           : "/users/me/update/user";
@@ -139,7 +68,7 @@ export const UsersService = {
             queryKey: ["UsersService.getCurrentUser"],
           }),
           queryClient.invalidateQueries({
-            queryKey: ["UsersService.getPotentialUsers"],
+            queryKey: ["MatchesService.getPotentialUsers"],
           }),
         ]);
       },

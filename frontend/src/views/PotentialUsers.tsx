@@ -1,9 +1,9 @@
-import { UsersService } from "@/api/users";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { CircularProgress } from "@mui/material";
 import MatchCard from "@/components/MatchCard";
 import ProfileCard from "@/components/ProfileCard";
+import { MatchesService } from "@/api/matches";
 
 const PAGE_SIZE = 5;
 
@@ -11,11 +11,11 @@ const PotentialUsers = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [currentUserIndex, setCurrentUserIndex] = useState(0);
-  const result = UsersService.useGetPotentailUsers(page);
-  const acceptMatch = UsersService.useAcceptMatch();
-  const rejectMatch = UsersService.useRejectMatch();
+  const result = MatchesService.useGetPotentailUsers(page);
+  const acceptMatch = MatchesService.useAcceptMatch();
+  const rejectMatch = MatchesService.useRejectMatch();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const prefetchPotential = UsersService.usePrefetchPotentialUsers(page);
+  const prefetchPotential = MatchesService.usePrefetchPotentialUsers(page);
   const queryClient = useQueryClient();
 
   const handleNextUser = (matchAccept: boolean, userId: string) => {
@@ -46,7 +46,7 @@ const PotentialUsers = () => {
   useEffect(() => {
     return () => {
       queryClient.invalidateQueries({
-        queryKey: ["UsersService.getPotentialUsers"],
+        queryKey: ["MatchesService.getPotentialUsers"],
       });
     };
   }, [queryClient]);

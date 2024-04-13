@@ -1,10 +1,10 @@
-import { UsersService } from "@/api/users";
+import { MatchesService } from "@/api/matches";
 import MatchedUser from "@/components/MatchedUser";
 import { CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const MatchesPage = () => {
-  const query = UsersService.useGetMatches();
+  const query = MatchesService.useGetMatches();
 
   if (query.isLoading) {
     return (

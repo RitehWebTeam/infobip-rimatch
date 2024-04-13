@@ -10,7 +10,6 @@ import useAuth from "@/hooks/useAuth";
 import { useEffect } from "react";
 import * as Yup from "yup";
 import useLogout from "@/hooks/useLogout";
-import { toBase64 } from "@/utils";
 
 const initialValues = {
   description: "",
@@ -18,7 +17,7 @@ const initialValues = {
   location: "",
   favouriteSong: "",
   profileImageUrl: null,
-  tags: [],
+  tags: [] as Array<string>,
   preferences: {
     ageGroupMin: "",
     ageGroupMax: "",
@@ -74,16 +73,22 @@ type SetupPreferencesValues = typeof initialValues & {
   profileImageUrl: File | null;
 };
 
-const mapPreferenceValues = async (
+const mapPreferenceValues = (
   values: SetupPreferencesValues
-): Promise<PreferencesInitData> => ({
-  ...values,
-  profileImageUrl: await toBase64(values.profileImageUrl!),
-  preferences: {
-    ageGroupMin: parseInt(values.preferences.ageGroupMin, 10),
-    ageGroupMax: parseInt(values.preferences.ageGroupMax, 10),
-    partnerGender: values.preferences.partnerGender,
+): PreferencesInitData => ({
+  data: {
+    description: values.description,
+    phoneNumber: values.phoneNumber,
+    location: values.location,
+    favouriteSong: values.favouriteSong,
+    tags: values.tags,
+    preferences: {
+      ageGroupMin: parseInt(values.preferences.ageGroupMin, 10),
+      ageGroupMax: parseInt(values.preferences.ageGroupMax, 10),
+      partnerGender: values.preferences.partnerGender,
+    },
   },
+  photo: values.profileImageUrl!,
 });
 
 const SetupPreferencesPage = () => {
@@ -104,7 +109,7 @@ const SetupPreferencesPage = () => {
   const handleSubmit = async (values: SetupPreferencesValues) => {
     // TODO: Error handling
 
-    const mappedValues = await mapPreferenceValues(values);
+    const mappedValues = mapPreferenceValues(values);
     await initPreferences(mappedValues);
     setAuth((prev) => ({
       ...prev!,
