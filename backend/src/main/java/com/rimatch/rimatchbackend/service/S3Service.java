@@ -53,6 +53,18 @@ public class S3Service {
         return s3Client.utilities().getUrl(getUrlRequest).toString();
     }
 
+    public void removeImage(String imageUrl) {
+        String fileName = null;
+        try {
+            fileName = getObjectFromURL(imageUrl);
+        } catch (IllegalArgumentException e) {
+            // Old images are stored as base64 strings, so getting the object from URL will fail
+            // and we can ignore that exception
+            return;
+        }
+        removeFile(fileName);
+    }
+
     public void removeFile(String fileName) {
         try {
             DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
