@@ -9,6 +9,7 @@ export interface User {
   active: boolean;
   description: string;
   profileImageUrl: string;
+  photos: Array<string>;
   phoneNumber: string;
   location: string;
   preferences: UserPreferences;
@@ -16,7 +17,7 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   favouriteSong: string;
-  tags: string[];
+  tags: Array<string>;
 }
 
 export type ProjectedUser = Pick<
@@ -31,6 +32,7 @@ export type ProjectedUser = Pick<
   | "age"
   | "favouriteSong"
   | "tags"
+  | "photos"
 >;
 
 export interface MatchedUser extends ProjectedUser {

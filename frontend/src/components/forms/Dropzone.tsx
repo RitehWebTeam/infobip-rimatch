@@ -7,9 +7,10 @@ const fileTypes = ["JPG", "JPEG"];
 
 interface DropzoneProps {
   name: string;
+  multiple?: boolean;
 }
 
-function Dropzone({ name }: DropzoneProps) {
+function Dropzone({ name, multiple = false }: DropzoneProps) {
   const [field, meta, helpers] = useField<File | string>(name);
 
   const setValue = async (file: File | null) => {
@@ -21,7 +22,7 @@ function Dropzone({ name }: DropzoneProps) {
     <div className="w-full flex flex-col items-center justify-center ">
       <FileUploader
         classes="focus-within:outline focus-within:outline-2 outline-slate-500 outline-offset-4 rounded-[3.5rem]"
-        multiple={false}
+        multiple={multiple}
         handleChange={setValue}
         name="file"
         types={fileTypes}
@@ -59,8 +60,8 @@ const ImageDisplay = ({ fileOrUrl }: ImageDisplayProps) => {
       </button>
       <img
         src={fileUrl}
-        alt="Upload your profile image here"
-        className="flex justify-center items-center text-center text-sm h-64 w-64 rounded-[3.5rem] object-cover border-2 border-slate-800 shadow-lg cursor-pointer"
+        alt="Upload your image here"
+        className="flex justify-center items-center text-center text-sm h-64 min-w-[16rem] rounded-[3.5rem] object-cover border-2 border-slate-800 shadow-lg cursor-pointer"
       />
     </div>
   );

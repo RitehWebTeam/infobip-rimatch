@@ -13,7 +13,7 @@ export const Header = ({ children, title }: HeaderCardProps) => {
         <Link to=".." type="button" className="font-semibold">
           <KeyboardArrowLeftIcon fontSize="large" />
         </Link>
-        <div className="text-black dark:text-red-500 font-bold">{title}</div>
+        <h2 className="text-black dark:text-red-500 font-bold">{title}</h2>
       </div>
       {children}
     </div>

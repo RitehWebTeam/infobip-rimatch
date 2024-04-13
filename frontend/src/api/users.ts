@@ -102,4 +102,62 @@ export const UsersService = {
       ...mutationOptions,
     });
   },
+
+  useAddUserPhotos: <T = void>(
+    mutationOptions?: Omit<
+      UseMutationOptions<T, Error, File[]>,
+      "mutationFn" | "onSuccess"
+    >
+  ) => {
+    const axios = useAxiosPrivate();
+    const queryClient = useQueryClient();
+    return useMutation<T, Error, File[]>({
+      mutationFn: async (files) => {
+        const form = new FormData();
+        files.forEach((file) => form.append("photos", file));
+        const response = await axios.postForm<T>("/users/me/addPhotos", form);
+        return response.data;
+      },
+      onSuccess: () => {
+        return queryClient.invalidateQueries({
+          queryKey: ["UsersService.getCurrentUser"],
+        });
+      },
+      ...mutationOptions,
+    });
+  },
+
+  useRemoveUserPhotos: <T = void>(
+    mutationOptions?: Omit<
+      UseMutationOptions<T, Error, Array<string>>,
+      "mutationFn" | "onSuccess"
+    >
+  ) => {
+    const axios = useAxiosPrivate();
+    const queryClient = useQueryClient();
+    return useMutation<T, Error, Array<string>>({
+      mutationFn: async (urls) => {
+        const response = await axios.post<T>("/users/me/removePhotos", urls);
+        return response.data;
+      },
+      onSuccess: () => {
+        return queryClient.invalidateQueries({
+          queryKey: ["UsersService.getCurrentUser"],
+        });
+      },
+      onMutate: (urls) => {
+        queryClient.setQueryData<User | undefined>(
+          ["UsersService.getCurrentUser"],
+          (oldData) => {
+            if (!oldData) return oldData;
+            return {
+              ...oldData,
+              photos: oldData.photos.filter((photo) => !urls.includes(photo)),
+            };
+          }
+        );
+      },
+      ...mutationOptions,
+    });
+  },
 };
