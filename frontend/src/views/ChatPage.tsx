@@ -137,9 +137,13 @@ const ChatPageHeader = ({ children, user }: ChatPageHeaderProps) => (
         <Link to=".." type="button" className="font-semibold text-4xl">
           <KeyboardArrowLeftIcon fontSize="inherit" />
         </Link>
-        <div className="text-black dark:text-red-500 font-bold">
+        <Link
+          to="/matches/profile"
+          state={{ user }}
+          className="text-black dark:text-red-500 font-bold"
+        >
           {user.firstName}
-        </div>
+        </Link>
       </div>
       <div className="flex items-center gap-2">
         <Link
@@ -149,7 +153,7 @@ const ChatPageHeader = ({ children, user }: ChatPageHeaderProps) => (
         >
           <UserAvatar user={user} />
         </Link>
-        <UserActionsDropdown />
+        <UserActionsDropdown user={user} />
       </div>
     </div>
     {children}
