@@ -7,10 +7,11 @@ const fileTypes = ["JPG", "JPEG"];
 
 interface DropzoneProps {
   name: string;
+  multiple?: boolean;
 }
 
-function Dropzone({ name }: DropzoneProps) {
-  const [field, meta, helpers] = useField<File>(name);
+function Dropzone({ name, multiple = false }: DropzoneProps) {
+  const [field, meta, helpers] = useField<File | string>(name);
 
   const setValue = async (file: File | null) => {
     helpers.setTouched(true);
@@ -21,13 +22,13 @@ function Dropzone({ name }: DropzoneProps) {
     <div className="w-full flex flex-col items-center justify-center ">
       <FileUploader
         classes="focus-within:outline focus-within:outline-2 outline-slate-500 outline-offset-4 rounded-[3.5rem]"
-        multiple={false}
+        multiple={multiple}
         handleChange={setValue}
         name="file"
         types={fileTypes}
         dropMessageStyle={{ opactity: 0 }}
       >
-        <ImageDisplay file={field.value} />
+        <ImageDisplay fileOrUrl={field.value} />
       </FileUploader>
       {meta.touched && (
         <div className="text-sm pl-2 text-red-500 mt-5">{meta.error}</div>
@@ -39,15 +40,16 @@ function Dropzone({ name }: DropzoneProps) {
 export default Dropzone;
 
 interface ImageDisplayProps {
-  file?: File;
+  fileOrUrl?: File | string;
   clearFile?: () => void;
 }
 
-const ImageDisplay = ({ file }: ImageDisplayProps) => {
-  const fileUrl = useMemo(
-    () => (file ? URL.createObjectURL(file) : ""),
-    [file]
-  );
+const ImageDisplay = ({ fileOrUrl }: ImageDisplayProps) => {
+  const fileUrl = useMemo(() => {
+    if (typeof fileOrUrl === "string") return fileOrUrl;
+    if (!fileOrUrl) return "";
+    return URL.createObjectURL(fileOrUrl);
+  }, [fileOrUrl]);
   return (
     <div className="relative">
       <button
@@ -58,8 +60,8 @@ const ImageDisplay = ({ file }: ImageDisplayProps) => {
       </button>
       <img
         src={fileUrl}
-        alt="Upload your profile image here"
-        className="flex justify-center items-center text-center text-sm h-64 w-64 rounded-[3.5rem] object-cover border-2 border-slate-800 shadow-lg cursor-pointer"
+        alt="Upload your image here"
+        className="flex justify-center items-center text-center text-sm h-64 min-w-[16rem] w-[16rem] rounded-[3.5rem] object-cover border-2 border-slate-800 shadow-lg cursor-pointer"
       />
     </div>
   );

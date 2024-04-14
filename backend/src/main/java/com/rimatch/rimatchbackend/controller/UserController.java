@@ -120,8 +120,10 @@ public class UserController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        String profileImageUrl = user.getProfileImageUrl();
-        s3Service.removeFile(s3Service.getObjectFromURL(profileImageUrl));
+
+        String oldProfileImageUrl = user.getProfileImageUrl();
+        s3Service.removeImage(oldProfileImageUrl);
+        
         UserUpdateDTO update = new UserUpdateDTO();
         update.setProfileImageUrl(newProfileImageUrl);
         userService.updateUser(user,update);

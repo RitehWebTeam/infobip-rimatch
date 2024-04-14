@@ -1,4 +1,3 @@
-import { UsersService } from "@/api/users";
 import ChatListComponent from "@/components/ChatListComponent";
 import { CircularProgress } from "@mui/material";
 import * as MessagesCard from "@/components/GenericCard";
@@ -6,9 +5,10 @@ import * as MessagesCard from "@/components/GenericCard";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import useCurrentUserContext from "@/hooks/useCurrentUser";
 import { MessagesService } from "@/api/messages";
+import { MatchesService } from "@/api/matches";
 
 const ListOfMatchesForChatPage = () => {
-  const query = UsersService.useGetMatches();
+  const query = MatchesService.useGetMatches();
   const [parent] = useAutoAnimate();
   const currentUser = useCurrentUserContext();
   MessagesService.useSubscribeToMessages(currentUser.id);
