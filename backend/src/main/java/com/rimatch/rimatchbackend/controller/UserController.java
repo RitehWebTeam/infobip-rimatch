@@ -120,8 +120,10 @@ public class UserController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        String profileImageUrl = user.getProfileImageUrl();
-        s3Service.removeFile(s3Service.getObjectFromURL(profileImageUrl));
+
+        String oldProfileImageUrl = user.getProfileImageUrl();
+        s3Service.removeImage(oldProfileImageUrl);
+        
         UserUpdateDTO update = new UserUpdateDTO();
         update.setProfileImageUrl(newProfileImageUrl);
         userService.updateUser(user,update);
@@ -156,6 +158,14 @@ public class UserController {
                 s3Service.removeFile(s3Service.getObjectFromURL(url));
         }
         userService.removePhotos(user,urls);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/block/{id}")
+    public ResponseEntity<User> blockUser(@PathVariable String id, HttpServletRequest request) {
+        String authToken = request.getHeader("Authorization");
+        User user = userService.getUserByToken(authToken);
+        userService.blockUser(user, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

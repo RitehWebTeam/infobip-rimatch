@@ -13,6 +13,7 @@ import ChatInput from "@/components/chat/ChatInput";
 import { useInView } from "react-intersection-observer";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import UserActionsDropdown from "@/components/UserActionsDropdown";
 const initialValues = {
   message: "",
 };
@@ -136,17 +137,24 @@ const ChatPageHeader = ({ children, user }: ChatPageHeaderProps) => (
         <Link to=".." type="button" className="font-semibold text-4xl">
           <KeyboardArrowLeftIcon fontSize="inherit" />
         </Link>
-        <div className="text-black dark:text-red-500 font-bold">
+        <Link
+          to="/matches/profile"
+          state={{ user }}
+          className="text-black dark:text-red-500 font-bold"
+        >
           {user.firstName}
-        </div>
+        </Link>
       </div>
-      <Link
-        to="/matches/profile"
-        state={{ user }}
-        className="flex items-center justify-center w-12 h-12 bg-gray-300 rounded-full"
-      >
-        <UserAvatar user={user} />
-      </Link>
+      <div className="flex items-center gap-2">
+        <Link
+          to="/matches/profile"
+          state={{ user }}
+          className="flex items-center justify-center w-12 h-12 bg-gray-300 rounded-full"
+        >
+          <UserAvatar user={user} />
+        </Link>
+        <UserActionsDropdown user={user} />
+      </div>
     </div>
     {children}
   </div>
