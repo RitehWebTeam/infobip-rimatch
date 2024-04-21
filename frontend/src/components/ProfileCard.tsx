@@ -38,6 +38,9 @@ const ProfileCard = ({
     }));
     return matchTags.sort((a) => (a.matched ? -1 : 1));
   }, [user.tags, loggedInUser.tags]);
+
+  const matchedImages = user.photos;
+
   return (
     <div className="bg-white dark:bg-[#343030] flex w-full sm:w-[27rem] flex-col h-fit items-center rounded-lg shadow-lg shadow-black border dark:border-[#343030]">
       <div className="flex w-full p-2 items-center justify-between">
@@ -95,6 +98,22 @@ const ProfileCard = ({
               {user.favouriteSong}
             </p>
           )}
+        </section>
+
+        <section className="relative">
+          <h3 className="font-semibold mb-1">Gallery</h3>
+
+          <div className="grid gap-x-3 gap-y-4 grid-cols-3">
+            {matchedImages.map((image, index) => (
+              <div className="relative" key={index}>
+                <img
+                  srcSet={image}
+                  className="flex-initial w-46 h-48 rounded-[1rem] object-center object-cover"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
         </section>
       </div>
     </div>
