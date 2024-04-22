@@ -2,22 +2,21 @@ import CurrentUserContextProvider from "../context/CurrentUserProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "../context/AuthProvider";
 import { Slot } from "expo-router";
+import { PaperProvider } from "react-native-paper";
 
 //!Main/Root Layout component
 const client = new QueryClient();
 const Layout = () => {
-  console.log("Loading Root");
-
   return (
-      
     <QueryClientProvider client={client}>
-    <CurrentUserContextProvider>
-      <AuthProvider>
-        <Slot />
-      </AuthProvider>
-    </CurrentUserContextProvider>
-  </QueryClientProvider>
-      
+      <CurrentUserContextProvider>
+        <AuthProvider>
+          <PaperProvider>
+            <Slot />
+          </PaperProvider>
+        </AuthProvider>
+      </CurrentUserContextProvider>
+    </QueryClientProvider>
   );
 };
 
