@@ -44,7 +44,7 @@ const ProfileCard = ({
         <button type="button" className="font-semibold " onClick={onClose}>
           <KeyboardArrowLeftIcon fontSize="large" />
         </button>
-        <UserActionsDropdown user={user} />
+        {showChatIcon && <UserActionsDropdown user={user} />}
       </div>
       <div className="w-full sm:rounded-t-lg bg-[#f3f4f6] dark:bg-[#1e1e1e] flex-grow">
         <img
