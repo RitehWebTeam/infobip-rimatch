@@ -28,7 +28,6 @@ services:
   mongodb:
     image: mongo:jammy
     container_name: mongodb
-    restart: always
     ports:
       - 27017:27017
     volumes:
