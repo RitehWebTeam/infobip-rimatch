@@ -330,8 +330,8 @@ const GenderPicker = () => {
         setItems={setItems}
         onChangeValue={updateFormikValue}
         zIndex={10}
-        style={{
-          borderColor: hasError ? theme.colors.error : theme.colors.primary,
+        style={{    
+          borderColor: 'gray',
           borderWidth: hasError ? 2 : 1,
           backgroundColor: theme.colors.background,
         }}

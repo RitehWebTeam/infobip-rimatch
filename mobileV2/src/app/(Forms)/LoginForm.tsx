@@ -1,14 +1,18 @@
 import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Button } from "react-native";
 import { Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import AuthService from "../../api/auth";
 import { AxiosError } from "axios";
-
-/* import {  LockIcon, EmailAtIcon } from '../../../assets/SVG'; */
-
-import { router, useNavigation } from "expo-router";
-/* import CircularProgress from '@mui/material/CircularProgress'; */
+import { Ionicons } from "@expo/vector-icons";
+import { Link, useNavigation } from "expo-router";
+import { View } from "react-native";
+import {
+  TextInput,
+  Text,
+  HelperText,
+  Button,
+  useTheme,
+} from "react-native-paper";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().required("Required"),
@@ -22,23 +26,21 @@ const initialValues = {
 };
 type LoginValues = typeof initialValues;
 const LoginForm = () => {
+  const theme = useTheme();
   const [loginError, setLoginError] = useState("");
   const navigation = useNavigation();
   const { mutate: login } = AuthService.useLogin();
-  console.log("Login");
   const handleSubmit = (
     values: LoginValues,
     helpers: FormikHelpers<LoginValues>
   ) => {
     helpers.setSubmitting(true);
-    
+
     setLoginError("");
     login(values, {
       onSuccess: () => {
-
         console.log("Login successful");
         navigation.navigate("(Protected)" as never);
-        
       },
       onError: (error) => {
         console.log(error);
@@ -57,116 +59,118 @@ const LoginForm = () => {
     });
   };
 
- 
   return (
-    <View style={{
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'red'
-    
-    }}>
-      <Formik
-        initialValues={{ email: "", password: "" }}
-        validationSchema={LoginSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
-          <View
-            style={{
-              width: "80%",
-              backgroundColor: "white",
-              borderRadius: 20,
-              padding: 20,
-            }}
-          >
+    <Formik
+      initialValues={initialValues}
+      validationSchema={LoginSchema}
+      onSubmit={handleSubmit}
+      validate={() => setLoginError("")}
+    >
+      {({
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        isSubmitting,
+        values,
+        errors,
+        touched,
+      }) => (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            paddingHorizontal: 40,
+            flexDirection: "column",
+            rowGap: 60,
+          }}
+        >
+          <View>
             <Text
-             
-               
+              variant="displayMedium"
+              style={{ color: theme.colors.primary, fontWeight: "700" }}
             >
               RiMatch
             </Text>
-            <Text
-              style={{ textAlign: "center", fontSize: 16, marginBottom: 20 }}
-            >
-              Welcome Back
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                borderWidth: 2,
-                borderColor: "black",
-                borderRadius: 10,
-                paddingVertical: 10,
-                paddingHorizontal: 20,
-                marginBottom: 10,
-              }}
-            >
-              {/* <EmailAtIcon />   */}
+            <Text variant="headlineMedium">Welcome back!</Text>
+          </View>
+          <View>
+            <View>
               <TextInput
+                label="Email"
+                mode="outlined"
+                error={!!errors.email && touched.email}
                 onChangeText={handleChange("email")}
                 onBlur={handleBlur("email")}
                 value={values.email}
-                placeholder="Email address"
-                keyboardType="email-address"
-                style={{ flex: 1, marginLeft: 10 }}
+                left={
+                  <TextInput.Icon
+                    icon={({ color }) => (
+                      <Ionicons name="at" size={18} color={color} />
+                    )}
+                  />
+                }
               />
+              <HelperText
+                type="error"
+                visible={!!errors.email && touched.email}
+              >
+                {touched.email && errors.email}
+              </HelperText>
             </View>
-            
-            <Text style={{ color: "red" }}>{errors.email}</Text>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                borderWidth: 2,
-                borderColor: "black",
-                borderRadius: 10,
-                paddingVertical: 10,
-                paddingHorizontal: 20,
-                marginBottom: 10,
-              }}
-            >
-              {/* <LockIcon />  */}
+            <View>
               <TextInput
+                label="Password"
+                mode="outlined"
+                error={!!errors.password && touched.password}
                 onChangeText={handleChange("password")}
                 onBlur={handleBlur("password")}
                 value={values.password}
-                placeholder="Password"
-                style={{ flex: 1, marginLeft: 10 }}
+                secureTextEntry
+                left={
+                  <TextInput.Icon
+                    icon={({ color }) => (
+                      <Ionicons name="lock-closed" size={18} color={color} />
+                    )}
+                  />
+                }
               />
+              <HelperText
+                type="error"
+                visible={!!errors.password && touched.password}
+              >
+                {touched.password && errors.password}
+              </HelperText>
             </View>
-            <Text style={{ color: "red" }}>{errors.password}</Text>
-            <Text style={{ color: "red" }}>{loginError}</Text>
-            <Button title="Login" onPress={() => handleSubmit()}></Button>
-            {/*  <Button
-              
-             
-            >
-              {isSubmitting ? <CircularProgress size="small" color="inherit" /> : <Text style={{ color: 'white', fontWeight: 'bold' }}>Login</Text>}
-            </Button> */}
-            <TouchableOpacity
-              /* onPress={() => navigation.navigate('ForgotPassword')} */
-              style={{ marginTop: 10 }}
-            >
-              <Text style={{ color: "white", fontWeight: "bold" }}>
-                Forgot Password?
+            <HelperText type="error" visible={!!loginError}>
+              {loginError}
+            </HelperText>
+            <View style={{ display: "flex", rowGap: 15 }}>
+              <Button
+                mode="contained"
+                onPress={() => handleSubmit()}
+                loading={isSubmitting}
+                disabled={isSubmitting}
+              >
+                Login
+              </Button>
+              <Text variant="bodyMedium" style={{ textAlign: "center" }}>
+                Don't have an account?{" "}
+                <Link
+                  href={"/RegisterForm"}
+                  style={{
+                    color: theme.colors.primary,
+                    fontWeight: "700",
+                    textDecorationLine: "underline",
+                  }}
+                >
+                  Register here
+                </Link>
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                router.push("/RegisterForm");
-              }}
-              style={{ marginTop: 10 }}
-            >
-              <Text style={{ color: "red", fontWeight: "bold" }}>
-                Don &apost have an account? Sign up here!
-              </Text>
-            </TouchableOpacity>
+            </View>
           </View>
-        )}
-      </Formik>
-    </View>
+        </View>
+      )}
+    </Formik>
   );
 };
 
