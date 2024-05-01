@@ -69,7 +69,7 @@ const ProfileCard = ({
         />
       </div>
 
-      <div className="flex flex-col gap-8 bg-white dark:bg-[#343030] h-full w-full mt-[-2rem] rounded-t-[2rem] rounded-lg px-12 pt-10 pb-10 z-10">
+      <div className="flex flex-col gap-8 bg-white dark:bg-[#343030] h-full w-full mt-[-2rem] rounded-t-[2rem] rounded-lg px-12 pt-10 pb-10">
         <div className="flex w-full justify-between gap-4">
           <h2 className="text-2xl font-semibold dark:text-red-500">
             {user.firstName} {user.lastName}, {user.age}
