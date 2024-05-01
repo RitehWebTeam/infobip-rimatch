@@ -49,6 +49,10 @@ const ProfileCard = ({
     setOpenModal(image);
   }
 
+  function handleCloseImageDisplay() {
+    setOpenModal("");
+  }
+
   return (
     <div className="bg-white dark:bg-[#343030] flex w-full sm:w-[27rem] flex-col h-fit items-center rounded-lg shadow-lg shadow-black border dark:border-[#343030]">
       <div className="flex w-full p-2 items-center justify-between">
@@ -122,7 +126,12 @@ const ProfileCard = ({
                     handleImageDisplay(image);
                   }}
                 />
-                {openModal && <ImageModal image={openModal} />}
+                {openModal && (
+                  <ImageModal
+                    image={openModal}
+                    handleClose={handleCloseImageDisplay}
+                  />
+                )}
               </div>
             ))}
           </div>
