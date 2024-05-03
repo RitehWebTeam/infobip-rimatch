@@ -147,10 +147,10 @@ The simplest way to start the app is using [Docker][docker-url] so make sure you
 </details>
 <br/>
 
-- [ ] Blocking users
+- [x] Blocking users
 - [ ] Reporting users
-- [ ] Saving images to S3
-- [ ] Image gallery
+- [x] Saving images to S3
+- [x] Image gallery
 - [ ] Design improvements
 - [ ] Improved recommendation algorithm
   - [ ] Geolocation
