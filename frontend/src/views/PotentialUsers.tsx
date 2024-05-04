@@ -103,6 +103,18 @@ const PotentialUsers = () => {
   };
 
   const handleDragEnd = () => {
+    // Assuming the threshold for "right" or "left" is 50% of the container width
+    const threshold = 0.5;
+
+    // Get the current x value
+    const dragValue = x.get();
+
+    if (dragValue > threshold * window.innerWidth) {
+      handleNextUser(false, user.id);
+    } else {
+      handleNextUser(true, user.id);
+    }
+
     x.set(0);
   };
 
