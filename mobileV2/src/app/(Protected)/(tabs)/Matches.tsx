@@ -1,8 +1,100 @@
-import { View, StyleSheet, FlatList, Image } from "react-native";
-import { Text } from "react-native-paper";
+import { View, StyleSheet, FlatList, Pressable } from "react-native";
+import { ActivityIndicator, Text, useTheme } from "react-native-paper";
+import MatchedUserCard from "../../../components/MatchedUserCard";
+import { ProjectedUser } from "../../../types/User";
+import { UsersService } from "../../../api/users";
+import { Link } from "expo-router";
 
+const items = [1, 2, 3, 4, 5];
+const users = items.map<ProjectedUser>((item) => ({
+  id: item.toString(),
+  firstName: "John",
+  age: 21,
+  profileImageUrl:
+    "https://firebasestorage.googleapis.com/v0/b/twitterclone-b784a.appspot.com/o/DSC_0050.JPG?alt=media&token=c6e6f3ad-2027-4595-a2f0-be799341d906",
+  description: "I am a software engineer",
+  location: "Lagos, Nigeria",
+  favouriteSong: "Love Story",
+  gender: "M",
+  lastName: "Doe",
+  tags: ["#software", "#engineer"],
+}));
 const Matches = () => {
-  return <MatchHeader />;
+  const query = UsersService.useGetMatches();
+  const theme = useTheme();
+
+  if (query.isLoading) {
+    return (
+      <MatchHeader>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator animating={true} size={"large"} />
+        </View>
+      </MatchHeader>
+    );
+  }
+
+  if (query.isError || !query.isSuccess) {
+    return (
+      <MatchHeader>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text variant="headlineSmall" style={{ color: theme.colors.error }}>
+            Something went wrong.
+          </Text>
+        </View>
+      </MatchHeader>
+    );
+  }
+
+  const matches = query.data;
+
+  if (matches.length === 0) {
+    return (
+      <MatchHeader>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            paddingHorizontal: 20,
+          }}
+        >
+          <Text
+            variant="headlineSmall"
+            style={{ color: theme.colors.onBackground }}
+          >
+            No matches yet?
+          </Text>
+          <Link href="/" asChild>
+            <Pressable>
+              <Text
+                variant="titleLarge"
+                style={{ color: theme.colors.primary }}
+              >
+                Check out some users.
+              </Text>
+            </Pressable>
+          </Link>
+        </View>
+      </MatchHeader>
+    );
+  }
+
+  return (
+    <MatchHeader>
+      <FlatList
+        data={users}
+        renderItem={(user) => <MatchedUserCard user={user.item} />}
+        keyExtractor={(item) => item.id}
+        numColumns={2}
+        columnWrapperStyle={styles.columnWrapper}
+        contentContainerStyle={styles.itemContainer}
+      />
+    </MatchHeader>
+  );
 };
 
 interface MatchHeaderProps {
@@ -10,35 +102,13 @@ interface MatchHeaderProps {
 }
 
 const MatchHeader = ({ children }: MatchHeaderProps) => {
-  const items = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   return (
     <View style={styles.container}>
       <Text variant="bodyLarge" style={styles.subtitle}>
         This is a list of people who matched with you.
       </Text>
       <View style={styles.divider} />
-      <FlatList
-        data={items}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Image
-              source={{
-                uri: "https://firebasestorage.googleapis.com/v0/b/twitterclone-b784a.appspot.com/o/DSC_0050.JPG?alt=media&token=c6e6f3ad-2027-4595-a2f0-be799341d906",
-              }}
-              style={styles.userImage}
-            />
-            <View style={styles.textBackground}>
-              <Text variant="titleMedium" style={styles.userLabel}>
-                Test, 21
-              </Text>
-            </View>
-          </View>
-        )}
-        keyExtractor={(item) => item.toString()}
-        numColumns={2}
-        columnWrapperStyle={styles.columnWrapper}
-        contentContainerStyle={styles.itemContainer}
-      />
+      {children}
     </View>
   );
 };
@@ -68,31 +138,6 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     gap: 13,
-  },
-  item: {
-    flex: 1,
-    width: 140,
-    height: 200,
-    maxWidth: "47%",
-    borderRadius: 10,
-  },
-  userImage: {
-    height: "100%",
-    resizeMode: "cover",
-    borderRadius: 10,
-  },
-  userLabel: {
-    color: "white",
-  },
-  textBackground: {
-    position: "absolute",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    width: "100%",
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
   },
 });
 
