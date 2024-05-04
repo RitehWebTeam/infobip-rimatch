@@ -3,7 +3,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { CircularProgress } from "@mui/material";
 import MatchCard from "@/components/MatchCard";
 import ProfileCard from "@/components/ProfileCard";
-import { motion, useMotionValue, useTransform } from "framer-motion";
 import { MatchesService } from "@/api/matches";
 
 const PAGE_SIZE = 5;
@@ -58,9 +57,6 @@ const PotentialUsers = () => {
     return result.data[currentUserIndex];
   }, [currentUserIndex, result.data]);
 
-  const x = useMotionValue(0);
-  const rotate = useTransform(x, [-10, 0, 10], [-30, 0, 30]);
-
   if (result.isLoading || result.isFetching) {
     return (
       <PotentialUsersContainer>
@@ -102,41 +98,16 @@ const PotentialUsers = () => {
     setIsProfileOpen(false);
   };
 
-  const handleDragEnd = () => {
-    // Assuming the threshold for "right" or "left" is 50% of the container width
-    const threshold = 0.5;
-
-    // Get the current x value
-    const dragValue = x.get();
-
-    if (dragValue > threshold * window.innerWidth) {
-      handleNextUser(false, user.id);
-    } else {
-      handleNextUser(true, user.id);
-    }
-
-    x.set(0);
-  };
-
   return (
     <>
       {!isProfileOpen && (
         <PotentialUsersContainer>
-          <motion.div
-            className="flex flex-col items-center"
-            style={{ x, rotate }}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.01}
-            onDragEnd={handleDragEnd}
-          >
-            <MatchCard
-              user={user}
-              handleNextUser={handleNextUser}
-              openDetailedProfile={openProfile}
-              loading={loading}
-            />
-          </motion.div>
+          <MatchCard
+            user={user}
+            handleNextUser={handleNextUser}
+            openDetailedProfile={openProfile}
+            loading={loading}
+          />
         </PotentialUsersContainer>
       )}
       {isProfileOpen && (
