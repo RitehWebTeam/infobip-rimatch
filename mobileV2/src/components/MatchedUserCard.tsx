@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   item: {
     flex: 1,
     width: 140,
-    height: 200,
+    height: 230,
     maxWidth: "47%",
     borderRadius: 10,
   },

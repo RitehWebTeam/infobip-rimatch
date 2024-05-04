@@ -1,34 +1,17 @@
 import { View, StyleSheet, FlatList, Pressable } from "react-native";
 import { ActivityIndicator, Text, useTheme } from "react-native-paper";
-import MatchedUserCard from "../../../components/MatchedUserCard";
-import { ProjectedUser } from "../../../types/User";
-import { UsersService } from "../../../api/users";
 import { Link } from "expo-router";
+import { MatchesService } from "@/api/matches";
+import MatchedUserCard from "@/components/MatchedUserCard";
 
-const items = [1, 2, 3, 4, 5];
-const users = items.map<ProjectedUser>((item) => ({
-  id: item.toString(),
-  firstName: "John",
-  age: 21,
-  profileImageUrl:
-    "https://firebasestorage.googleapis.com/v0/b/twitterclone-b784a.appspot.com/o/DSC_0050.JPG?alt=media&token=c6e6f3ad-2027-4595-a2f0-be799341d906",
-  description: "I am a software engineer",
-  location: "Lagos, Nigeria",
-  favouriteSong: "Love Story",
-  gender: "M",
-  lastName: "Doe",
-  tags: ["#software", "#engineer"],
-}));
 const Matches = () => {
-  const query = UsersService.useGetMatches();
+  const query = MatchesService.useGetMatches();
   const theme = useTheme();
 
   if (query.isLoading) {
     return (
       <MatchHeader>
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
+        <View style={styles.centeredContainer}>
           <ActivityIndicator animating={true} size={"large"} />
         </View>
       </MatchHeader>
@@ -38,9 +21,7 @@ const Matches = () => {
   if (query.isError || !query.isSuccess) {
     return (
       <MatchHeader>
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
+        <View style={styles.centeredContainer}>
           <Text variant="headlineSmall" style={{ color: theme.colors.error }}>
             Something went wrong.
           </Text>
@@ -54,14 +35,7 @@ const Matches = () => {
   if (matches.length === 0) {
     return (
       <MatchHeader>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            paddingHorizontal: 20,
-          }}
-        >
+        <View style={styles.centeredContainer}>
           <Text
             variant="headlineSmall"
             style={{ color: theme.colors.onBackground }}
@@ -86,8 +60,8 @@ const Matches = () => {
   return (
     <MatchHeader>
       <FlatList
-        data={users}
-        renderItem={(user) => <MatchedUserCard user={user.item} />}
+        data={matches}
+        renderItem={({ item }) => <MatchedUserCard user={item} />}
         keyExtractor={(item) => item.id}
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
@@ -138,6 +112,12 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     gap: 13,
+  },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
   },
 });
 
