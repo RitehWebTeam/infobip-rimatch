@@ -30,6 +30,8 @@ public class DisplayUserDto {
 
     private List<String> tags = new ArrayList<>();
 
+    private List<String> photos = new ArrayList<>();
+
     private String chatId;
 
     public static DisplayUserDto fromUser(User user){
