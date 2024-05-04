@@ -44,8 +44,6 @@ const ProfileCard = ({
   const matchedImages = user.photos;
 
   function handleImageDisplay(image: string) {
-    console.log("Function works!");
-
     setOpenModal(image);
   }
 
