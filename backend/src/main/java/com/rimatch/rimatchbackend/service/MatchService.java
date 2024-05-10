@@ -161,6 +161,15 @@ public class MatchService {
         return userDtos;
     }
 
+    public Optional<User> findMatchedUserById(String id, User authUser) {
+        Match match = findMatch(authUser.getId(), id);
+
+        if (match != null) {
+            return userRepository.findById(id);
+        }
+        return Optional.empty();
+    }
+
     @Getter
     private static class MatchedUserIdDTO {
         private String matchedUserId;
