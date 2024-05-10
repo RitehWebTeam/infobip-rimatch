@@ -95,7 +95,7 @@ export const MessagesService = {
       queryClient.setQueryData(
         ["messages", newMessage.chatId],
         (oldData: Page<Message>) => {
-          const newContent = [...oldData.content];
+          const newContent = oldData ? [...oldData.content] : [];
           newContent.unshift(newMessage);
           return { ...oldData, content: newContent };
         }

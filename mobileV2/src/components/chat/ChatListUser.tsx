@@ -1,31 +1,51 @@
+import { MessagesService } from "@/api/messages";
+import { MatchedUser } from "@/types/User";
 import { useMemo } from "react";
 import { View, StyleSheet } from "react-native";
 import { Avatar, Text } from "react-native-paper";
 
-const ChatListUser = () => {
-  const message = "How are you?";
+interface ChatListUserProps {
+  matchedUser: MatchedUser;
+}
 
-  const truncatedMessage = useMemo(() => {
-    if (message.length > 25) {
-      return message.slice(0, 25) + "...";
+const formatMessage = (message: string) => {
+  return message.slice(0, 25) + (message.length > 25 ? "..." : "");
+};
+
+const ChatListUser = ({ matchedUser }: ChatListUserProps) => {
+  const { data } = MessagesService.useGetMessages(matchedUser.chatId);
+  const { timestamp, message } = useMemo(() => {
+    const lastMessage = data?.content.at(0);
+    if (!lastMessage) {
+      return {
+        timestamp: "",
+        message: "",
+      };
     }
-    return message;
-  }, [message]);
-  const imageLink =
-    "https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg";
+    const sentByCurrentUser = lastMessage.receiverId === matchedUser.id;
+    const prefix = sentByCurrentUser ? "You: " : "";
+    const date = new Date(lastMessage.timestamp);
+    return {
+      timestamp: date.toLocaleTimeString("de-DE", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      message: `${prefix}${formatMessage(lastMessage.content)}`,
+    };
+  }, [data?.content]);
 
   return (
     <View style={itemStyles.container}>
-      <Avatar.Image size={64} source={{ uri: imageLink }} />
+      <Avatar.Image size={64} source={{ uri: matchedUser.profileImageUrl }} />
       <View style={itemStyles.infoContainer}>
         <View>
           <Text variant="titleMedium" style={itemStyles.nameText}>
-            Emelie
+            {matchedUser.firstName}
           </Text>
-          <Text variant="bodyMedium">{truncatedMessage}</Text>
+          <Text variant="bodyMedium">{message}</Text>
         </View>
         <Text variant="bodyMedium" style={itemStyles.timeText}>
-          12:00
+          {timestamp}
         </Text>
       </View>
     </View>

@@ -1,4 +1,3 @@
-import CurrentUserContextProvider from "../context/CurrentUserProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "../context/AuthProvider";
 import {
@@ -23,18 +22,18 @@ const client = new QueryClient();
 const Layout = () => {
   return (
     <QueryClientProvider client={client}>
-      <CurrentUserContextProvider>
-        <AuthProvider>
-          <PaperProvider theme={theme}>
-            <StompSessionProvider
-              // @ts-ignore
-              url={`${process.env.EXPO_PUBLIC_BACKEND_URL}/ws`}
-            >
-              <Slot />
-            </StompSessionProvider>
-          </PaperProvider>
-        </AuthProvider>
-      </CurrentUserContextProvider>
+      <AuthProvider>
+        <PaperProvider theme={theme}>
+          <StompSessionProvider
+            // @ts-ignore
+            url={`ws://18.199.30.172:8080/ws`}
+            forceBinaryWSFrames={true}
+            appendMissingNULLonIncoming={true}
+          >
+            <Slot />
+          </StompSessionProvider>
+        </PaperProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };
