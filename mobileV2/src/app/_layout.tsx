@@ -26,7 +26,7 @@ const Layout = () => {
         <PaperProvider theme={theme}>
           <StompSessionProvider
             // @ts-ignore
-            url={`ws://18.199.30.172:8080/ws`}
+            url={`${process.env.EXPO_PUBLIC_BACKEND_WS_URL}/ws`}
             forceBinaryWSFrames={true}
             appendMissingNULLonIncoming={true}
           >
