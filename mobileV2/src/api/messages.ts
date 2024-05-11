@@ -11,7 +11,7 @@ import { Message } from "@/types/Message";
 import { Page } from "@/types/Page";
 import useCurrentUserContext from "@/hooks/useCurrentUser";
 
-export const HISTORY_PAGE_SIZE = 20;
+export const HISTORY_PAGE_SIZE = 15;
 export const MESSAGE_PAGE_SIZE = 15;
 
 export const MessagesService = {
@@ -71,7 +71,11 @@ export const MessagesService = {
     });
   },
 
-  useGetMessagesHistory: (chatId: string, lastMessageId: string) => {
+  useGetMessagesHistory: (
+    chatId: string,
+    lastMessageId: string,
+    enabled = true
+  ) => {
     const axios = useAxiosPrivate();
 
     const fetchMessages = async ({ pageParam }: { pageParam: unknown }) => {
@@ -88,6 +92,7 @@ export const MessagesService = {
       getNextPageParam: (lastPage) =>
         !lastPage.last ? lastPage.number + 1 : null,
       staleTime: Infinity,
+      enabled: !!chatId && enabled,
     });
   },
 
