@@ -5,6 +5,7 @@ const ChatLayout = () => {
     <Stack
       screenOptions={{
         title: "Messages",
+        headerBackVisible: false,
       }}
     />
   );
