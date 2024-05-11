@@ -48,6 +48,7 @@ const UserChatPage = () => {
     historyEnable
   );
 
+  // Fix for not showing the loading spinner when there are no messages
   const onEndReached = useCallback(() => {
     if (history.isPending) {
       setHistoryEnable(true);
