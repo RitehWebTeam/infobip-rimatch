@@ -1,7 +1,8 @@
 import { MessagesService } from "@/api/messages";
 import { MatchedUser } from "@/types/User";
+import { Link } from "expo-router";
 import { useMemo } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import { Avatar, Text } from "react-native-paper";
 
 interface ChatListUserProps {
@@ -35,20 +36,28 @@ const ChatListUser = ({ matchedUser }: ChatListUserProps) => {
   }, [data?.content]);
 
   return (
-    <View style={itemStyles.container}>
-      <Avatar.Image size={64} source={{ uri: matchedUser.profileImageUrl }} />
-      <View style={itemStyles.infoContainer}>
-        <View>
-          <Text variant="titleMedium" style={itemStyles.nameText}>
-            {matchedUser.firstName}
+    <Link
+      href={{
+        pathname: "chat/[id]",
+        params: { id: matchedUser.id },
+      }}
+      asChild
+    >
+      <Pressable style={itemStyles.container}>
+        <Avatar.Image size={64} source={{ uri: matchedUser.profileImageUrl }} />
+        <View style={itemStyles.infoContainer}>
+          <View>
+            <Text variant="titleMedium" style={itemStyles.nameText}>
+              {matchedUser.firstName}
+            </Text>
+            <Text variant="bodyMedium">{message}</Text>
+          </View>
+          <Text variant="bodyMedium" style={itemStyles.timeText}>
+            {timestamp}
           </Text>
-          <Text variant="bodyMedium">{message}</Text>
         </View>
-        <Text variant="bodyMedium" style={itemStyles.timeText}>
-          {timestamp}
-        </Text>
-      </View>
-    </View>
+      </Pressable>
+    </Link>
   );
 };
 

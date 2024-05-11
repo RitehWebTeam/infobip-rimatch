@@ -27,9 +27,10 @@ const _layout = () => {
         }}
       />
       <Tabs.Screen
-        name="ChatPage"
+        name="chat"
         options={{
           tabBarShowLabel: false,
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="chat" size={24} color={color} />
           ),
