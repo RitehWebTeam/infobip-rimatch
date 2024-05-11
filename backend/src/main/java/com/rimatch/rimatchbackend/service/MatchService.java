@@ -161,11 +161,16 @@ public class MatchService {
         return userDtos;
     }
 
-    public Optional<User> findMatchedUserById(String id, User authUser) {
+    public Optional<DisplayUserDto> findMatchedUserById(String id, User authUser) {
         Match match = findMatch(authUser.getId(), id);
 
         if (match != null) {
-            return userRepository.findById(id);
+            var user = userRepository.findById(id);
+            if (user.isPresent()) {
+                DisplayUserDto userDto = DisplayUserConverter.convertToDto(user.get());
+                userDto.setChatId(match.getId());
+                return Optional.of(userDto);
+            }
         }
         return Optional.empty();
     }

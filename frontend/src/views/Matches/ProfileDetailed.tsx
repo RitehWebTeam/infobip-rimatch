@@ -1,30 +1,27 @@
+import { MatchesService } from "@/api/matches";
 import ProfileCard from "@/components/ProfileCard";
-import { ProjectedUser } from "@/types/User";
-import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ProfileDetailed = () => {
-  const { state } = useLocation();
   const navigate = useNavigate();
+  const { userId } = useParams() as { userId: string };
+  const query = MatchesService.useGetMatchedUserById(userId);
 
-  const user = state?.user as ProjectedUser;
   const goBackToMatches = () => {
     navigate(-1);
   };
+  if (query.isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  useEffect(() => {
-    if (!user) {
-      goBackToMatches();
-    }
-  }, [user]);
-
-  if (!user) {
+  if (query.isError || !query.isSuccess) {
+    navigate(-1);
     return null;
   }
 
   return (
     <div className="flex w-full justify-center flex-grow md:pb-8">
-      <ProfileCard user={user} onClose={goBackToMatches} showChatIcon />
+      <ProfileCard user={query.data} onClose={goBackToMatches} showChatIcon />
     </div>
   );
 };

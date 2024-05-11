@@ -103,11 +103,11 @@ public class MatchController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getMatchedUserById(@PathVariable String id, HttpServletRequest request) {
+    public ResponseEntity<DisplayUserDto> getMatchedUserById(@PathVariable String id, HttpServletRequest request) {
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);
 
-        Optional<User> matchedUser = matchService.findMatchedUserById(id, user);
+        Optional<DisplayUserDto> matchedUser = matchService.findMatchedUserById(id, user);
 
         return matchedUser.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
