@@ -80,4 +80,20 @@ export const MatchesService = {
       staleTime: 60e3,
     });
   },
+
+  useGetMatchedUserById: (id: string) => {
+    const queryClient = useQueryClient();
+    const axios = useAxiosPrivate();
+    return useQuery<MatchedUser, Error>({
+      queryKey: ["MatchesService.getMatches", id],
+      queryFn: () => axios.get(`/match/${id}`).then((res) => res.data),
+      staleTime: 60e3,
+      initialData: () =>
+        queryClient
+          .getQueryData<Array<MatchedUser>>(["MatchesService.getMatches"])
+          ?.find((user) => user.id === id),
+      initialDataUpdatedAt: () =>
+        queryClient.getQueryState(["MatchesService.getMatches"])?.dataUpdatedAt,
+    });
+  },
 };

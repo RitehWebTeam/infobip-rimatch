@@ -54,7 +54,7 @@ export const MessagesService = {
     return sendMessage;
   },
 
-  useGetMessages: (chatId: string) => {
+  useGetMessages: (chatId?: string) => {
     const axios = useAxiosPrivate();
 
     return useQuery<Page<Message>>({
@@ -65,6 +65,7 @@ export const MessagesService = {
           .get(`/messages/${chatId}?pageSize=${MESSAGE_PAGE_SIZE}`)
           .then((res) => res.data),
       staleTime: Infinity,
+      enabled: !!chatId,
     });
   },
 

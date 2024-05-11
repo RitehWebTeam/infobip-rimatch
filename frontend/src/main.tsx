@@ -40,7 +40,7 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <MatchesPage /> },
           {
-            path: "profile",
+            path: "profile/:userId",
             element: <ProfileDetailed />,
           },
         ],
@@ -64,7 +64,7 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
           { index: true, element: <ListOfMatchesForChatPage /> },
-          { path: "chat", element: <ChatPage /> },
+          { path: "chat/:userId", element: <ChatPage /> },
         ],
       },
     ],

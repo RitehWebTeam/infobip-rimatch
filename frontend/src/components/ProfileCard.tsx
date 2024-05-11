@@ -74,8 +74,7 @@ const ProfileCard = ({
           </h2>
           {showChatIcon && (
             <Link
-              to="/messages/chat"
-              state={{ user }}
+              to={`/messages/chat/${user.id}`}
               className="flex -mr-3 justify-center text-xl items-center px-2 py-2 rounded-lg border border-[#E8E6EA] dark:border-[#494343] font-semibold  text-red-500 max-h-10"
             >
               <TelegramIcon fontSize="inherit" />
