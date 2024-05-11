@@ -4,7 +4,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // !Layout for the tabs/Main screen
 const _layout = () => {
-  console.log("Loading tabs");
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: "red" }}>
       <Tabs.Screen
