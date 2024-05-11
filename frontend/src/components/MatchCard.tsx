@@ -34,20 +34,17 @@ const MatchCard = ({
   const handleDragEnd = () => {
     // Assuming the threshold for "right" or "left" is 50% of the container width
 
-    // Get the current x value
     const dragValue = x.get();
     if (Math.abs(dragValue) < DRAG_TRESHOLD) {
       x.set(0);
       setDragValue(0);
       return;
     }
-    console.log(dragValue, DRAG_TRESHOLD);
-    if (dragValue > 0) {
-      //handleNextUser(false, user.id);
-      console.log("swipe right");
+
+    if (dragValue < 0) {
+      handleNextUser(true, user.id);
     } else {
-      //handleNextUser(true, user.id);
-      console.log("swipe left");
+      handleNextUser(false, user.id);
     }
 
     setDragValue(0);
