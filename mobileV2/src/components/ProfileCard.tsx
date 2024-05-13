@@ -185,7 +185,6 @@ const styles = StyleSheet.create({
   buttonCOntainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    
     alignItems: "center",
     position: 'absolute',
     top: '50%', 

@@ -14,6 +14,8 @@ const _layout = () => {
           tabBarIcon: ({ color }) => (
             <FontAwesome size={28} name="home" color={color} />
           ),
+          title:'RiMatch',
+          headerTitleAlign: 'center'
         }}
       />
 
@@ -33,17 +35,23 @@ const _layout = () => {
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="chat" size={24} color={color} />
           ),
+          headerTitleAlign: 'center'
+         
         }}
       />
-      <Tabs.Screen
+     <Tabs.Screen
         name="Settings"
         options={{
           tabBarShowLabel: false,
+          
           tabBarIcon: ({ color }) => (
             <FontAwesome size={28} name="cog" color={color} />
           ),
+          headerTitleAlign: 'center'
         }}
-      />
+      /> 
+      
+       
     </Tabs>
   );
 };

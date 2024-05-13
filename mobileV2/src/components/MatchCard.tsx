@@ -12,6 +12,7 @@ import { ProjectedUser } from "../types/User";
 import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 
+
 interface MatchCardProps {
   user: ProjectedUser;
   loading: boolean;
@@ -30,7 +31,7 @@ const MatchCard = ({
       <View style={styles.cardContainer} >
         <Image
           source={{
-            uri: "https://firebasestorage.googleapis.com/v0/b/twitterclone-b784a.appspot.com/o/DSC_0050.JPG?alt=media&token=c6e6f3ad-2027-4595-a2f0-be799341d906",
+            uri: user.profileImageUrl,
           }}
           style={styles.userImage}
           
@@ -45,7 +46,7 @@ const MatchCard = ({
         <TouchableOpacity style={styles.sideButton} onPress={() => handleNextUser(false, user.id)}>
           <Entypo name="cross" size={40} color="orange" />
         </TouchableOpacity>
-
+       
         <TouchableOpacity style={styles.middleButton} onPress={() => handleNextUser(true, user.id)}>
           <AntDesign name="heart" size={50} color="white" />
         </TouchableOpacity>

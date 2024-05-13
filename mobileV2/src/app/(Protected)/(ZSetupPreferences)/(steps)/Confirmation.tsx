@@ -23,8 +23,8 @@ const initialValues = {
   phoneNumber: "",
   location: "",
   favouriteSong: "",
-  profileImageUrl: "",
-  tags: "",
+  profileImageUrl: null,
+  tags: [] as Array<string>,
   preferences: {
     ageGroupMin: "",
     ageGroupMax: "",
@@ -72,6 +72,7 @@ export default function Confirmation({ navigation }: PreferencesProps) {
     // TODO: Error handling
 
     const mappedValues = await mapPreferenceValues(values);
+    console.log(mappedValues);
      await initPreferences(mappedValues)
       
     
@@ -94,8 +95,8 @@ export default function Confirmation({ navigation }: PreferencesProps) {
       phoneNumber: "",
       location: "",
       favouriteSong: "",
-      profileImageUrl: "",
-      tags: "", //* PRomijeni nazad u []
+      profileImageUrl: null,
+      tags: [] as Array<string>,
       preferences: {
         ageGroupMin: "",
         ageGroupMax: "",
@@ -164,7 +165,7 @@ export default function Confirmation({ navigation }: PreferencesProps) {
           label={"Your prefered partner is"}
         />
         <SummaryEntry
-          name={information.tags}
+          name={information.tags.join(", ")}
           label={"Your tags are"}
         />
         <Button
@@ -177,7 +178,7 @@ export default function Confirmation({ navigation }: PreferencesProps) {
         <Button
           style={styles.button}
           mode="outlined"
-          //nPress={() => handleSubmit(information)}
+          onPress={() => handleSubmit(information)}
         >
           <Text>SaveData</Text>
         </Button>
