@@ -4,7 +4,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // !Layout for the tabs/Main screen
 const _layout = () => {
-  console.log("Loading tabs");
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: "red" }}>
       <Tabs.Screen
@@ -27,9 +26,10 @@ const _layout = () => {
         }}
       />
       <Tabs.Screen
-        name="ChatPage"
+        name="chat"
         options={{
           tabBarShowLabel: false,
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="chat" size={24} color={color} />
           ),

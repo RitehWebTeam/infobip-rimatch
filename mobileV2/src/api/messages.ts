@@ -9,8 +9,9 @@ import useAuth from "@/hooks/useAuth";
 import { MatchedUser } from "@/types/User";
 import { Message } from "@/types/Message";
 import { Page } from "@/types/Page";
+import useCurrentUserContext from "@/hooks/useCurrentUser";
 
-export const HISTORY_PAGE_SIZE = 20;
+export const HISTORY_PAGE_SIZE = 15;
 export const MESSAGE_PAGE_SIZE = 15;
 
 export const MessagesService = {
@@ -18,6 +19,7 @@ export const MessagesService = {
     const client = useStompClient();
     const queryClient = useQueryClient();
     const { auth } = useAuth();
+    const currentUser = useCurrentUserContext();
 
     const sendMessage = (
       content: string,
@@ -42,7 +44,7 @@ export const MessagesService = {
           newContent.unshift({
             id: new Date().getTime().toString() + content,
             content,
-            senderId: "",
+            senderId: currentUser.id,
             receiverId,
             chatId,
             timestamp: new Date().toISOString(),
@@ -54,7 +56,7 @@ export const MessagesService = {
     return sendMessage;
   },
 
-  useGetMessages: (chatId: string) => {
+  useGetMessages: (chatId?: string) => {
     const axios = useAxiosPrivate();
 
     return useQuery<Page<Message>>({
@@ -65,10 +67,15 @@ export const MessagesService = {
           .get(`/messages/${chatId}?pageSize=${MESSAGE_PAGE_SIZE}`)
           .then((res) => res.data),
       staleTime: Infinity,
+      enabled: !!chatId,
     });
   },
 
-  useGetMessagesHistory: (chatId: string, lastMessageId: string) => {
+  useGetMessagesHistory: (
+    chatId: string,
+    lastMessageId: string,
+    enabled = true
+  ) => {
     const axios = useAxiosPrivate();
 
     const fetchMessages = async ({ pageParam }: { pageParam: unknown }) => {
@@ -85,6 +92,7 @@ export const MessagesService = {
       getNextPageParam: (lastPage) =>
         !lastPage.last ? lastPage.number + 1 : null,
       staleTime: Infinity,
+      enabled: !!chatId && enabled,
     });
   },
 
@@ -95,7 +103,7 @@ export const MessagesService = {
       queryClient.setQueryData(
         ["messages", newMessage.chatId],
         (oldData: Page<Message>) => {
-          const newContent = oldData ? [...oldData.content] : [];
+          const newContent = [...oldData.content];
           newContent.unshift(newMessage);
           return { ...oldData, content: newContent };
         }

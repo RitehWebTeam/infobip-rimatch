@@ -6,6 +6,7 @@ import {
 } from "react-native-paper";
 import { Slot } from "expo-router";
 import { StompSessionProvider } from "react-stomp-hooks";
+// Needed for StompJS to work in React Native
 global.TextEncoder = require("text-encoding").TextEncoder;
 
 const theme = {
@@ -27,6 +28,7 @@ const Layout = () => {
           <StompSessionProvider
             // @ts-ignore
             url={`${process.env.EXPO_PUBLIC_BACKEND_WS_URL}/ws`}
+            // Needed for StompJS to work in React Native
             forceBinaryWSFrames={true}
             appendMissingNULLonIncoming={true}
           >
