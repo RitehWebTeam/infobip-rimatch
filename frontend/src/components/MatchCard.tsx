@@ -1,13 +1,21 @@
+import { useMemo, useState, useEffect } from "react";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import { ProjectedUser } from "@/types/User";
-import { useMemo, useState } from "react";
+import HeartIcon from "@mui/icons-material/Favorite";
 import LocationOnIcon from "@mui/icons-material/LocationOnOutlined";
 import InfoIcon from "@mui/icons-material/Info";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import cx from "classnames";
+
 interface MatchCardProps {
-  user: ProjectedUser;
+  user: {
+    id: string;
+    firstName: string;
+    age: number;
+    description: string;
+    profileImageUrl: string;
+    location: string;
+  };
   loading: boolean;
   handleNextUser: (matchAccept: boolean, userId: string) => void;
   openDetailedProfile: () => void;
@@ -22,6 +30,8 @@ const MatchCard = ({
   openDetailedProfile,
 }: MatchCardProps) => {
   const [dragValue, setDragValue] = useState(0);
+  const [showHeartIcon, setShowHeartIcon] = useState(false);
+  const [showRedXIcon, setShowRedXIcon] = useState(false);
   const truncatedDescription = useMemo(() => {
     if (user.description.length > 50) {
       return user.description.slice(0, 50) + "...";
@@ -32,8 +42,6 @@ const MatchCard = ({
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-10, 0, 10], [-30, 0, 30]);
   const handleDragEnd = () => {
-    // Assuming the threshold for "right" or "left" is 50% of the container width
-
     const dragValue = x.get();
     if (Math.abs(dragValue) < DRAG_TRESHOLD) {
       x.set(0);
@@ -41,15 +49,30 @@ const MatchCard = ({
       return;
     }
 
-    if (dragValue < 0) {
-      handleNextUser(true, user.id);
-    } else {
+    if (dragValue < 0 && Math.abs(dragValue) > DRAG_TRESHOLD) {
       handleNextUser(false, user.id);
+      setShowHeartIcon(true);
+      setShowRedXIcon(false);
+    } else {
+      handleNextUser(true, user.id);
+      setShowHeartIcon(false);
+      setShowRedXIcon(true);
     }
 
     setDragValue(0);
     x.set(0);
   };
+
+  useEffect(() => {
+    if (showHeartIcon || showRedXIcon) {
+      const timer = setTimeout(() => {
+        setShowHeartIcon(false);
+        setShowRedXIcon(false);
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  });
 
   return (
     <>
@@ -57,8 +80,9 @@ const MatchCard = ({
         className={cx(
           "flex flex-col items-center w-full justify-center flex-grow",
           {
-            "bg-red-500": dragValue > DRAG_TRESHOLD,
-            "bg-green-500": dragValue < -DRAG_TRESHOLD,
+            "": dragValue > DRAG_TRESHOLD,
+            "": dragValue < -DRAG_TRESHOLD,
+            "bg-transparent": showHeartIcon || showRedXIcon,
           }
         )}
         style={{ x, rotate }}
@@ -97,7 +121,7 @@ const MatchCard = ({
       <div className="flex flex-col items-center w-full justify-center flex-grow">
         <div className="flex justify-between w-full text-white px-6 sm:p-6">
           <button
-            className=" hover:bg-green-600 bg-green-500 transition-color duration-300 sm:ml-4  border-green-700 rounded-full w-24 h-24 shadow-md shadow-black"
+            className="hover:bg-green-600 bg-green-500 transition-color duration-300 sm:ml-4 border-green-700 rounded-full w-24 h-24 shadow-md shadow-black"
             onClick={() => handleNextUser(true, user.id)}
             disabled={loading}
           >
@@ -112,6 +136,20 @@ const MatchCard = ({
           </button>
         </div>
       </div>
+      {showHeartIcon && (
+        <div className="fixed inset-0 flex items-center justify-center z-80">
+          <div className="bg-white rounded-full w-40 h-40 flex items-center justify-center opacity-7">
+            <HeartIcon sx={{ fontSize: "5rem", color: "red", opacity: 0.7 }} />
+          </div>
+        </div>
+      )}
+      {showRedXIcon && (
+        <div className="fixed inset-0 flex items-center justify-center z-80">
+          <div className="bg-white rounded-full w-40 h-40 flex items-center justify-center opacity-7">
+            <ClearIcon sx={{ fontSize: "5rem", color: "red", opacity: 0.7 }} />
+          </div>
+        </div>
+      )}
     </>
   );
 };
