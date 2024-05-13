@@ -80,9 +80,8 @@ const MatchCard = ({
         className={cx(
           "flex flex-col items-center w-full justify-center flex-grow",
           {
-            "": dragValue > DRAG_TRESHOLD,
-            "": dragValue < -DRAG_TRESHOLD,
-            "bg-transparent": showHeartIcon || showRedXIcon,
+            "/* Heart appearing */": dragValue > DRAG_TRESHOLD,
+            "/* X appearing */": dragValue < -DRAG_TRESHOLD,
           }
         )}
         style={{ x, rotate }}
@@ -117,6 +116,25 @@ const MatchCard = ({
             <InfoIcon />
           </div>
         </div>
+
+        {dragValue > DRAG_TRESHOLD && (
+          <div className="fixed inset-0 flex items-center justify-center z-80">
+            <div className="bg-white rounded-full w-40 h-40 flex items-center justify-center opacity-60">
+              <ClearIcon
+                sx={{ fontSize: "5rem", color: "red", opacity: 0.4 }}
+              />
+            </div>
+          </div>
+        )}
+        {dragValue < -DRAG_TRESHOLD && (
+          <div className="fixed inset-0 flex items-center justify-center z-80">
+            <div className="bg-white rounded-full w-40 h-40 flex items-center justify-center opacity-60">
+              <HeartIcon
+                sx={{ fontSize: "5rem", color: "red", opacity: 0.4 }}
+              />
+            </div>
+          </div>
+        )}
       </motion.div>
       <div className="flex flex-col items-center w-full justify-center flex-grow">
         <div className="flex justify-between w-full text-white px-6 sm:p-6">
@@ -139,14 +157,14 @@ const MatchCard = ({
       {showHeartIcon && (
         <div className="fixed inset-0 flex items-center justify-center z-80">
           <div className="bg-white rounded-full w-40 h-40 flex items-center justify-center opacity-7">
-            <HeartIcon sx={{ fontSize: "5rem", color: "red", opacity: 0.7 }} />
+            <HeartIcon sx={{ fontSize: "5rem", color: "red", opacity: 0.4 }} />
           </div>
         </div>
       )}
       {showRedXIcon && (
         <div className="fixed inset-0 flex items-center justify-center z-80">
           <div className="bg-white rounded-full w-40 h-40 flex items-center justify-center opacity-7">
-            <ClearIcon sx={{ fontSize: "5rem", color: "red", opacity: 0.7 }} />
+            <ClearIcon sx={{ fontSize: "5rem", color: "red", opacity: 0.4 }} />
           </div>
         </div>
       )}
