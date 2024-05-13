@@ -154,20 +154,6 @@ const MatchCard = ({
           </button>
         </div>
       </div>
-      {showHeartIcon && (
-        <div className="fixed inset-0 flex items-center justify-center z-80">
-          <div className="bg-white rounded-full w-40 h-40 flex items-center justify-center opacity-7">
-            <HeartIcon sx={{ fontSize: "5rem", color: "red", opacity: 0.4 }} />
-          </div>
-        </div>
-      )}
-      {showRedXIcon && (
-        <div className="fixed inset-0 flex items-center justify-center z-80">
-          <div className="bg-white rounded-full w-40 h-40 flex items-center justify-center opacity-7">
-            <ClearIcon sx={{ fontSize: "5rem", color: "red", opacity: 0.4 }} />
-          </div>
-        </div>
-      )}
     </>
   );
 };
