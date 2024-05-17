@@ -9,6 +9,7 @@ import { launchImageLibrary } from "react-native-image-picker";
 import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useTheme } from "../../../../../context/ThemeProvider";
 const validationSchema = Yup.object({
   profileImageUrl: Yup.mixed<File>()
     .required("Required")
@@ -21,7 +22,7 @@ const SettingsProfilePicture = () => {
   const user = useCurrentUserContext();
   const [profileImageUrl, setProfileImageUrl] = React.useState<File | null>();
   const [photoUri, setPhotoUri] = React.useState<string | null>(null);
-
+  const { theme } = useTheme();
   const { mutateAsync: updateProfilePicture } =
     UsersService.useUpdateProfilePicture();
 
@@ -59,7 +60,7 @@ const SettingsProfilePicture = () => {
   };
 
   return (
-    <View>
+    <View style={{backgroundColor:theme.colors.primary}}>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -68,7 +69,7 @@ const SettingsProfilePicture = () => {
         {({ submitForm, touched, isSubmitting }) => (
           <>
            
-            <View className=" relative mt-12">
+            <View className=" relative mt-12" >
               <TouchableOpacity onPress={showCameraRoll}>
                 <View className=" flex justify-center items-center ">
                   <Image
@@ -78,7 +79,7 @@ const SettingsProfilePicture = () => {
                     style={{
                       width: 200,
                       height: 200,
-                      borderColor: "black",
+                      borderColor: theme.colors.secondary,
                       borderWidth: 2,
                       borderRadius: 50,
                       marginTop: 10,
@@ -97,7 +98,7 @@ const SettingsProfilePicture = () => {
                   </TouchableOpacity>
                 </View>
               </TouchableOpacity>
-              <View className="flex justify-center items-center mt-24">
+              <View className="flex justify-center items-center mt-24 mb-56">
                 <Button onPress={submitForm} className=" w-4/5 bg-[#ee5253] ">
                   {isSubmitting ? <CircularProgress /> :<Text className="text-white align-middle">Save</Text> }
                   

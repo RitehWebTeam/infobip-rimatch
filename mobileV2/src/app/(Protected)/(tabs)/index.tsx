@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, useColorScheme } from "react-native";
 import { useQueryClient } from "@tanstack/react-query";
 /* import { CircularProgress } from "@mui/material"; */
 import MatchCard from "../../../components/MatchCard";
 import { MatchesService } from "../../../api/matches";
 import ProfileCard from "../../../components/ProfileCard";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useTheme } from "react-native-paper";
+
 
 export default function App() {
   return <AuthLayout />;
@@ -125,8 +127,10 @@ export const AuthLayout = () => {
 };
 
 const PotentialUsersContainer = ({ children }: { children?: React.ReactNode }) => {
+  const theme = useTheme();
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.colors.primary }]}>
       <View style={styles.cardContainer}>
         {children}
       </View>
@@ -153,6 +157,8 @@ const styles = StyleSheet.create({
     padding: 16,
     width: '100%',
     maxWidth: 400,
+   
+    
   },
   loadingContainer: {
     flex: 1,

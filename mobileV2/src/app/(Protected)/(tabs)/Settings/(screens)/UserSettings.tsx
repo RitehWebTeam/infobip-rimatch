@@ -8,6 +8,7 @@ import { UsersService } from "../../../../../api/users";
 import SaveCancelButtons from "../../../../../components/SaveCancelButtons";
 import { View, Text, ScrollView, Button } from "react-native";
 import { HelperText, TextInput } from "react-native-paper";
+import { useTheme } from "../../../../../context/ThemeProvider";
 
 const updatePreferenceSchema = Yup.object({
   phoneNumber: Yup.number().required("Required"),
@@ -43,7 +44,7 @@ const UserSettings = ({navigation}: {navigation: any}) => {
   const user = useCurrentUserContext();
   const [editMode, setEditMode] = useState(false);
   const { mutateAsync: updateUser } = UsersService.useUpdateUser();
-
+  const {theme} = useTheme();
    
   const handleCancleClick = (resetForm: ResetFormFunction) => {
     setEditMode(false);
@@ -92,19 +93,21 @@ const UserSettings = ({navigation}: {navigation: any}) => {
         }) => (
           <>
            
-            <View className="w-full flex flex-col relative gap-1 px-4">
+            <View className="w-full flex flex-col relative gap-1 px-4" style={{backgroundColor: theme.colors.primary}}>
               <View className=" flex-row justify-between gap-y-3 pl-1">
                 <View className="flex flex-col gap-1">
-                  <Text>Phone Number</Text>
+                  <Text style ={{color:theme.colors.secondary}}>Phone Number</Text>
                   <TextInput
-                    className=" shadow-lg  shadow-red-600 w-full rounded-lg "
+                    
                     mode="outlined"
                     error={!!errors.phoneNumber && touched.phoneNumber}
                     onChangeText={handleChange("phoneNumber")}
                     onBlur={handleBlur("phoneNumber")}
                     placeholder={values.phoneNumber}
+                    placeholderTextColor={!editMode ?  "gray" : "white"}
                     disabled={!editMode}
-                  
+                    style = {{backgroundColor:theme.colors.tertiary}}
+                    activeOutlineColor="#ee5253"
                   />
                   <HelperText
                     type="error"
@@ -114,16 +117,18 @@ const UserSettings = ({navigation}: {navigation: any}) => {
                   </HelperText>
                 </View>
                 <View className="flex flex-col gap-1 w-2/6">
-                <Text>Age</Text>
+                <Text style ={{color:theme.colors.secondary}}>Age</Text>
                   <TextInput
-                    className=" shadow-lg  shadow-red-600 w-full rounded-lg "
+                   
                     mode="outlined"
                     error={!!errors.age && touched.age}
                     onChangeText={handleChange("age")}
                     onBlur={handleBlur("age")}
                     placeholder={values.age.toString()}
+                    placeholderTextColor={!editMode ?  "gray" : "white"}
                     disabled={!editMode}
-                    style = {{ borderRadius: 1}}
+                    style = {{backgroundColor:theme.colors.tertiary}}
+                    activeOutlineColor="#ee5253"
                   />
                   <HelperText
                     type="error"
@@ -143,15 +148,18 @@ const UserSettings = ({navigation}: {navigation: any}) => {
             </View>
               </View>
               <View className="flex flex-col gap-1">
-              <Text>Favorite Song</Text>
+              <Text style ={{color:theme.colors.secondary}}>Favorite Song</Text>
                   <TextInput
-                    className=" shadow-lg  shadow-red-600 w-full rounded-lg "
+                    
                     mode="outlined"
                     error={!!errors.favouriteSong && touched.favouriteSong}
                     onChangeText={handleChange("favouriteSong")}
                     onBlur={handleBlur("favouriteSong")}
                     placeholder={values.favouriteSong}
+                    placeholderTextColor={!editMode ?  "gray" : "white"}
                     disabled={!editMode}
+                    style = {{backgroundColor:theme.colors.tertiary}}
+                    activeOutlineColor="#ee5253"
                   />
                   <HelperText
                     type="error"
@@ -162,16 +170,18 @@ const UserSettings = ({navigation}: {navigation: any}) => {
               </View>
 
               <View className="flex flex-col gap-1">
-              <Text>Location</Text>
+              <Text style ={{color:theme.colors.secondary}}>Location</Text>
                   <TextInput
-                   className=" shadow-lg  shadow-red-600 w-full rounded-lg "
+                   
                     mode="outlined"
                     error={!!errors.location && touched.location}
                     onChangeText={handleChange("location")}
                     onBlur={handleBlur("location")}
                     placeholder={values.location}
+                    placeholderTextColor={!editMode ?  "gray" : "white"}
                     disabled={!editMode}
-                    
+                    style = {{backgroundColor:theme.colors.tertiary}}
+                    activeOutlineColor="#ee5253"
                   />
                   <HelperText
                     type="error"
@@ -180,16 +190,19 @@ const UserSettings = ({navigation}: {navigation: any}) => {
                     {touched.location && errors.location}
                   </HelperText>
               </View>
-              <View className="flex flex-col gap-2 mr-1 ml-2">
-              <Text>Description</Text>
+              <View className="flex flex-col gap-2 mr-1  mb-36">
+              <Text style ={{color:theme.colors.secondary}}>Description</Text>
                   <TextInput
-                    className=" shadow-lg  shadow-red-600 w-full rounded-lg "
+                    
                     mode="outlined"
                     error={!!errors.description && touched.description}
                     onChangeText={handleChange("description")}
                     onBlur={handleBlur("description")}
                     placeholder={values.description}
+                    placeholderTextColor={!editMode ?  "gray" : "white"}
                     disabled={!editMode}
+                    style = {{backgroundColor:theme.colors.tertiary}}
+                    activeOutlineColor="#ee5253"
                   />
                   <HelperText
                     type="error"

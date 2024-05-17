@@ -1,44 +1,96 @@
-import useLocalStorage from "../hooks/useLocalStorage";
-import React, { createContext, useEffect } from "react";
+import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import {useColorScheme} from 'react-native';
+import {
+  Provider as PaperProvider,
+  MD3DarkTheme as PaperDarkTheme,
+  MD3LightTheme as DefaultTheme,
+} from 'react-native-paper';
+import {
+  DarkTheme as NavigationDarkTheme,
+  DefaultTheme as NavigationDefaultTheme,
+} from '@react-navigation/native';
 
-export type Theme = "system" | "dark" | "light";
+const lightTheme = {
+  ...NavigationDefaultTheme,
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "#f2f3f5",
+    secondary: "#000000",
+    accent: "#EE5253",
+    tertiary: "#ebebeb"
+  },
+};
 
-interface ThemeContextProps {
+const darkTheme = {
+  ...NavigationDarkTheme,
+  ...PaperDarkTheme,
+  colors: {
+    ...PaperDarkTheme.colors,
+    primary: "#1E1E1E",
+    secondary: "#FFFFFF",
+    accent: "#EE5253",
+    tertiary: "#2b2b2b"
+  },
+};
+
+export type Theme = typeof lightTheme; 
+export type ThemeType = 'dark' | 'light';
+
+export interface ThemeContextValue {
   theme: Theme;
-  setThemeMode: (t: Theme) => void;
+  themeType: ThemeType;
+  isDarkTheme: boolean;
+  toggleThemeType: () => void;
+  setThemeType: React.Dispatch<React.SetStateAction<ThemeType>>;
 }
 
-export const ThemeContext = createContext<ThemeContextProps>({
-  theme: "system",
-  setThemeMode: () => {},
+export const ThemeContext = React.createContext<ThemeContextValue>({
+  theme: lightTheme,
+  themeType: 'light',
+  isDarkTheme: false,
+  setThemeType: () => {},
+  toggleThemeType: () => {},
 });
 
-interface ThemeProviderProps {
+export const useTheme = () => useContext(ThemeContext);
+
+export interface ThemeContextProviderProps {
   children: React.ReactNode;
 }
 
-export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const [theme, setTheme] = useLocalStorage<Theme>("theme", "system");
-
-  const setThemeMode = (newTheme: Theme) => {
-    setTheme(newTheme);
-  };
+export const ThemeProvider = ({children}: ThemeContextProviderProps) => {
+  const systemTheme = useColorScheme();
+  const [themeType, setThemeType] = useState<ThemeType>(systemTheme || 'light');
 
   useEffect(() => {
-    if (
-      theme === "dark" ||
-      (theme === "system" &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
+    if (!themeType || themeType === systemTheme) {
+      setThemeType(systemTheme || 'light');
     }
-  }, [theme]);
+  }, [systemTheme, themeType]);
+
+  const toggleThemeType = useCallback(() => {
+    setThemeType(prev => (prev === 'dark' ? 'light' : 'dark'));
+  }, []);
+
+  const isDarkTheme = useMemo(() => themeType === 'dark', [themeType]);
+  const theme = useMemo(
+    () => (isDarkTheme ? darkTheme : lightTheme),
+    [isDarkTheme]
+  );
 
   return (
-    <ThemeContext.Provider value={{ theme, setThemeMode }}>
-      {children}
+    <ThemeContext.Provider
+      value={{
+        theme,
+        themeType,
+        isDarkTheme,
+        setThemeType,
+        toggleThemeType,
+      }}>
+      <PaperProvider theme={theme}>
+        {children}
+      </PaperProvider>
     </ThemeContext.Provider>
   );
 };

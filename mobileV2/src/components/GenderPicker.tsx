@@ -47,7 +47,7 @@ const GenderPicker = () => {
         style={{
           borderColor: "gray",
           borderWidth: hasError ? 2 : 1,
-          backgroundColor: theme.colors.background,
+          backgroundColor: theme.colors.primary,
         }}
       />
       <HelperText type="error" visible={!!meta.error && meta.touched}>

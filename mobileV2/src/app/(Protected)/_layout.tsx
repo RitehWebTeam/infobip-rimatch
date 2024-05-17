@@ -50,7 +50,7 @@ const Layout = () => {
   }
 
   return auth?.active ? (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack screenOptions={{ headerShown: false }} >
       <Stack.Screen name="(tabs)" />
     </Stack>
   ) : null/* : (

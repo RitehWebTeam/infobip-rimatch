@@ -2,86 +2,95 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import useLogout from "../../../../hooks/useLogout";
 import useCurrentUserContext from "../../../../hooks/useCurrentUser";
 import { Button, Divider, Switch } from "react-native-paper";
-import { useColorScheme } from "nativewind";
+import { useTheme } from "../../../../context/ThemeProvider";
 import { FontAwesome5 } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome6 } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 const Settings = ({ navigation }: { navigation: any }) => {
   const logout = useLogout();
   const user = useCurrentUserContext();
-  const { colorScheme, toggleColorScheme } = useColorScheme();
+  const { isDarkTheme, toggleThemeType,theme } = useTheme();
+
+
+  
   return (
-    <View>
+    <View style = {{backgroundColor: theme.colors.primary}}>
       <View style={style.imageContainer}>
         <Image
           source={{ uri: user?.profileImageUrl }}
           style={style.imageStyle}
         />
-        <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: theme.colors.secondary }}>
           {user.firstName} {user.lastName}
         </Text>
-       
       </View>
       <View style={style.buttonContainer}>
         <Divider />
         <Button
-          icon={"contacts"}
+          
           onPress={() => navigation.navigate("UserSettings")}
-          style={{
-            backgroundColor: "#fff",
-            width: "100%",
-            padding: 10,
-            alignItems: "flex-start",
-            borderRadius: 0,
-          }}
+          style={[style.button,{ backgroundColor: theme.colors.tertiary}]}
+         
         >
-          <Text style={style.buttonText}>User Settings</Text>
+          <View>
+            <MaterialIcons name="contacts" size={20} color="red" style={{marginRight:10}} />
+          </View>
+          <Text style={[style.buttonText,{color:theme.colors.secondary}]}className="ml-2">User Settings</Text>
         </Button>
         <Divider />
         <Button
           onPress={() => navigation.navigate("ProfilePicture")}
-          style={style.button}
-          icon={"camera"}
+          style={[style.button,{ backgroundColor: theme.colors.tertiary}]}
+        
         >
-          <Text style={style.buttonText}>Profile Picture</Text>
+          <View>
+            <MaterialIcons name="camera-alt" size={20} color="red" style={{marginRight:10}} />
+          </View>
+          <Text style={[style.buttonText,{color:theme.colors.secondary}]} className="ml-2">Profile Picture</Text>
         </Button>
         <Divider />
-
         <Button
           onPress={() => navigation.navigate("Preferences")}
-          style={style.button}
-          icon={"cards-heart-outline"}
+          style={[style.button,{backgroundColor: theme.colors.tertiary}]}
+         
         >
-          <Text style={style.buttonText}>Preferences</Text>
+          <View>
+            <FontAwesome6 name="heart" size={20} color="red" style={{marginRight:10}}/>
+          </View>
+          <Text style={[style.buttonText,{color:theme.colors.secondary}]} className="ml-2">Preferences</Text>
         </Button>
-
         <Divider />
-
-        
-          <View className=" flex-row items-center justify-between " style={style.button}>
-          <View className=" flex-row ml-2">
-          <FontAwesome5 className="ml-3"  name="palette" size={20} color="pink" />
-           <Text className="ml-2"  style={style.buttonText}>Theme</Text>
+        <View className="flex-row items-center justify-between" style={[style.button,{backgroundColor: theme.colors.tertiary}]}>
+          <View className="flex-row ml-3">
+            <FontAwesome5  name="palette" size={20} color="red" />
+            <Text className="ml-2  " style={[style.buttonText,{color:theme.colors.secondary}]}>Dark mode</Text>
           </View>
-            <Switch
-              value={colorScheme == "dark"}
-              onValueChange={toggleColorScheme}
-              color="#ee5253"
-            />
-          </View>
-        
+          <Switch 
+            value={isDarkTheme}
+            onValueChange={toggleThemeType} 
+            color="#ee5253"
+          />
 
+        </View>
         <Divider />
         <Button
-          icon={"image-multiple-outline"}
+        
           onPress={() => navigation.navigate("Gallery")}
-          style={style.button}
+          style={[style.button,{backgroundColor: theme.colors.tertiary}]}
         >
-          <Text style={style.buttonText}>Gallery</Text>
+          <View>
+            <MaterialCommunityIcons name="image-multiple-outline" size={20} color="red" style={{marginRight:10}}/>
+          </View>
+          <Text style={[style.buttonText,{color:theme.colors.secondary}]} className="ml-2">Gallery</Text>
         </Button>
         <Divider />
       </View>
-      <TouchableOpacity onPress={() => logout()}>
-        <Text style={style.logOutButton}>Logout</Text>
-      </TouchableOpacity>
+      
+        <TouchableOpacity className="bg-[#ee5253] p-3 rounded-full mt-14 mb-10 "  onPress={() => logout()}>
+          <Text className=" text-center text-white text-xl" >Logout</Text>
+        </TouchableOpacity>
+     
     </View>
   );
 };
@@ -98,7 +107,7 @@ const style = StyleSheet.create({
     borderTopColor: "#00f",
   },
   button: {
-    backgroundColor: "#fff",
+    
     width: "100%",
     padding: 10,
     alignItems: "flex-start",
@@ -107,6 +116,7 @@ const style = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     color: "black",
+    marginLeft: 10,
   },
   imageContainer: {
     justifyContent: "center",
@@ -118,7 +128,7 @@ const style = StyleSheet.create({
     height: 175,
     borderRadius: 100,
     borderWidth: 5,
-    borderColor: "#fff",
+    borderColor: "#ee5253",
     shadowColor: "#F13559",
     shadowOffset: {
       width: 0,

@@ -18,6 +18,7 @@ import { EvilIcons } from "@expo/vector-icons";
 import * as Yup from "yup";
 import { Button } from "react-native-paper";
 import { set } from "react-hook-form";
+import { useTheme } from "../../../../../context/ThemeProvider";
 const screenWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
@@ -78,6 +79,7 @@ const Gallery = () => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imageUri, setImageUri] = useState<string>("");
+  const {theme} = useTheme();
   const showCameraRoll = async () => {
     const response = await launchImageLibrary({
       mediaType: "photo",
@@ -119,7 +121,7 @@ const Gallery = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{backgroundColor:theme.colors.primary}]}>
       <Formik<NewImageValues>
         initialValues={{ galleryImage: undefined }}
         onSubmit={handleSubmit}
