@@ -1,9 +1,9 @@
 import { MessagesService } from "@/api/messages";
 import UserAvatar from "@/components/UserAvatar";
-import { MatchedUser, ProjectedUser } from "@/types/User";
+import { ProjectedUser } from "@/types/User";
 import { FormikHelpers } from "formik";
 import { useEffect, useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import React from "react";
 import ChatMessage from "@/components/chat/ChatMessage";
@@ -14,6 +14,8 @@ import { useInView } from "react-intersection-observer";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import UserActionsDropdown from "@/components/UserActionsDropdown";
+import { MatchesService } from "@/api/matches";
+
 const initialValues = {
   message: "",
 };
@@ -23,33 +25,13 @@ type ChatValues = typeof initialValues;
 const ChatPage = () => {
   const [messagesStartRef, messagesStartInView] = useInView({ delay: 500 });
   const [messagesEndRef, messagesEndInView] = useInView({ triggerOnce: true });
-  const [parent] = useAutoAnimate();
   const startRef = useRef<HTMLDivElement | null>(null);
+  const [parent] = useAutoAnimate();
+
+  const { userId } = useParams() as { userId: string };
+  const userQuery = MatchesService.useGetMatchedUserById(userId);
+  const recentMessages = MessagesService.useGetMessages(userQuery.data?.chatId);
   const sendMessage = MessagesService.useSendMessage();
-
-  const { state } = useLocation();
-  const navigate = useNavigate();
-  const user = state?.user as MatchedUser;
-
-  const recentMessages = MessagesService.useGetMessages(user?.chatId ?? "");
-
-  const handleSubmit = (
-    values: ChatValues,
-    helpers: FormikHelpers<ChatValues>
-  ) => {
-    sendMessage(values.message, user.id, user.chatId);
-    helpers.resetForm();
-  };
-
-  const goBackToMessages = () => {
-    navigate("/messages");
-  };
-
-  useEffect(() => {
-    if (!user) {
-      goBackToMessages();
-    }
-  }, [user]);
 
   useEffect(() => {
     if (!recentMessages.isSuccess) {
@@ -67,9 +49,29 @@ const ChatPage = () => {
     recentMessages.isSuccess,
   ]);
 
-  if (!user) {
-    return null;
+  if (userQuery.isLoading) {
+    return (
+      <ChatPageHeader>
+        <div className="flex justify-center items-center h-full w-full text-red-500">
+          <CircularProgress size="3rem" color="inherit" />
+        </div>
+      </ChatPageHeader>
+    );
   }
+
+  if (userQuery.isError || !userQuery.isSuccess) {
+    return <Navigate to="/messages" />;
+  }
+
+  const user = userQuery.data;
+
+  const handleSubmit = (
+    values: ChatValues,
+    helpers: FormikHelpers<ChatValues>
+  ) => {
+    sendMessage(values.message, user.id, user.chatId);
+    helpers.resetForm();
+  };
 
   if (recentMessages.isLoading) {
     return (
@@ -127,35 +129,35 @@ const ChatPage = () => {
 
 interface ChatPageHeaderProps {
   children: React.ReactNode;
-  user: ProjectedUser;
+  user?: ProjectedUser;
 }
 
 const ChatPageHeader = ({ children, user }: ChatPageHeaderProps) => (
   <div className="bg-white dark:bg-[#343030] flex w-full flex-grow sm:w-[27rem] flex-col items-center sm:rounded-lg shadow-lg shadow-black navbar-max-h relative">
-    <div className="flex w-full items-center justify-between text-2xl py-2 dark:bg-[#242121] pl-4 pr-3 sm:rounded-t-lg border-b border-[#E8E6EA] dark:border-[#554e4e]">
-      <div className="flex items-center gap-6">
-        <Link to=".." type="button" className="font-semibold text-4xl">
-          <KeyboardArrowLeftIcon fontSize="inherit" />
-        </Link>
-        <Link
-          to="/matches/profile"
-          state={{ user }}
-          className="text-black dark:text-red-500 font-bold"
-        >
-          {user.firstName}
-        </Link>
+    {user && (
+      <div className="flex w-full items-center justify-between text-2xl py-2 dark:bg-[#242121] pl-4 pr-3 sm:rounded-t-lg border-b border-[#E8E6EA] dark:border-[#554e4e]">
+        <div className="flex items-center gap-6">
+          <Link to=".." type="button" className="font-semibold text-4xl">
+            <KeyboardArrowLeftIcon fontSize="inherit" />
+          </Link>
+          <Link
+            to={`/matches/profile/${user.id}`}
+            className="text-black dark:text-red-500 font-bold"
+          >
+            {user.firstName}
+          </Link>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link
+            to={`/matches/profile/${user.id}`}
+            className="flex items-center justify-center w-12 h-12 bg-gray-300 rounded-full"
+          >
+            <UserAvatar user={user} />
+          </Link>
+          <UserActionsDropdown user={user} />
+        </div>
       </div>
-      <div className="flex items-center gap-2">
-        <Link
-          to="/matches/profile"
-          state={{ user }}
-          className="flex items-center justify-center w-12 h-12 bg-gray-300 rounded-full"
-        >
-          <UserAvatar user={user} />
-        </Link>
-        <UserActionsDropdown user={user} />
-      </div>
-    </div>
+    )}
     {children}
   </div>
 );

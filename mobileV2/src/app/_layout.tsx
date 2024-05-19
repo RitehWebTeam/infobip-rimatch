@@ -1,15 +1,20 @@
-import CurrentUserContextProvider from "../context/CurrentUserProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "../context/AuthProvider";
-import { MD3LightTheme as DefaultTheme, PaperProvider } from 'react-native-paper';
+import {
+  MD3LightTheme as DefaultTheme,
+  PaperProvider,
+} from "react-native-paper";
 import { Slot } from "expo-router";
+import { StompSessionProvider } from "react-stomp-hooks";
+// Needed for StompJS to work in React Native
+global.TextEncoder = require("text-encoding").TextEncoder;
 
 const theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#EF4444',
-    secondary: 'yellow',
+    primary: "#EF4444",
+    secondary: "yellow",
   },
 };
 
@@ -18,13 +23,19 @@ const client = new QueryClient();
 const Layout = () => {
   return (
     <QueryClientProvider client={client}>
-      <CurrentUserContextProvider>
-        <AuthProvider>
-          <PaperProvider theme={theme}>
+      <AuthProvider>
+        <PaperProvider theme={theme}>
+          <StompSessionProvider
+            // @ts-ignore
+            url={`${process.env.EXPO_PUBLIC_BACKEND_WS_URL}/ws`}
+            // Needed for StompJS to work in React Native
+            forceBinaryWSFrames={true}
+            appendMissingNULLonIncoming={true}
+          >
             <Slot />
-          </PaperProvider>
-        </AuthProvider>
-      </CurrentUserContextProvider>
+          </StompSessionProvider>
+        </PaperProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };
