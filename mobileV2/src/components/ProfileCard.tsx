@@ -12,9 +12,9 @@ import { ProjectedUser } from "../types/User";
 import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { StyleSheet } from "react-native";
-import { Ionicons } from '@expo/vector-icons';
-import { EvilIcons } from '@expo/vector-icons';
-
+import { Ionicons } from "@expo/vector-icons";
+import { EvilIcons } from "@expo/vector-icons";
+import { useTheme } from "@/context/ThemeProvider";
 interface ProfileCardProps {
   user: ProjectedUser;
   onClose: () => void;
@@ -30,10 +30,10 @@ const ProfileCard = ({
   user,
   onClose,
   showChatIcon = false,
-  handleNextUser
+  handleNextUser,
 }: ProfileCardProps) => {
   /* const loggedInUser = useCurrentUserContext(); */
-
+  const { theme } = useTheme();
   const isSpotifySong = useMemo(() => {
     if (!user.favouriteSong) return false;
     return user.favouriteSong?.search(/open.spotify.com/gi) !== -1;
@@ -59,13 +59,25 @@ const ProfileCard = ({
         elevation: 5,
       }}
     >
-      <ScrollView>
-        <View style={{ flexDirection: "row", padding: 10 }}>
+      <ScrollView style={{ backgroundColor: theme.colors.primary }}>
+        <View
+          style={{
+            flexDirection: "row",
+            padding: 10,
+            backgroundColor: theme.colors.primary,
+          }}
+        >
           <TouchableOpacity onPress={onClose}>
-          <Ionicons name="arrow-back" size={24} color="black" />
+            <Ionicons name="arrow-back" size={24} color="black" />
           </TouchableOpacity>
         </View>
-        <View style={{ width: "100%", backgroundColor: "#f3f4f6", flex: 1 }}>
+        <View
+          style={{
+            width: "100%",
+            backgroundColor: theme.colors.primary,
+            flex: 1,
+          }}
+        >
           <Image
             source={{ uri: user.profileImageUrl || "/Default_pfp.svg" }}
             style={{
@@ -77,7 +89,12 @@ const ProfileCard = ({
             /* loadingIndicatorSource="/Default_pfp.svg" */
           />
         </View>
-        <View style={styles.buttonCOntainer}>
+        <View
+          style={[
+            styles.buttonCOntainer,
+            { backgroundColor: theme.colors.primary },
+          ]}
+        >
           <TouchableOpacity
             style={styles.sideButton}
             onPress={() => handleNextUser(false, user.id)}
@@ -98,7 +115,7 @@ const ProfileCard = ({
         <View
           style={{
             flex: 1,
-            backgroundColor: "#fff",
+            backgroundColor: theme.colors.primary,
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
             paddingHorizontal: 20,
@@ -120,7 +137,7 @@ const ProfileCard = ({
                 fontWeight: "bold",
                 color: "#F13559",
                 zIndex: 20,
-                marginBottom:20
+                marginBottom: 20,
               }}
             >
               {user.firstName} {user.lastName}, {user.age}
@@ -129,7 +146,6 @@ const ProfileCard = ({
             <TouchableOpacity onPress={() => Linking.openURL("/messages/chat")}>
               <View
                 style={{
-                 
                   alignItems: "center",
                   justifyContent: "center",
                   padding: 5,
@@ -140,22 +156,63 @@ const ProfileCard = ({
                 }}
               >
                 <EvilIcons name="sc-telegram" size={40} color="red" />
-                
               </View>
             </TouchableOpacity>
           </View>
           <View>
-            <Text style={{ fontWeight: "bold", marginBottom: 5,fontSize:16 }}>
+            <Text
+              style={{
+                fontWeight: "bold",
+                marginBottom: 5,
+                fontSize: 16,
+                color: theme.colors.secondary,
+              }}
+            >
               Location
             </Text>
-            <Text style={{ marginBottom: 20,fontSize:16 }}>{user.location}</Text>
+            <Text
+              style={{
+                marginBottom: 20,
+                fontSize: 16,
+                color: theme.colors.secondary,
+              }}
+            >
+              {user.location}
+            </Text>
           </View>
           <View>
-            <Text style={{ fontWeight: "bold", marginBottom: 5,fontSize:16,fontFamily:"Times new roman" }}>About</Text>
-            <Text style={{ marginBottom: 20,fontSize:16 }}>{user.description}</Text>
+            <Text
+              style={{
+                fontWeight: "bold",
+                marginBottom: 5,
+                fontSize: 16,
+                fontFamily: "Times new roman",
+                color: theme.colors.secondary,
+              }}
+            >
+              About
+            </Text>
+            <Text
+              style={{
+                marginBottom: 20,
+                fontSize: 16,
+                color: theme.colors.secondary,
+              }}
+            >
+              {user.description}
+            </Text>
           </View>
           <View>
-            <Text style={{ fontWeight: "bold", marginBottom: 20,fontSize:16 }}>Tags</Text>
+            <Text
+              style={{
+                fontWeight: "bold",
+                marginBottom: 20,
+                fontSize: 16,
+                color: theme.colors.secondary,
+              }}
+            >
+              Tags
+            </Text>
             {/*  <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
                 {matchedTags.map(
                   (tag: any, index: React.Key | null | undefined) => (
@@ -165,14 +222,23 @@ const ProfileCard = ({
               </View> */}
           </View>
           <View>
-            <Text style={{ fontWeight: "bold", marginBottom: 10,fontSize:16 }}>
+            <Text
+              style={{
+                fontWeight: "bold",
+                marginBottom: 10,
+                fontSize: 16,
+                color: theme.colors.secondary,
+              }}
+            >
               Favorite song
             </Text>
             {isSpotifySong ? (
               /*  <Spotify wide link={user.favouriteSong} /> */
               <Text>Song</Text>
             ) : (
-              <Text>{user.favouriteSong}</Text>
+              <Text style={{ color: theme.colors.secondary }}>
+                {user.favouriteSong}
+              </Text>
             )}
           </View>
         </View>
@@ -185,14 +251,13 @@ const styles = StyleSheet.create({
   buttonCOntainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    
     alignItems: "center",
-    position: 'absolute',
-    top: '50%', 
-    width: '90%',
-    height: '10%', 
+    position: "absolute",
+    top: "50%",
+    width: "90%",
+    height: "10%",
     marginHorizontal: 20,
-    zIndex: 10, 
+    zIndex: 10,
   },
   middleButton: {
     width: 120,

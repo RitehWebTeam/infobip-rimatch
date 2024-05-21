@@ -17,14 +17,13 @@ import useAuth from "../../../../hooks/useAuth";
 import { UsersService } from "../../../../api/users";
 import { router } from "expo-router";
 
-
 const initialValues = {
   description: "",
   phoneNumber: "",
   location: "",
   favouriteSong: "",
-  profileImageUrl: "",
-  tags: "",
+  profileImageUrl: null,
+  tags: [] as Array<string>,
   preferences: {
     ageGroupMin: "",
     ageGroupMax: "",
@@ -39,25 +38,25 @@ type PreferencesProps = {
 type SetupPreferencesValues = typeof initialValues & {
   profileImageUrl: File | null;
 };
-  //WORKING on sending data to the server
-  const mapPreferenceValues = (
-    values: SetupPreferencesValues
-  ): PreferencesInitData => ({
-    data: {
-      description: values.description,
-      phoneNumber: values.phoneNumber,
-      location: values.location,
-      favouriteSong: values.favouriteSong,
-      tags: values.tags,
-      preferences: {
-        ageGroupMin: parseInt(values.preferences.ageGroupMin, 10),
-        ageGroupMax: parseInt(values.preferences.ageGroupMax, 10),
-        partnerGender: values.preferences.partnerGender,
-      },
+//WORKING on sending data to the server
+const mapPreferenceValues = (
+  values: SetupPreferencesValues
+): PreferencesInitData => ({
+  data: {
+    description: values.description,
+    phoneNumber: values.phoneNumber,
+    location: values.location,
+    favouriteSong: values.favouriteSong,
+    tags: values.tags,
+    preferences: {
+      ageGroupMin: parseInt(values.preferences.ageGroupMin, 10),
+      ageGroupMax: parseInt(values.preferences.ageGroupMax, 10),
+      partnerGender: values.preferences.partnerGender,
     },
-    photo: values.profileImageUrl!,
-  });
- 
+  },
+  photo: values.profileImageUrl!,
+});
+
 export default function Confirmation({ navigation }: PreferencesProps) {
   const { setAuth } = useAuth();
   const { mutateAsync: initPreferences } = UsersService.useInitPreferences();
@@ -72,9 +71,9 @@ export default function Confirmation({ navigation }: PreferencesProps) {
     // TODO: Error handling
 
     const mappedValues = await mapPreferenceValues(values);
-     await initPreferences(mappedValues)
-      
-    
+    console.log(mappedValues);
+    await initPreferences(mappedValues);
+
     setAuth((prev) => ({
       ...prev!,
       active: true,
@@ -94,8 +93,8 @@ export default function Confirmation({ navigation }: PreferencesProps) {
       phoneNumber: "",
       location: "",
       favouriteSong: "",
-      profileImageUrl: "",
-      tags: "", //* PRomijeni nazad u []
+      profileImageUrl: null,
+      tags: [] as Array<string>,
       preferences: {
         ageGroupMin: "",
         ageGroupMax: "",
@@ -164,7 +163,7 @@ export default function Confirmation({ navigation }: PreferencesProps) {
           label={"Your prefered partner is"}
         />
         <SummaryEntry
-          name={information.tags}
+          name={information.tags.join(", ")}
           label={"Your tags are"}
         />
         <Button
@@ -177,7 +176,7 @@ export default function Confirmation({ navigation }: PreferencesProps) {
         <Button
           style={styles.button}
           mode="outlined"
-          //nPress={() => handleSubmit(information)}
+          onPress={() => handleSubmit(information)}
         >
           <Text>SaveData</Text>
         </Button>

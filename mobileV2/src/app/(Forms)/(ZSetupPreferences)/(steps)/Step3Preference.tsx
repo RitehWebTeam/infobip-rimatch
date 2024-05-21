@@ -24,7 +24,7 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
       });
   }, [isFocused]);
 
-  const onSubmit = (data: { favouriteSong: string; tags: string }) => {
+  const onSubmit = (data: { favouriteSong: string; tags: string[] }) => {
     WizardStore.update((s) => {
       s.progress = 75;
       s.favouriteSong = data.favouriteSong;
@@ -77,7 +77,7 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
               placeholder="(separate with spaces)"
               onBlur={onBlur}
               onChangeText={onChange}
-              value={value} // Ovdje ce biti problema garant
+              value={Array.isArray(value) ? value.join(" ") : value}
             />
           )}
           name="tags"

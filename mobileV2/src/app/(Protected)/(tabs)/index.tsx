@@ -4,7 +4,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import MatchCard from "../../../components/MatchCard";
 import ProfileCard from "../../../components/ProfileCard";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { MatchesService } from "../../../api/matches";
+import { MatchesService } from "@api/matches";
+import { useTheme } from "@/context/ThemeProvider";
 
 export default function App() {
   return <AuthLayout />;
@@ -118,12 +119,7 @@ export const AuthLayout = () => {
           <ProfileCard
             user={user}
             onClose={closeProfile}
-            handleNextUser={function (
-              matchAccept: boolean,
-              userId: string
-            ): void {
-              throw new Error("Function not implemented.");
-            }}
+            handleNextUser={handleNextUser}
           />
         </GestureHandlerRootView>
       )}
@@ -136,8 +132,9 @@ const PotentialUsersContainer = ({
 }: {
   children?: React.ReactNode;
 }) => {
+  const { theme } = useTheme();
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.colors.primary }]}>
       <View style={styles.cardContainer}>{children}</View>
     </View>
   );

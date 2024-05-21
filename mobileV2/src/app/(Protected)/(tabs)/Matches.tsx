@@ -1,12 +1,13 @@
 import { View, StyleSheet, FlatList, Pressable } from "react-native";
-import { ActivityIndicator, Text, useTheme } from "react-native-paper";
+import { ActivityIndicator, Text } from "react-native-paper";
 import { Link } from "expo-router";
 import { MatchesService } from "@/api/matches";
 import MatchedUserCard from "@/components/MatchedUserCard";
-
+import { useTheme } from "@/context/ThemeProvider";
 const Matches = () => {
   const query = MatchesService.useGetMatches();
-  const theme = useTheme();
+
+  const { theme } = useTheme();
 
   if (query.isLoading) {
     return (
@@ -76,9 +77,18 @@ interface MatchHeaderProps {
 }
 
 const MatchHeader = ({ children }: MatchHeaderProps) => {
+  const theme = useTheme();
   return (
-    <View style={styles.container}>
-      <Text variant="bodyLarge" style={styles.subtitle}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme.theme.colors.primary },
+      ]}
+    >
+      <Text
+        variant="bodyLarge"
+        style={[styles.subtitle, { color: theme.theme.colors.secondary }]}
+      >
         This is a list of people who matched with you.
       </Text>
       <View style={styles.divider} />
@@ -90,6 +100,7 @@ const MatchHeader = ({ children }: MatchHeaderProps) => {
 const styles = StyleSheet.create({
   container: {
     display: "flex",
+
     height: "100%",
     paddingHorizontal: 25,
     backgroundColor: "white",
@@ -107,12 +118,14 @@ const styles = StyleSheet.create({
     marginTop: 7,
     marginBottom: 3,
   },
+
   columnWrapper: {
     justifyContent: "space-between",
   },
   itemContainer: {
     gap: 13,
   },
+
   centeredContainer: {
     flex: 1,
     justifyContent: "center",
