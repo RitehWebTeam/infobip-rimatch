@@ -1,22 +1,20 @@
 import { NavigationProp, useIsFocused } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import { View, Text, Image } from "react-native";
-import  {
-  launchImageLibrary,
-} from "react-native-image-picker"; // Import MediaType
+import { launchImageLibrary } from "react-native-image-picker"; // Import MediaType
 import { WizardStore } from "../store";
 import { useForm } from "react-hook-form";
-import { Button, MD3Colors, ProgressBar,  } from "react-native-paper";
+import { Button, MD3Colors, ProgressBar } from "react-native-paper";
 import { StyleSheet } from "react-native";
 type Step1PreferencesProps = {
   navigation: NavigationProp<object>;
 };
 
 const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
-  const [profileImageUrl, setProfileImageUrl] = React.useState<File | null>(); 
+  const [profileImageUrl, setProfileImageUrl] = React.useState<File | null>();
   const [photoUri, setPhotoUri] = React.useState<string | null>(null);
-  
-  const {handleSubmit} = useForm({
+
+  const { handleSubmit } = useForm({
     defaultValues: WizardStore.useState((s) => s),
   });
   const isFocused = useIsFocused();
@@ -28,43 +26,33 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
       });
   }, [isFocused]);
 
-  const onSubmit = (data: {
-    profileImageUrl: File 
- }) => {
+  const onSubmit = (data: { profileImageUrl: File }) => {
     WizardStore.update((s) => {
       s.progress = 100;
-      s.profileImageUrl = profileImageUrl as File ;
-      
+      s.profileImageUrl = profileImageUrl as File;
     });
     console.log(data);
     navigation.navigate("Confirmation" as never);
   };
-  //Ovo je ružan library ali za pocetak je okej 
+  //Ovo je ružan library ali za pocetak je okej
   const showCameraRoll = async () => {
-    const response = await launchImageLibrary(
-      {
-        mediaType: "photo",
-        quality: 0.5,
-        maxWidth: 500,
-        maxHeight: 500, 
-        includeBase64: false,
-      },
-      
-    );
-  
-    
-    if (response && response.assets ) {
-      
+    const response = await launchImageLibrary({
+      mediaType: "photo",
+      quality: 0.5,
+      maxWidth: 500,
+      maxHeight: 500,
+      includeBase64: false,
+    });
+
+    if (response && response.assets) {
       setProfileImageUrl(response.assets[0] as File | null);
       setPhotoUri(response.assets[0].uri as string);
-      console.log( profileImageUrl);
+      console.log(profileImageUrl);
     } else {
       setProfileImageUrl(null);
     }
-    
   };
-  
-  
+
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <ProgressBar
@@ -88,7 +76,7 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
           />
         </View>
       )}
-       
+
       <Button onPress={handleSubmit(onSubmit)} mode="outlined">
         <Text>NEXT</Text>
       </Button>

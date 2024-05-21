@@ -1,17 +1,14 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "../context/AuthProvider";
-import { DefaultTheme, PaperProvider } from "react-native-paper";
 import { Slot } from "expo-router";
 import { StompSessionProvider } from "react-stomp-hooks";
+import { ThemeProvider } from "../context/ThemeProvider";
 // Needed for StompJS to work in React Native
 global.TextEncoder = require("text-encoding").TextEncoder;
-import { useColorScheme } from "react-native";
-import { useEffect } from "react";
-import { ThemeProvider } from "../context/ThemeProvider";
-
 //!Main/Root Layout component
-const client = new QueryClient();
 
+const client = new QueryClient();
+console.log("Layout root");
 const Layout = () => {
   return (
     <QueryClientProvider client={client}>

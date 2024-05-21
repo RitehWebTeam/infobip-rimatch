@@ -3,8 +3,8 @@ import { MessagesService } from "@/api/messages";
 import ChatListUser from "@/components/chat/ChatListUser";
 import useCurrentUserContext from "@/hooks/useCurrentUser";
 import { View, StyleSheet, FlatList } from "react-native";
-import { useTheme, Text, ActivityIndicator } from "react-native-paper";
-
+import { Text, ActivityIndicator } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 const ChatListing = () => {
   const theme = useTheme();
   const query = MatchesService.useGetMatches();
@@ -43,9 +43,16 @@ const ChatListing = () => {
   );
 };
 
-const ChatListingHeader = ({ children }: { children: React.ReactNode }) => (
-  <View style={styles.mainContainer}>{children}</View>
-);
+const ChatListingHeader = ({ children }: { children: React.ReactNode }) => {
+  const theme = useTheme();
+  return (
+    <View
+      style={[styles.mainContainer, { backgroundColor: theme.colors.primary }]}
+    >
+      {children}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   mainContainer: {

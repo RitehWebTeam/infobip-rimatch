@@ -1,7 +1,7 @@
 import { UsersService } from "./../../../../../api/users";
 import useCurrentUserContext from "../../../../../hooks/useCurrentUser";
 import { Formik, FormikHelpers } from "formik";
-import { CircularProgress } from "@mui/material";
+//import { CircularProgress } from "@mui/material";
 import * as Yup from "yup";
 import { View, Text, Image } from "react-native";
 import { Button } from "react-native-paper";
@@ -100,7 +100,7 @@ const SettingsProfilePicture = () => {
               <View className="flex justify-center items-center mt-24 mb-56">
                 <Button onPress={submitForm} className=" w-4/5 bg-[#ee5253] ">
                   {isSubmitting ? (
-                    <CircularProgress />
+                    <Text>Loading</Text>
                   ) : (
                     <Text className="text-white align-middle">Save</Text>
                   )}

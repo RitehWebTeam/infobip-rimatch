@@ -36,6 +36,8 @@ const _layout = () => {
             <FontAwesome size={28} name="heart" color={color} />
           ),
           headerTitleAlign: "center",
+          headerTintColor: theme.colors.secondary,
+          headerStyle: { backgroundColor: theme.colors.primary },
         }}
       />
       <Tabs.Screen

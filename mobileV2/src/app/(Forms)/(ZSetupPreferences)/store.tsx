@@ -1,19 +1,18 @@
 import { registerInDevtools, Store } from "pullstate";
 
-interface storeTypes{
+interface storeTypes {
   description: string;
   phoneNumber: string;
   location: string;
   favouriteSong: string;
   profileImageUrl: any;
-  tags: Array<string>,
+  tags: Array<string>;
   preferences: {
     ageGroupMin: string;
     ageGroupMax: string;
     partnerGender: string;
   };
   progress: number;
-
 }
 
 export const WizardStore = new Store<storeTypes>({
@@ -21,7 +20,7 @@ export const WizardStore = new Store<storeTypes>({
   phoneNumber: "",
   location: "",
   favouriteSong: "",
-  profileImageUrl: null, 
+  profileImageUrl: null,
   tags: [], //* PRomijeni nazad u []
   preferences: {
     ageGroupMin: "",

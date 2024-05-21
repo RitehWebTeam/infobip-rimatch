@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import useRefreshToken from "../../hooks/useRefreshToken";
 import useAuth from "../../hooks/useAuth";
 import { View, ActivityIndicator } from "react-native";
+
 import CurrentUserContextProvider, {
   CurrentUserContext,
 } from "@/context/CurrentUserProvider";
@@ -12,6 +13,7 @@ const Layout = () => {
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useRefreshToken();
   const { auth } = useAuth();
+
   useEffect(() => {
     let isMounted = true;
 
@@ -46,6 +48,17 @@ const Layout = () => {
     return <Redirect href={"/LoginForm"} />;
   }
 
+  return (
+    <CurrentUserContextProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="(tabs)" />
+      </Stack>
+    </CurrentUserContextProvider>
+  );
   return (
     <CurrentUserContextProvider>
       <Stack

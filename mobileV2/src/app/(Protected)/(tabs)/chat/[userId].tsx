@@ -10,10 +10,10 @@ import {
 } from "react-native-gifted-chat";
 import { memo, useCallback, useMemo, useState } from "react";
 import useCurrentUserContext from "@/hooks/useCurrentUser";
-import { ActivityIndicator, useTheme } from "react-native-paper";
 import { Message } from "@/types/Message";
 import { ProjectedUser, User } from "@/types/User";
-
+import { useTheme } from "@/context/ThemeProvider";
+import { ActivityIndicator } from "react-native-paper";
 const mapMessage = (
   message: Message,
   currentUser: User,
@@ -40,6 +40,7 @@ const UserChatPage = () => {
   const recentMessages = MessagesService.useGetMessages(userQuery.data?.chatId);
   const sendMessage = MessagesService.useSendMessage();
   const currentUser = useCurrentUserContext();
+  const { theme } = useTheme();
 
   const [historyEnable, setHistoryEnable] = useState(false);
   const history = MessagesService.useGetMessagesHistory(
@@ -93,7 +94,7 @@ const UserChatPage = () => {
         }}
       />
       <GiftedChat
-        messagesContainerStyle={{ backgroundColor: "white" }}
+        messagesContainerStyle={{ backgroundColor: theme.colors.primary }}
         messages={messages}
         onSend={onSend}
         scrollToBottom={true}
@@ -151,12 +152,12 @@ function LoadEarlier({
 }
 
 const CustomBubble = memo((props) => {
-  const theme = useTheme();
+  const { theme } = useTheme();
   return (
     <Bubble
       {...props}
       wrapperStyle={{
-        right: { backgroundColor: theme.colors.primary },
+        right: { backgroundColor: theme.colors.accent },
       }}
     />
   );
@@ -165,6 +166,7 @@ const CustomBubble = memo((props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
   },
 });
 
