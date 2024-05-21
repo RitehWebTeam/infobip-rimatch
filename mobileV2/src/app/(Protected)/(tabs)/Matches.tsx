@@ -1,17 +1,20 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { MatchesService } from "../../../api/matches";
-import MatchedUser from "../../../components/MatchedUser";
+import { View, StyleSheet, FlatList, Pressable } from "react-native";
+import { ActivityIndicator, Text } from "react-native-paper";
 import { Link } from "expo-router";
+import { MatchesService } from "@/api/matches";
+import MatchedUserCard from "@/components/MatchedUserCard";
+import { useTheme } from "@/context/ThemeProvider";
 
-const MatchesPage = () => {
+const Matches = () => {
   const query = MatchesService.useGetMatches();
+
+  const { theme } = useTheme();
 
   if (query.isLoading) {
     return (
       <MatchHeader>
-        <View style={styles.container}>
-          <Text style={styles.loadingText}>Loading</Text>
+        <View style={styles.centeredContainer}>
+          <ActivityIndicator animating={true} size={"large"} />
         </View>
       </MatchHeader>
     );
@@ -19,24 +22,37 @@ const MatchesPage = () => {
 
   if (query.isError || !query.isSuccess) {
     return (
-      <View>
-        <Text>Error</Text>
-      </View>
+      <MatchHeader>
+        <View style={styles.centeredContainer}>
+          <Text variant="headlineSmall" style={{ color: theme.colors.error }}>
+            Something went wrong.
+          </Text>
+        </View>
+      </MatchHeader>
     );
   }
 
   const matches = query.data;
-  console.log(matches);
-  if (matches.length === 0) {
 
+  if (matches.length === 0) {
     return (
       <MatchHeader>
-        <View style={styles.container}>
-          <Text style={[styles.loadingText, { backgroundColor: "cyan" }]}>
+        <View style={styles.centeredContainer}>
+          <Text
+            variant="headlineSmall"
+            style={{ color: theme.colors.onBackground }}
+          >
             No matches yet?
           </Text>
-          <Link href="/" style={styles.linkText}>
-            <Text>Check out some users.</Text>
+          <Link href="/" asChild>
+            <Pressable>
+              <Text
+                variant="titleLarge"
+                style={{ color: theme.colors.primary }}
+              >
+                Check out some users.
+              </Text>
+            </Pressable>
           </Link>
         </View>
       </MatchHeader>
@@ -45,101 +61,66 @@ const MatchesPage = () => {
 
   return (
     <MatchHeader>
-      <View style={styles.gridContainer}>
-        {matches.map((user) => (
-          <Link key={user.id} href="./profile">
-            <MatchedUser user={user} />
-          </Link>
-        ))}
-      </View>
+      <FlatList
+        data={matches}
+        renderItem={({ item }) => <MatchedUserCard user={item} />}
+        keyExtractor={(item) => item.id}
+        numColumns={2}
+        columnWrapperStyle={styles.columnWrapper}
+        contentContainerStyle={styles.itemContainer}
+      />
     </MatchHeader>
   );
 };
 
 interface MatchHeaderProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const MatchHeader = ({ children }: MatchHeaderProps) => {
   return (
-    <View style={styles.matchHeaderContainer}>
-      <View style={styles.matchHeader}>
-        <Text style={styles.matchHeaderText}>Matches</Text>
-        <Text style={styles.matchHeaderDescription}>
-          This is a list of people who matched with you.
-        </Text>
-        <View style={styles.divider} />
-        {children}
-      </View>
+    <View style={styles.container}>
+      <Text variant="bodyLarge" style={styles.subtitle}>
+        This is a list of people who matched with you.
+      </Text>
+      <View style={styles.divider} />
+      {children}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100%",
-    width: "100%",
-    padding: 4,
-  },
-  loadingText: {
-    fontSize: 16,
-    backgroundColor: "cyan",
-  },
-  linkText: {
-    textDecorationLine: "underline",
-    color: "red",
-  },
-  gridContainer: {
     display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    gap: 7,
-    width: "100%",
-    marginTop: 3,
-    maxHeight: 330,
-    overflow: "hidden",
-  },
-  matchHeaderContainer: {
-    flex: 1,
-    justifyContent: "center",
-    paddingBottom: 8,
-  },
-  matchHeader: {
+    height: "100%",
+    paddingHorizontal: 25,
     backgroundColor: "white",
-    flexDirection: "column",
-    width: "100%",
-    alignItems: "center",
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    borderRadius: 8,
-    shadowColor: "black",
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    gap: 10,
   },
-  matchHeaderText: {
-    color: "black",
-    fontSize: 40,
-    fontWeight: "bold",
-    lineHeight: 51,
-  },
-  matchHeaderDescription: {
-    color: "rgba(0, 0, 0, 0.7)",
-    width: "100%",
+  subtitle: {
     marginTop: 4,
+    color: "black",
+    opacity: 0.8,
   },
   divider: {
-    backgroundColor: "gray",
     width: "100%",
     height: 1,
+    backgroundColor: "rgb(229 231 235)",
+    marginTop: 7,
+    marginBottom: 3,
+  },
+  columnWrapper: {
+    justifyContent: "space-between",
+  },
+  itemContainer: {
+    gap: 13,
+  },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
   },
 });
 
-export default MatchesPage;
+export default Matches;

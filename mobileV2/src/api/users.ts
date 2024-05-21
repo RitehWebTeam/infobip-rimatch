@@ -1,17 +1,17 @@
-import useAuth from "../hooks/useAuth";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import type {
   MatchedUser,
   PreferencesInitData,
   User,
   UserUpdateData,
-} from "../types/User";
+} from "@/types/User";
 import {
   UseMutationOptions,
   useMutation,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import useAuth from "@/hooks/useAuth";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 export const UsersService = {
   useGetCurrentUser() {

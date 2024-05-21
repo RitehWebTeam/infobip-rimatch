@@ -1,16 +1,17 @@
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-import { Message } from "@/types/Message";
 import {
   useInfiniteQuery,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
-import { Page } from "@/types/Page";
 import useAuth from "@/hooks/useAuth";
 import { MatchedUser } from "@/types/User";
+import { Message } from "@/types/Message";
+import { Page } from "@/types/Page";
+import useCurrentUserContext from "@/hooks/useCurrentUser";
 
-export const HISTORY_PAGE_SIZE = 20;
+export const HISTORY_PAGE_SIZE = 15;
 export const MESSAGE_PAGE_SIZE = 15;
 
 export const MessagesService = {
@@ -18,6 +19,7 @@ export const MessagesService = {
     const client = useStompClient();
     const queryClient = useQueryClient();
     const { auth } = useAuth();
+    const currentUser = useCurrentUserContext();
 
     const sendMessage = (
       content: string,
@@ -42,7 +44,7 @@ export const MessagesService = {
           newContent.unshift({
             id: new Date().getTime().toString() + content,
             content,
-            senderId: "",
+            senderId: currentUser.id,
             receiverId,
             chatId,
             timestamp: new Date().toISOString(),
@@ -69,7 +71,11 @@ export const MessagesService = {
     });
   },
 
-  useGetMessagesHistory: (chatId: string, lastMessageId: string) => {
+  useGetMessagesHistory: (
+    chatId: string,
+    lastMessageId: string,
+    enabled = true
+  ) => {
     const axios = useAxiosPrivate();
 
     const fetchMessages = async ({ pageParam }: { pageParam: unknown }) => {
@@ -86,6 +92,7 @@ export const MessagesService = {
       getNextPageParam: (lastPage) =>
         !lastPage.last ? lastPage.number + 1 : null,
       staleTime: Infinity,
+      enabled: !!chatId && enabled,
     });
   },
 

@@ -35,8 +35,7 @@ const ChatListComponent = ({ matchedUser }: ChatListComponentProps) => {
   }, [data?.content]);
   return (
     <Link
-      to="./chat"
-      state={{ user: matchedUser }}
+      to={`./chat/${matchedUser.id}`}
       className="flex flex-row items-center justify-between h-min-10 p-4 border-b-2 border-gray-500 dark:hover:bg-gray-900 hover:bg-gray-200 cursor-pointer"
     >
       <div className="flex gap-4 items-start">

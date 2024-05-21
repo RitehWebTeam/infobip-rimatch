@@ -1,14 +1,13 @@
-import { Theme } from "../../../../../context/ThemeProvider";
+import { Theme } from "@/context/ThemeProvider";
 import useTheme from "../../../../../hooks/useTheme";
 import { RadioButton } from "react-native-paper";
 import { View } from "react-native";
 import { useState } from "react";
 import { Text } from "react-native";
 
-
 const SettingsTheme = () => {
   const { theme, setThemeMode } = useTheme();
- 
+
   const [checked, setChecked] = useState("light");
   const handleChange = (value: Theme) => {
     setThemeMode(value);
@@ -27,7 +26,7 @@ const SettingsTheme = () => {
           onPress={() => {
             setChecked("light");
             handleChange("light");
-        }}
+          }}
         />
         <Text>Light</Text>
       </View>
@@ -38,7 +37,7 @@ const SettingsTheme = () => {
           onPress={() => {
             setChecked("dark");
             handleChange("dark");
-        }}
+          }}
         />
         <Text>Dark</Text>
       </View>
@@ -49,9 +48,9 @@ const SettingsTheme = () => {
           onPress={() => {
             setChecked("system");
             handleChange("system");
-        }}
+          }}
         />
-        <Text >System</Text>
+        <Text>System</Text>
       </View>
     </View>
   );

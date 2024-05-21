@@ -1,6 +1,6 @@
 import { UsersService } from "./../../../../../api/users";
 import useCurrentUserContext from "../../../../../hooks/useCurrentUser";
-import {  Formik, FormikHelpers } from "formik";
+import { Formik, FormikHelpers } from "formik";
 import { CircularProgress } from "@mui/material";
 import * as Yup from "yup";
 import { View, Text, Image } from "react-native";
@@ -9,7 +9,7 @@ import { launchImageLibrary } from "react-native-image-picker";
 import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useTheme } from "../../../../../context/ThemeProvider";
+import { useTheme } from "@/context/ThemeProvider";
 const validationSchema = Yup.object({
   profileImageUrl: Yup.mixed<File>()
     .required("Required")
@@ -60,16 +60,15 @@ const SettingsProfilePicture = () => {
   };
 
   return (
-    <View style={{backgroundColor:theme.colors.primary}}>
+    <View style={{ backgroundColor: theme.colors.primary }}>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ submitForm, touched, isSubmitting }) => (
+        {({ submitForm, isSubmitting }) => (
           <>
-           
-            <View className=" relative mt-12" >
+            <View className=" relative mt-12">
               <TouchableOpacity onPress={showCameraRoll}>
                 <View className=" flex justify-center items-center ">
                   <Image
@@ -100,11 +99,13 @@ const SettingsProfilePicture = () => {
               </TouchableOpacity>
               <View className="flex justify-center items-center mt-24 mb-56">
                 <Button onPress={submitForm} className=" w-4/5 bg-[#ee5253] ">
-                  {isSubmitting ? <CircularProgress /> :<Text className="text-white align-middle">Save</Text> }
-                  
+                  {isSubmitting ? (
+                    <CircularProgress />
+                  ) : (
+                    <Text className="text-white align-middle">Save</Text>
+                  )}
                 </Button>
               </View>
-             
             </View>
           </>
         )}

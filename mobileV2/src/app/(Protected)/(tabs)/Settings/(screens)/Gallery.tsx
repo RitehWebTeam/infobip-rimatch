@@ -11,14 +11,13 @@ import {
 import { Entypo } from "@expo/vector-icons";
 import { launchImageLibrary } from "react-native-image-picker";
 import { Formik, FormikConfig } from "formik";
-import { UsersService } from "../../../../../api/users";
 import useCurrentUserContext from "../../../../../hooks/useCurrentUser";
 import { FlatList } from "react-native-gesture-handler";
 import { EvilIcons } from "@expo/vector-icons";
 import * as Yup from "yup";
 import { Button } from "react-native-paper";
-import { set } from "react-hook-form";
-import { useTheme } from "../../../../../context/ThemeProvider";
+import { useTheme } from "@/context/ThemeProvider";
+import { UsersService } from "@api/users";
 const screenWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
@@ -79,7 +78,7 @@ const Gallery = () => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imageUri, setImageUri] = useState<string>("");
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const showCameraRoll = async () => {
     const response = await launchImageLibrary({
       mediaType: "photo",
@@ -97,9 +96,8 @@ const Gallery = () => {
   };
 
   const handleSubmit: NewImageOnSubmit = async (values, helpers) => {
-    
     const newImage = selectedImage as File;
-    
+
     addPhotos([newImage], {
       onSuccess: () => {
         setIsDialogOpen(false);
@@ -108,7 +106,7 @@ const Gallery = () => {
       onSettled: () => helpers.setSubmitting(false),
       onError: (error) => {
         console.log(error);
-      }
+      },
     });
   };
 
@@ -121,57 +119,53 @@ const Gallery = () => {
   };
 
   return (
-    <View style={[styles.container,{backgroundColor:theme.colors.primary}]}>
+    <View style={[styles.container, { backgroundColor: theme.colors.primary }]}>
       <Formik<NewImageValues>
         initialValues={{ galleryImage: undefined }}
         onSubmit={handleSubmit}
         validationSchema={newImageValidationSchema}
       >
-        
-           <Modal
-           animationType="fade"
-           transparent={true}
-           visible={isDialogOpen}
-           onRequestClose={() => setIsDialogOpen(false)}
-         >
-           <TouchableOpacity
-             style={styles.modalBackground}
-             activeOpacity={1}
-             onPress={closeModal}
-           >
-             <View style={styles.dialogContainer}>
-               {selectedImage && (
-                 <Image
-                   source={{ uri: imageUri }}
-                   style={styles.modalImage}
-                   resizeMode="contain"
-                   
-                 />
-               )}
-               <Button
-                 style={{
-                   backgroundColor: "#ee5253",
-                   width: 120,
-                   height: 40,
-                   borderRadius: 20,
-                   alignItems: "center",
-                   justifyContent: "center",
-                   marginBottom: 10,
-                 }}
-                 /* onPress={() => {
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={isDialogOpen}
+          onRequestClose={() => setIsDialogOpen(false)}
+        >
+          <TouchableOpacity
+            style={styles.modalBackground}
+            activeOpacity={1}
+            onPress={closeModal}
+          >
+            <View style={styles.dialogContainer}>
+              {selectedImage && (
+                <Image
+                  source={{ uri: imageUri }}
+                  style={styles.modalImage}
+                  resizeMode="contain"
+                />
+              )}
+              <Button
+                style={{
+                  backgroundColor: "#ee5253",
+                  width: 120,
+                  height: 40,
+                  borderRadius: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 10,
+                }}
+                /* onPress={() => {
                    handleSubmit();
                  }} TODO handaling submit for images  */
-               >
-                 <Text style={{ color: "white" }}>Upload Image</Text>
-               </Button>
-               <TouchableOpacity onPress={showCameraRoll}>
-                 <Text style={{ color: "#ee5253" }}>Choose from Gallery</Text>
-               </TouchableOpacity>
-             </View>
-           </TouchableOpacity>
-         </Modal>
-       
-       
+              >
+                <Text style={{ color: "white" }}>Upload Image</Text>
+              </Button>
+              <TouchableOpacity onPress={showCameraRoll}>
+                <Text style={{ color: "#ee5253" }}>Choose from Gallery</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Modal>
       </Formik>
 
       <View className=" flex justify-between items-center gap-4">

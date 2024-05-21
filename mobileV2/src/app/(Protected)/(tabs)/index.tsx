@@ -1,13 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Text, View, StyleSheet, TouchableOpacity, useColorScheme } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import { useQueryClient } from "@tanstack/react-query";
-/* import { CircularProgress } from "@mui/material"; */
 import MatchCard from "../../../components/MatchCard";
-import { MatchesService } from "../../../api/matches";
 import ProfileCard from "../../../components/ProfileCard";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useTheme } from "react-native-paper";
-
+import { MatchesService } from "@api/matches";
+import { useTheme } from "@/context/ThemeProvider";
 
 export default function App() {
   return <AuthLayout />;
@@ -51,7 +49,7 @@ export const AuthLayout = () => {
   useEffect(() => {
     return () => {
       queryClient.invalidateQueries({
-        queryKey: ["UsersService.getPotentialUsers"],
+        queryKey: ["MatchesService.getPotentialUsers"],
       });
     };
   }, [queryClient]);
@@ -73,7 +71,7 @@ export const AuthLayout = () => {
   }
 
   if (result.isError || !result.isSuccess) {
-    console.log(result.error)
+    console.log(result.error);
     return (
       <PotentialUsersContainer>
         <View style={styles.errorContainer}>
@@ -114,26 +112,30 @@ export const AuthLayout = () => {
             openDetailedProfile={openProfile}
             loading={loading}
           />
-           
-          </PotentialUsersContainer>
+        </PotentialUsersContainer>
       )}
       {isProfileOpen && (
-          <GestureHandlerRootView> 
-           <ProfileCard user={user} onClose={closeProfile}  handleNextUser={handleNextUser}/> 
-        </ GestureHandlerRootView>
+        <GestureHandlerRootView>
+          <ProfileCard
+            user={user}
+            onClose={closeProfile}
+            handleNextUser={handleNextUser}
+          />
+        </GestureHandlerRootView>
       )}
     </>
   );
 };
 
-const PotentialUsersContainer = ({ children }: { children?: React.ReactNode }) => {
-  const theme = useTheme();
-
+const PotentialUsersContainer = ({
+  children,
+}: {
+  children?: React.ReactNode;
+}) => {
+  const { theme } = useTheme();
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.primary }]}>
-      <View style={styles.cardContainer}>
-        {children}
-      </View>
+      <View style={styles.cardContainer}>{children}</View>
     </View>
   );
 };
@@ -141,55 +143,53 @@ const PotentialUsersContainer = ({ children }: { children?: React.ReactNode }) =
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
-    alignItems: 'center',
+    flexDirection: "column",
+    alignItems: "center",
     flexGrow: 1,
     paddingBottom: 12,
     minHeight: undefined,
     maxHeight: 800,
-    maxWidth: '100%',
-    marginHorizontal: 'auto',
+    maxWidth: "100%",
+    marginHorizontal: "auto",
   },
   cardContainer: {
     flex: 1,
-    flexDirection: 'column',
-    alignItems: 'center',
+    flexDirection: "column",
+    alignItems: "center",
     padding: 16,
-    width: '100%',
+    width: "100%",
     maxWidth: 400,
-   
-    
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '100%',
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
   },
   errorContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
     paddingHorizontal: 16,
   },
   errorText: {
-    color: '#ff0000',
+    color: "#ff0000",
     marginBottom: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
   noUsersText: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
     fontSize: 20,
-    color: '#000000',
+    color: "#000000",
   },
   profileContainer: {
     flex: 1,
-    justifyContent: 'center',
-    width: '100%',
+    justifyContent: "center",
+    width: "100%",
   },
 });

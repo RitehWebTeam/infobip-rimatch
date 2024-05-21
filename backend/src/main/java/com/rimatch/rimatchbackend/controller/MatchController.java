@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -99,5 +100,15 @@ public class MatchController {
         User user = userService.getUserByToken(authToken);
         List<DisplayUserDto> list = matchService.getAllSuccessfulMatchedUsers(user);
         return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DisplayUserDto> getMatchedUserById(@PathVariable String id, HttpServletRequest request) {
+        String authToken = request.getHeader("Authorization");
+        User user = userService.getUserByToken(authToken);
+
+        Optional<DisplayUserDto> matchedUser = matchService.findMatchedUserById(id, user);
+
+        return matchedUser.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
