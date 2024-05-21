@@ -1,13 +1,12 @@
 import { useEffect } from "react";
 import Confirmation from "./(steps)/Confirmation";
+import { createStackNavigator } from "@react-navigation/stack";
+import useAuth from "@/hooks/useAuth";
+import { Redirect } from "expo-router";
 import Step1Preferences from "./(steps)/Step1Preference";
 import Step2Preferences from "./(steps)/Step2Preference";
 import Step3Preferences from "./(steps)/Step3Preference";
 import Step4Preferences from "./(steps)/Step4Preference";
-import { createStackNavigator } from "@react-navigation/stack";
-
-import useAuth from "@/hooks/useAuth";
-import { Redirect } from "expo-router";
 
 //!Layout for SetupPreferences and all of its steps
 const _layout = () => {

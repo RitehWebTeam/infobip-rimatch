@@ -1,7 +1,7 @@
 import React from "react";
 import { Text } from "react-native-paper";
-import { View, StyleSheet } from "react-native";
-import { WizardStore } from "../store";
+import { View, StyleSheet, ScrollView } from "react-native";
+import { storeTypes, WizardStore } from "../store";
 import {
   Button,
   MD3Colors,
@@ -35,19 +35,17 @@ type PreferencesProps = {
   navigation: NavigationProp<object>;
 };
 
-type SetupPreferencesValues = typeof initialValues & {
-  profileImageUrl: File | null;
-};
 //WORKING on sending data to the server
 const mapPreferenceValues = (
-  values: SetupPreferencesValues
+  values: storeTypes
 ): PreferencesInitData => ({
   data: {
     description: values.description,
     phoneNumber: values.phoneNumber,
     location: values.location,
     favouriteSong: values.favouriteSong,
-    tags: values.tags,
+    // @ts-ignore
+    tags: typeof values.tags === 'string' ? values.tags.split(' ') : values.tags,
     preferences: {
       ageGroupMin: parseInt(values.preferences.ageGroupMin, 10),
       ageGroupMax: parseInt(values.preferences.ageGroupMax, 10),
@@ -67,10 +65,10 @@ export default function Confirmation({ navigation }: PreferencesProps) {
     });
   }, [navigation]);
 
-  const handleSubmit = async (values: SetupPreferencesValues) => {
+  const handleSubmit = async (values: storeTypes) => {
     // TODO: Error handling
 
-    const mappedValues = await mapPreferenceValues(values);
+    const mappedValues = mapPreferenceValues(values);
     console.log(mappedValues);
     await initPreferences(mappedValues);
 
@@ -107,7 +105,7 @@ export default function Confirmation({ navigation }: PreferencesProps) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <ProgressBar
         style={styles.progressBar}
         progress={WizardStore.useState().progress / 100}
@@ -163,7 +161,7 @@ export default function Confirmation({ navigation }: PreferencesProps) {
           label={"Your prefered partner is"}
         />
         <SummaryEntry
-          name={information.tags.join(", ")}
+          name={information.tags as unknown as string}
           label={"Your tags are"}
         />
         <Button
@@ -181,7 +179,7 @@ export default function Confirmation({ navigation }: PreferencesProps) {
           <Text>SaveData</Text>
         </Button>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

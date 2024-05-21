@@ -6,12 +6,13 @@ import { WizardStore } from "../store";
 import { useForm } from "react-hook-form";
 import { Button, MD3Colors, ProgressBar } from "react-native-paper";
 import { StyleSheet } from "react-native";
+import { Asset } from "@/types/User";
 type Step1PreferencesProps = {
   navigation: NavigationProp<object>;
 };
 
 const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
-  const [profileImageUrl, setProfileImageUrl] = React.useState<File | null>();
+  const [profileImageUrl, setProfileImageUrl] = React.useState<Asset | null>();
   const [photoUri, setPhotoUri] = React.useState<string | null>(null);
 
   const { handleSubmit } = useForm({
@@ -26,10 +27,10 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
       });
   }, [isFocused]);
 
-  const onSubmit = (data: { profileImageUrl: File }) => {
+  const onSubmit = (data: { profileImageUrl: Asset | null }) => {
     WizardStore.update((s) => {
       s.progress = 100;
-      s.profileImageUrl = profileImageUrl as File;
+      s.profileImageUrl = profileImageUrl!;
     });
     console.log(data);
     navigation.navigate("Confirmation" as never);
@@ -45,9 +46,9 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
     });
 
     if (response && response.assets) {
-      setProfileImageUrl(response.assets[0] as File | null);
+      setProfileImageUrl(response.assets[0]);
       setPhotoUri(response.assets[0].uri as string);
-      console.log(profileImageUrl);
+      console.log(response);
     } else {
       setProfileImageUrl(null);
     }

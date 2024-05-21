@@ -38,12 +38,20 @@ export const UsersService = {
           "data",
           new Blob([JSON.stringify(data.data)], { type: "application/json" })
         );
-        form.append("photo", data.photo);
+        // https://stackoverflow.com/questions/32441963/how-to-use-formdata-in-react-native
+        // form.append("photo", {
+        //   uri: data.photo.uri,
+        //   type: data.photo.type,
+        //   name: data.photo.fileName,
+        // });
 
         const response = await axios.postForm<T>("/users/me/setup", form, {
           withCredentials: true,
         });
         return response.data;
+      },
+      onError: (error) => {
+        console.error(JSON.stringify(error));
       },
       ...mutationOptions,
     });

@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { Button, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
 
 import { StyleSheet } from "react-native";
-import useLogout from "../../../../hooks/useLogout";
+import useLogout from "@/hooks/useLogout";
 type Step1PreferencesProps = {
   navigation: NavigationProp<object>;
 };
