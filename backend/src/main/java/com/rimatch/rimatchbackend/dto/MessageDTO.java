@@ -1,5 +1,6 @@
 package com.rimatch.rimatchbackend.dto;
 
+import com.rimatch.rimatchbackend.model.MessageType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -12,5 +13,13 @@ public class MessageDTO {
     private String chatId;
 
     @NotBlank
-    private String content;
+    private MessageType messageType;
+
+    private String textContent;
+
+    private String imageContentUrl;
+
+    private String voiceContentUrl;
+
+    private String replyId;
 }

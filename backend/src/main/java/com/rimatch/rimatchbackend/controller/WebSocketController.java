@@ -3,6 +3,7 @@ package com.rimatch.rimatchbackend.controller;
 import com.rimatch.rimatchbackend.dto.MessageDTO;
 import com.rimatch.rimatchbackend.model.Match;
 import com.rimatch.rimatchbackend.model.Message;
+import com.rimatch.rimatchbackend.model.MessageType;
 import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.repository.MatchRepository;
 import com.rimatch.rimatchbackend.repository.MessageRepository;
@@ -41,7 +42,7 @@ public class WebSocketController {
     @Autowired
     private MatchRepository matchRepository;
 
-    @MessageMapping("/sendMessage")
+    @MessageMapping("/sendMessage")//todo:CHANGE BEFORE PUSHING
     public void sendMessage(@Payload MessageDTO messageDTO, @Header("Authorization") String token) {
         try {
             User sender = userService.getUserByToken(token.substring(7));
@@ -53,8 +54,8 @@ public class WebSocketController {
             if(m.get().isFinished() && !m.get().isAccepted()) return; //"blocked"
 
             String receiverId = messageDTO.getReceiverId();
-            Message message = new Message(messageDTO.getChatId(),sender.getId(),receiverId);
-            message.setContent(messageDTO.getContent());
+            Message message = new Message(messageDTO.getChatId(),sender.getId(),receiverId,messageDTO.getMessageType());
+            message.setContent(messageDTO.getTextContent());
             messageRepository.save(message);
             messagingTemplate.convertAndSend(receiverId+"/queue/messages", message);
         } catch (JwtException | IllegalArgumentException ex) {
