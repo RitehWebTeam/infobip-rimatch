@@ -11,6 +11,7 @@ import useLogout from "@/hooks/useLogout";
 type Step1PreferencesProps = {
   navigation: NavigationProp<object>;
 };
+import { useTheme } from "@/context/ThemeProvider";
 
 const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
   const {
@@ -20,6 +21,7 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
   } = useForm({ defaultValues: WizardStore.useState((s) => s) });
   const logout = useLogout();
   const isFocused = useIsFocused();
+  const { theme } = useTheme();
 
   useEffect(() => {
     isFocused &&
@@ -39,15 +41,16 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
       s.location = data.location;
       s.description = data.description;
     });
-    navigation.navigate("Step2" as never);
+    navigation.navigate("Step 2" as never);
     console.log(data);
   };
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <View>
         <ProgressBar
-          progress={WizardStore.getRawState().progress}
-          color={MD3Colors.primary60}
+          style={styles.progressBar}
+          progress={WizardStore.useState().progress / 100}
+          color={theme.colors.accent}
         />
       </View>
       <View style={{ paddingHorizontal: 16 }}>
@@ -67,6 +70,7 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
                 onChangeText={onChange}
                 value={value}
                 keyboardType="numeric"
+                activeOutlineColor="#EE5253"
               />
             )}
             name="phoneNumber"
@@ -92,6 +96,7 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
+                activeOutlineColor="#EE5253"
               />
             )}
             name="location"
@@ -118,6 +123,7 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
+                activeOutlineColor="#EE5253"
               />
             )}
             name="description"
@@ -132,12 +138,28 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
         <Button
           onPress={handleSubmit(onSubmit)}
           mode="outlined"
-          style={styles.button}
+          style={{
+            margin: 8,
+            backgroundColor: theme.colors.accent,
+            borderWidth: 2,
+          }}
         >
-          <Text>NEXT</Text>
+          <Text style={{ color: "white", borderColor: theme.colors.accent }}>
+            NEXT
+          </Text>
         </Button>
-        <Button onPress={() => logout()} mode="outlined" style={styles.button}>
-          <Text>Logout</Text>
+        <Button
+          onPress={() => logout()}
+          mode="outlined"
+          style={{
+            margin: 8,
+            backgroundColor: theme.colors.accent,
+            borderWidth: 2,
+          }}
+        >
+          <Text style={{ color: "white", borderColor: theme.colors.accent }}>
+            Logout
+          </Text>
         </Button>
       </View>
     </View>

@@ -12,7 +12,7 @@ import {
 } from "@tanstack/react-query";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-
+import RNFetchBlob from "rn-fetch-blob";
 export const UsersService = {
   useGetCurrentUser() {
     const { auth } = useAuth();
@@ -31,27 +31,68 @@ export const UsersService = {
     >
   ) => {
     const axios = useAxiosPrivate();
+    const { auth } = useAuth();
     return useMutation<T, Error, PreferencesInitData>({
       mutationFn: async (data) => {
-        const form = new FormData();
-        form.append(
-          "data",
-          new Blob([JSON.stringify(data.data)], { type: "application/json" })
-        );
-        // https://stackoverflow.com/questions/32441963/how-to-use-formdata-in-react-native
-        // form.append("photo", {
-        //   uri: data.photo.uri,
-        //   type: data.photo.type,
-        //   name: data.photo.fileName,
-        // });
+        console.log(auth?.accessToken);
+        try {
+          const formData = [];
 
-        const response = await axios.postForm<T>("/users/me/setup", form, {
-          withCredentials: true,
-        });
-        return response.data;
+          if (data.photo) {
+            const photo = {
+              uri: data.photo.uri?.replace("file://", "") ?? "", // Provide a default value of an empty string if `photo.uri` is `undefined`
+              type: data.photo.type || "image/jpeg", // Ensure type is set
+              name: data.photo.fileName || "photo.jpg", // Ensure name is set
+            };
+
+            console.log("Appending photo to formData:", photo);
+            formData.push({
+              name: "photo",
+              filename: photo.name,
+              type: photo.type,
+              data: RNFetchBlob.wrap(photo.uri),
+            });
+          }
+
+          const jsonData = JSON.stringify({
+            description: data.data.description,
+            phoneNumber: data.data.phoneNumber,
+            location: data.data.location,
+            favouriteSong: data.data.favouriteSong,
+            tags: data.data.tags,
+            preferences: data.data.preferences,
+          });
+
+          console.log("Appending JSON data to formData:", jsonData);
+          formData.push({
+            name: "data",
+            data: jsonData,
+          });
+
+          console.log("FormData constructed:", formData);
+
+          const response = await RNFetchBlob.fetch(
+            "POST",
+            `${axios.defaults.baseURL}/users/me/setup`,
+            {
+              Authorization: `Bearer ${auth?.accessToken}`,
+              "Content-Type": "multipart/form-data",
+            },
+            formData
+          );
+
+          if (response.info().status >= 400) {
+            throw new Error(`HTTP Error: ${response.info().status}`);
+          }
+
+          return response.json();
+        } catch (error) {
+          console.error("Error in mutation function:", error);
+          throw error;
+        }
       },
       onError: (error) => {
-        console.error(JSON.stringify(error));
+        console.error("Mutation error:", error);
       },
       ...mutationOptions,
     });

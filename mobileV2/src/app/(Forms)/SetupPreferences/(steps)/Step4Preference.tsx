@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { Button, MD3Colors, ProgressBar } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { Asset } from "@/types/User";
+import { useTheme } from "@/context/ThemeProvider";
 type Step1PreferencesProps = {
   navigation: NavigationProp<object>;
 };
@@ -14,7 +15,7 @@ type Step1PreferencesProps = {
 const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
   const [profileImageUrl, setProfileImageUrl] = React.useState<Asset | null>();
   const [photoUri, setPhotoUri] = React.useState<string | null>(null);
-
+  const { theme } = useTheme();
   const { handleSubmit } = useForm({
     defaultValues: WizardStore.useState((s) => s),
   });
@@ -59,14 +60,14 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
       <ProgressBar
         style={styles.progressBar}
         progress={WizardStore.useState().progress / 100}
-        color={MD3Colors.primary60}
+        color={theme.colors.accent}
       />
       <Text>Choose your profile picture</Text>
       <Text style={{ fontSize: 12, color: "gray", marginBottom: 8 }}>
         Max size: 500 KB
       </Text>
       <Button onPress={showCameraRoll}>
-        <Text>Choose Image</Text>
+        <Text style={{ color: theme.colors.accent }}>Choose Image</Text>
       </Button>
       {profileImageUrl && (
         <View style={{ marginTop: 20 }}>
@@ -78,8 +79,18 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
         </View>
       )}
 
-      <Button onPress={handleSubmit(onSubmit)} mode="outlined">
-        <Text>NEXT</Text>
+      <Button
+        onPress={handleSubmit(onSubmit)}
+        mode="outlined"
+        style={{
+          margin: 8,
+          backgroundColor: theme.colors.accent,
+          borderWidth: 2,
+        }}
+      >
+        <Text style={{ color: "white", borderColor: theme.colors.accent }}>
+          NEXT
+        </Text>
       </Button>
     </View>
   );

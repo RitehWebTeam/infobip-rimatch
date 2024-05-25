@@ -25,11 +25,31 @@ const _layout = () => {
   }, [auth?.active, auth?.accessToken]);
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Step1" component={Step1Preferences} />
-      <Stack.Screen name="Step2" component={Step2Preferences} />
-      <Stack.Screen name="Step3" component={Step3Preferences} />
-      <Stack.Screen name="Step4" component={Step4Preferences} />
-      <Stack.Screen name="Confirmation" component={Confirmation} />
+      <Stack.Screen
+        name="Step 1"
+        component={Step1Preferences}
+        options={{ headerTitleAlign: "center" }}
+      />
+      <Stack.Screen
+        name="Step 2"
+        component={Step2Preferences}
+        options={{ headerTitleAlign: "center" }}
+      />
+      <Stack.Screen
+        name="Step 3"
+        component={Step3Preferences}
+        options={{ headerTitleAlign: "center" }}
+      />
+      <Stack.Screen
+        name="Step 4"
+        component={Step4Preferences}
+        options={{ headerTitleAlign: "center" }}
+      />
+      <Stack.Screen
+        name="Confirmation"
+        component={Confirmation}
+        options={{ headerTitleAlign: "center" }}
+      />
     </Stack.Navigator>
   );
 };

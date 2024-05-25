@@ -16,7 +16,8 @@ import { PreferencesInitData } from "../../../../types/User";
 import useAuth from "../../../../hooks/useAuth";
 import { UsersService } from "../../../../api/users";
 import { router } from "expo-router";
-
+import RNFetchBlob from "rn-fetch-blob";
+import { useTheme } from "@/context/ThemeProvider";
 const initialValues = {
   description: "",
   phoneNumber: "",
@@ -36,16 +37,15 @@ type PreferencesProps = {
 };
 
 //WORKING on sending data to the server
-const mapPreferenceValues = (
-  values: storeTypes
-): PreferencesInitData => ({
+const mapPreferenceValues = (values: storeTypes): PreferencesInitData => ({
   data: {
     description: values.description,
     phoneNumber: values.phoneNumber,
     location: values.location,
     favouriteSong: values.favouriteSong,
     // @ts-ignore
-    tags: typeof values.tags === 'string' ? values.tags.split(' ') : values.tags,
+    tags:
+      typeof values.tags === "string" ? values.tags.split(" ") : values.tags,
     preferences: {
       ageGroupMin: parseInt(values.preferences.ageGroupMin, 10),
       ageGroupMax: parseInt(values.preferences.ageGroupMax, 10),
@@ -58,7 +58,7 @@ const mapPreferenceValues = (
 export default function Confirmation({ navigation }: PreferencesProps) {
   const { setAuth } = useAuth();
   const { mutateAsync: initPreferences } = UsersService.useInitPreferences();
-
+  const { theme } = useTheme();
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => null,
@@ -69,6 +69,7 @@ export default function Confirmation({ navigation }: PreferencesProps) {
     // TODO: Error handling
 
     const mappedValues = mapPreferenceValues(values);
+
     console.log(mappedValues);
     await initPreferences(mappedValues);
 
@@ -101,7 +102,7 @@ export default function Confirmation({ navigation }: PreferencesProps) {
       progress: 0,
     });
     setVisible(false);
-    navigation.navigate("Step1" as never);
+    navigation.navigate("Step 1" as never);
   };
 
   return (
@@ -109,7 +110,7 @@ export default function Confirmation({ navigation }: PreferencesProps) {
       <ProgressBar
         style={styles.progressBar}
         progress={WizardStore.useState().progress / 100}
-        color={MD3Colors.primary60}
+        color={theme.colors.accent}
       />
       <View style={{ paddingHorizontal: 16 }}>
         {/* <!-- dialog --> */}
@@ -165,18 +166,30 @@ export default function Confirmation({ navigation }: PreferencesProps) {
           label={"Your tags are"}
         />
         <Button
-          style={styles.button}
+          style={{
+            margin: 8,
+            backgroundColor: theme.colors.accent,
+            borderWidth: 2,
+          }}
           mode="outlined"
-          onPress={() => navigation.navigate("Step4" as never)}
+          onPress={() => navigation.navigate("Step 4" as never)}
         >
-          <Text>GO BACK</Text>
+          <Text style={{ color: "white", borderColor: theme.colors.accent }}>
+            GO BACK
+          </Text>
         </Button>
         <Button
-          style={styles.button}
+          style={{
+            margin: 8,
+            backgroundColor: theme.colors.accent,
+            borderWidth: 2,
+          }}
           mode="outlined"
           onPress={() => handleSubmit(information)}
         >
-          <Text>SaveData</Text>
+          <Text style={{ color: "white", borderColor: theme.colors.accent }}>
+            SaveData
+          </Text>
         </Button>
       </View>
     </ScrollView>

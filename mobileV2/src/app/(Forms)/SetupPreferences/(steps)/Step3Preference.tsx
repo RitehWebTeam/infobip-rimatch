@@ -5,6 +5,7 @@ import { WizardStore } from "../store";
 import { Controller, useForm } from "react-hook-form";
 import { TextInput, Button, ProgressBar, MD3Colors } from "react-native-paper";
 import { StyleSheet } from "react-native";
+import { useTheme } from "@/context/ThemeProvider";
 type PreferencesProps = {
   navigation: NavigationProp<object>;
 };
@@ -16,7 +17,7 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
     formState: { errors },
   } = useForm({ defaultValues: WizardStore.useState((s) => s) });
   const isFocused = useIsFocused();
-
+  const { theme } = useTheme();
   useEffect(() => {
     isFocused &&
       WizardStore.update((s) => {
@@ -30,7 +31,7 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
       s.favouriteSong = data.favouriteSong;
       s.tags = data.tags;
     });
-    navigation.navigate("Step4" as never);
+    navigation.navigate("Step 4" as never);
     console.log(data);
   };
   return (
@@ -38,7 +39,7 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
       <ProgressBar
         style={styles.progressBar}
         progress={WizardStore.useState().progress / 100}
-        color={MD3Colors.primary60}
+        color={theme.colors.accent}
       />
       <View style={styles.formEntry}>
         <Text>What is your favourite song?</Text>
@@ -54,6 +55,7 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
+              activeOutlineColor="#EE5253"
             />
           )}
           name="favouriteSong"
@@ -78,6 +80,7 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
               onBlur={onBlur}
               onChangeText={onChange}
               value={Array.isArray(value) ? value.join(" ") : value}
+              activeOutlineColor="#EE5253"
             />
           )}
           name="tags"
@@ -92,9 +95,15 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
       <Button
         onPress={handleSubmit(onSubmit)}
         mode="outlined"
-        style={styles.button}
+        style={{
+          margin: 8,
+          backgroundColor: theme.colors.accent,
+          borderWidth: 2,
+        }}
       >
-        <Text>NEXT</Text>
+        <Text style={{ color: "white", borderColor: theme.colors.accent }}>
+          NEXT
+        </Text>
       </Button>
     </View>
   );

@@ -6,6 +6,7 @@ import { WizardStore } from "../store";
 import { NavigationProp, useIsFocused } from "@react-navigation/native";
 import { TextInput, MD3Colors, ProgressBar, Button } from "react-native-paper";
 import { StyleSheet } from "react-native";
+import { useTheme } from "@/context/ThemeProvider";
 type Step1PreferencesProps = {
   navigation: NavigationProp<object>;
 };
@@ -19,6 +20,7 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
     defaultValues: WizardStore.useState((s) => s),
   });
   const isFocused = useIsFocused();
+  const { theme } = useTheme();
   useEffect(() => {
     isFocused &&
       WizardStore.update((s) => {
@@ -39,14 +41,15 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
       s.preferences.ageGroupMin = data.preferences.ageGroupMin;
       s.preferences.partnerGender = data.preferences.partnerGender;
     });
-    navigation.navigate("Step3" as never);
+    navigation.navigate("Step 3" as never);
     console.log(data);
   };
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <ProgressBar
-        progress={WizardStore.getRawState().progress}
-        color={MD3Colors.primary60}
+        style={styles.progressBar}
+        progress={WizardStore.useState().progress / 100}
+        color={theme.colors.accent}
       />
       <View style={styles.formEntry}>
         <Text>Preferred gender</Text>
@@ -81,6 +84,7 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
               onChangeText={onChange}
               value={value}
               keyboardType="numeric"
+              activeOutlineColor="#EE5253"
             />
           )}
           name="preferences.ageGroupMax"
@@ -106,6 +110,7 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
               onChangeText={onChange}
               value={value}
               keyboardType="numeric"
+              activeOutlineColor="#EE5253"
             />
           )}
           name="preferences.ageGroupMin"
@@ -120,9 +125,15 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
       <Button
         onPress={handleSubmit(onSubmit)}
         mode="outlined"
-        style={styles.button}
+        style={{
+          margin: 8,
+          backgroundColor: theme.colors.accent,
+          borderWidth: 2,
+        }}
       >
-        <Text>NEXT</Text>
+        <Text style={{ color: "white", borderColor: theme.colors.accent }}>
+          NEXT
+        </Text>
       </Button>
     </View>
   );
