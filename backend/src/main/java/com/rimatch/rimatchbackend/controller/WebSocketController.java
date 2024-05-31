@@ -10,6 +10,8 @@ import com.rimatch.rimatchbackend.repository.MessageRepository;
 import com.rimatch.rimatchbackend.service.UserService;
 import com.rimatch.rimatchbackend.util.JWTUtils;
 import io.jsonwebtoken.JwtException;
+import jakarta.validation.constraints.Null;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -54,8 +56,14 @@ public class WebSocketController {
             if(m.get().isFinished() && !m.get().isAccepted()) return; //"blocked"
 
             String receiverId = messageDTO.getReceiverId();
-            Message message = new Message(messageDTO.getChatId(),sender.getId(),receiverId,messageDTO.getMessageType());
-            message.setContent(messageDTO.getTextContent());
+            Message message = new Message(messageDTO.getChatId(),sender.getId(),receiverId,messageDTO.getMessageType(),messageDTO.getContent());
+            if(messageDTO.getMessageType() == MessageType.REPLY){
+                if(!messageDTO.getReplyId().isEmpty()){
+                    message.setReplyId(message.getReplyId());
+                }else{
+                    return;
+                }
+            }
             messageRepository.save(message);
             messagingTemplate.convertAndSend(receiverId+"/queue/messages", message);
         } catch (JwtException | IllegalArgumentException ex) {

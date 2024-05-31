@@ -15,11 +15,8 @@ public class MessageDTO {
     @NotBlank
     private MessageType messageType;
 
-    private String textContent;
-
-    private String imageContentUrl;
-
-    private String voiceContentUrl;
+    @NotBlank
+    private String content;
 
     private String replyId;
 }
