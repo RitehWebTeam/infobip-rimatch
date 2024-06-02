@@ -1,9 +1,3 @@
-import type {
-  MatchedUser,
-  PreferencesInitData,
-  User,
-  UserUpdateData,
-} from "@/types/User";
 import {
   UseMutationOptions,
   useMutation,
@@ -13,6 +7,14 @@ import {
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import RNFetchBlob from "rn-fetch-blob";
+import {
+  Asset,
+  MatchedUser,
+  PreferencesInitData,
+  User,
+  UserUpdateData,
+} from "@/types/User";
+
 export const UsersService = {
   useGetCurrentUser() {
     const { auth } = useAuth();
@@ -34,62 +36,50 @@ export const UsersService = {
     const { auth } = useAuth();
     return useMutation<T, Error, PreferencesInitData>({
       mutationFn: async (data) => {
-        console.log(auth?.accessToken);
-        try {
-          const formData = [];
-
-          if (data.photo) {
-            const photo = {
-              uri: data.photo.uri?.replace("file://", "") ?? "", // Provide a default value of an empty string if `photo.uri` is `undefined`
-              type: data.photo.type || "image/jpeg", // Ensure type is set
-              name: data.photo.fileName || "photo.jpg", // Ensure name is set
-            };
-
-            console.log("Appending photo to formData:", photo);
-            formData.push({
-              name: "photo",
-              filename: photo.name,
-              type: photo.type,
-              data: RNFetchBlob.wrap(photo.uri),
-            });
-          }
-
-          const jsonData = JSON.stringify({
-            description: data.data.description,
-            phoneNumber: data.data.phoneNumber,
-            location: data.data.location,
-            favouriteSong: data.data.favouriteSong,
-            tags: data.data.tags,
-            preferences: data.data.preferences,
-          });
-
-          console.log("Appending JSON data to formData:", jsonData);
-          formData.push({
-            name: "data",
-            data: jsonData,
-          });
-
-          console.log("FormData constructed:", formData);
-
-          const response = await RNFetchBlob.fetch(
-            "POST",
-            `${axios.defaults.baseURL}/users/me/setup`,
+        const formData = new FormData();
+        formData.append("data", JSON.stringify(data.data));
+        const blob = new Blob([data.photo.base64 || ""]);
+        formData.append("photo", blob, data.photo.fileName);
+        const response = await axios.post<T>("/users/me/setup", formData);
+        /* const response = await RNFetchBlob.fetch(
+          "POST",
+          `${axios.defaults.baseURL}/users/me/setup`,
+          {
+            Authorization: `Bearer ${auth?.accessToken}`,
+            "Content-Type": "multipart/form-data, application/json ",
+          },
+          [
             {
-              Authorization: `Bearer ${auth?.accessToken}`,
-              "Content-Type": "multipart/form-data",
+              name: "data",
+              
+              data: JSON.stringify(
+                
+                  {
+                    description: data.data.description,
+                    phoneNumber: data.data.phoneNumber,
+                    location: data.data.location,
+                    favouriteSong: data.data.favouriteSong,
+                    tags: data.data.tags,
+                    preferences: {
+                      ageGroupMin: data.data.preferences.ageGroupMin,
+                      ageGroupMax: data.data.preferences.ageGroupMax,
+                      partnerGender: data.data.preferences.partnerGender,
+                    },
+                  }
+                
+              ),
             },
-            formData
-          );
+            {
+              name: "photo",
+             
+              filename: data.photo.fileName,
+              type: data.photo.type,
+              data:data.photo.base64,
+            },
+          ]
+        ); */
 
-          if (response.info().status >= 400) {
-            throw new Error(`HTTP Error: ${response.info().status}`);
-          }
-
-          return response.json();
-        } catch (error) {
-          console.error("Error in mutation function:", error);
-          throw error;
-        }
+        return response.data;
       },
       onError: (error) => {
         console.error("Mutation error:", error);
@@ -108,7 +98,6 @@ export const UsersService = {
     const queryClient = useQueryClient();
     return useMutation<T, Error, UserUpdateData>({
       mutationFn: async (data) => {
-        // TODO: Separate this into two different methods
         const url = data?.preferences
           ? "/users/me/update/preferences"
           : "/users/me/update/user";
@@ -132,20 +121,30 @@ export const UsersService = {
 
   useUpdateProfilePicture: <T = void>(
     mutationOptions?: Omit<
-      UseMutationOptions<T, Error, File>,
+      UseMutationOptions<T, Error, Asset>,
       "mutationFn" | "onSuccess"
     >
   ) => {
     const axios = useAxiosPrivate();
+    const { auth } = useAuth();
     const queryClient = useQueryClient();
-    return useMutation<T, Error, File>({
+    return useMutation<T, Error, Asset>({
       mutationFn: async (file) => {
-        const form = new FormData();
-        form.append("photo", file);
-        const response = await axios.postForm<T>(
-          "/users/me/profilePicture",
-          form
+        const response = await RNFetchBlob.fetch(
+          "POST",
+          `${axios.defaults.baseURL}/users/me/profilePicture`,
+          {
+            Authorization: `Bearer ${auth?.accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+          {
+            name: "photo",
+            filename: file.fileName,
+            type: file.type,
+            data: file.base64,
+          }
         );
+
         return response.data;
       },
       onSuccess: () => {

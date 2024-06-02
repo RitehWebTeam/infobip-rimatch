@@ -45,7 +45,14 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
     console.log(data);
   };
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: theme.colors.primary,
+      }}
+    >
       <View>
         <ProgressBar
           style={styles.progressBar}
@@ -55,7 +62,9 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
       </View>
       <View style={{ paddingHorizontal: 16 }}>
         <View style={styles.formEntry}>
-          <Text>Please enter your phone number</Text>
+          <Text style={{ color: theme.colors.secondary }}>
+            Please enter your phone number
+          </Text>
           <Controller
             control={control}
             rules={{
@@ -83,7 +92,9 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
         </View>
 
         <View style={styles.formEntry}>
-          <Text>Where are you from?</Text>
+          <Text style={{ color: theme.colors.secondary }}>
+            Where are you from?
+          </Text>
           <Controller
             control={control}
             rules={{
@@ -108,7 +119,9 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
           )}
         </View>
         <View style={styles.formEntry}>
-          <Text>Tell people about yourself</Text>
+          <Text style={{ color: theme.colors.secondary }}>
+            Tell people about yourself
+          </Text>
           <Controller
             control={control}
             rules={{

@@ -43,7 +43,7 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
       quality: 0.5,
       maxWidth: 500,
       maxHeight: 500,
-      includeBase64: false,
+      includeBase64: true,
     });
 
     if (response && response.assets) {
@@ -56,13 +56,22 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: theme.colors.primary,
+      }}
+    >
       <ProgressBar
         style={styles.progressBar}
         progress={WizardStore.useState().progress / 100}
         color={theme.colors.accent}
       />
-      <Text>Choose your profile picture</Text>
+      <Text style={{ color: theme.colors.secondary }}>
+        Choose your profile picture
+      </Text>
       <Text style={{ fontSize: 12, color: "gray", marginBottom: 8 }}>
         Max size: 500 KB
       </Text>
@@ -73,7 +82,7 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
         <View style={{ marginTop: 20 }}>
           <Text>Selected Image:</Text>
           <Image
-            source={{ uri: photoUri || "" }}
+            source={{ uri: profileImageUrl.uri || "" }}
             style={{ width: 200, height: 200, marginTop: 10 }}
           />
         </View>

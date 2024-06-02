@@ -4,7 +4,6 @@ import { View, StyleSheet, ScrollView } from "react-native";
 import { storeTypes, WizardStore } from "../store";
 import {
   Button,
-  MD3Colors,
   ProgressBar,
   Divider,
   Portal,
@@ -16,7 +15,7 @@ import { PreferencesInitData } from "../../../../types/User";
 import useAuth from "../../../../hooks/useAuth";
 import { UsersService } from "../../../../api/users";
 import { router } from "expo-router";
-import RNFetchBlob from "rn-fetch-blob";
+
 import { useTheme } from "@/context/ThemeProvider";
 const initialValues = {
   description: "",
@@ -106,7 +105,9 @@ export default function Confirmation({ navigation }: PreferencesProps) {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={[styles.container, { backgroundColor: theme.colors.primary }]}
+    >
       <ProgressBar
         style={styles.progressBar}
         progress={WizardStore.useState().progress / 100}
@@ -203,10 +204,21 @@ export const SummaryEntry = ({
   name: string;
   label: string;
 }) => {
+  const { theme } = useTheme();
   return (
     <View style={{ marginBottom: 16 }}>
-      <Text style={{ marginBottom: 8, fontWeight: "700" }}>{label}</Text>
-      <Text style={{ marginBottom: 8 }}>{name}</Text>
+      <Text
+        style={{
+          marginBottom: 8,
+          fontWeight: "700",
+          color: theme.colors.secondary,
+        }}
+      >
+        {label}
+      </Text>
+      <Text style={{ marginBottom: 8, color: theme.colors.secondary }}>
+        {name}
+      </Text>
       <Divider />
     </View>
   );

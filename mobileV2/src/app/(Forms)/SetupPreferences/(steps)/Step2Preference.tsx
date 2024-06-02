@@ -45,14 +45,21 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
     console.log(data);
   };
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: theme.colors.primary,
+      }}
+    >
       <ProgressBar
         style={styles.progressBar}
         progress={WizardStore.useState().progress / 100}
         color={theme.colors.accent}
       />
       <View style={styles.formEntry}>
-        <Text>Preferred gender</Text>
+        <Text style={{ color: theme.colors.secondary }}>Preferred gender</Text>
         <Controller
           control={control}
           rules={{ required: true }}
@@ -70,7 +77,9 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
 
       {/* //TODO Change this to sliders  */}
       <View style={styles.formEntry}>
-        <Text>Maximal Partner Age</Text>
+        <Text style={{ color: theme.colors.secondary }}>
+          Maximal Partner Age
+        </Text>
         <Controller
           control={control}
           rules={{
@@ -96,7 +105,9 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
         )}
       </View>
       <View style={styles.formEntry}>
-        <Text>Minimal Partner Age</Text>
+        <Text style={{ color: theme.colors.secondary }}>
+          Minimal Partner Age
+        </Text>
         <Controller
           control={control}
           rules={{

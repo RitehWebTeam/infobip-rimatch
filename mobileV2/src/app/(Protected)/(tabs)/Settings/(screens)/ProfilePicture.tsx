@@ -10,6 +10,7 @@ import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useTheme } from "@/context/ThemeProvider";
+import { Asset } from "@/types/User";
 const validationSchema = Yup.object({
   profileImageUrl: Yup.mixed<File>()
     .required("Required")
@@ -30,14 +31,16 @@ const SettingsProfilePicture = () => {
     profileImageUrl: user.profileImageUrl,
   };
 
-  type UserProfileUpdateData = { profileImageUrl: File | string };
+  type UserProfileUpdateData = { profileImageUrl: Asset | string };
 
   //TODO Submitting images not yet implemented
   const handleSubmit = async (
     values: UserProfileUpdateData,
     helpers: FormikHelpers<UserProfileUpdateData>
   ) => {
-    await updateProfilePicture(values.profileImageUrl as File);
+    helpers.setSubmitting(true);
+    console.log("calles");
+    await updateProfilePicture(values.profileImageUrl as Asset);
     helpers.resetForm({ values });
   };
 
@@ -53,10 +56,13 @@ const SettingsProfilePicture = () => {
     if (response && response.assets) {
       setProfileImageUrl(response.assets[0] as File | null);
       setPhotoUri(response.assets[0].uri as string);
-      console.log(profileImageUrl);
     } else {
       setProfileImageUrl(null);
     }
+  };
+
+  const test = () => {
+    console.log("test");
   };
 
   return (
@@ -66,7 +72,7 @@ const SettingsProfilePicture = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ submitForm, isSubmitting }) => (
+        {({ handleSubmit, isSubmitting }) => (
           <>
             <View className=" relative mt-12">
               <TouchableOpacity onPress={showCameraRoll}>
@@ -98,12 +104,14 @@ const SettingsProfilePicture = () => {
                 </View>
               </TouchableOpacity>
               <View className="flex justify-center items-center mt-24 mb-56">
-                <Button onPress={submitForm} className=" w-4/5 bg-[#ee5253] ">
-                  {isSubmitting ? (
-                    <Text>Loading</Text>
-                  ) : (
-                    <Text className="text-white align-middle">Save</Text>
-                  )}
+                <Button
+                  mode="contained"
+                  onPress={() => handleSubmit()}
+                  loading={isSubmitting}
+                  disabled={isSubmitting}
+                  style={{ backgroundColor: theme.colors.accent }}
+                >
+                  <Text style={{ color: "white" }}>Login</Text>
                 </Button>
               </View>
             </View>

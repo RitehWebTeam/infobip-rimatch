@@ -35,14 +35,23 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
     console.log(data);
   };
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: theme.colors.primary,
+      }}
+    >
       <ProgressBar
         style={styles.progressBar}
         progress={WizardStore.useState().progress / 100}
         color={theme.colors.accent}
       />
       <View style={styles.formEntry}>
-        <Text>What is your favourite song?</Text>
+        <Text style={{ color: theme.colors.secondary }}>
+          What is your favourite song?
+        </Text>
         <Controller
           control={control}
           rules={{
@@ -67,7 +76,7 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
         )}
       </View>
       <View style={styles.formEntry}>
-        <Text>Enter Some Tags</Text>
+        <Text style={{ color: theme.colors.secondary }}>Enter Some Tags</Text>
         <Controller
           control={control}
           rules={{
