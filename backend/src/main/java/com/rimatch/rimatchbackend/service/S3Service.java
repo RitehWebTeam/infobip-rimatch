@@ -37,7 +37,7 @@ public class S3Service {
         if (Arrays.asList("image/jpg", "image/jpeg", "image/png").contains(extension)) {
             return uploadFile(file,"/images/",folder+'/'+chatOrUserId);
         }else{
-            throw new Exception("File must be jpg,jpeg or png");
+            throw new Exception("File must be jpg, jpeg or png");
         }
     }
 

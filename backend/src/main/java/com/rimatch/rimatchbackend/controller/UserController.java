@@ -1,8 +1,6 @@
 package com.rimatch.rimatchbackend.controller;
 
-import com.rimatch.rimatchbackend.dto.PreferencesUpdateDTO;
-import com.rimatch.rimatchbackend.dto.SetupDto;
-import com.rimatch.rimatchbackend.dto.UserUpdateDTO;
+import com.rimatch.rimatchbackend.dto.*;
 import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.service.S3Service;
 import com.rimatch.rimatchbackend.service.UserService;
@@ -70,9 +68,10 @@ public class UserController {
     }
 
     @PostMapping("/me/setup")
-    public ResponseEntity<?> setupUser(@Valid @RequestPart("data") SetupDto setupDto, @RequestPart("photo") MultipartFile file, HttpServletRequest request) throws Exception {
+    public ResponseEntity<?> setupUser(@RequestParam("photo") MultipartFile file,@Valid @RequestPart("data") SetupDto setupDto, HttpServletRequest request) throws Exception {
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);
+        System.out.println(file.getContentType());
         if(user.isActive()){
             Map<String,String> map = new HashMap<>();
             map.put("message","Setup was already done!");

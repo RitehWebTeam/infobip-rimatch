@@ -44,7 +44,7 @@ public class WebSocketController {
     @Autowired
     private MatchRepository matchRepository;
 
-    @MessageMapping("/sendMessage")//todo:CHANGE BEFORE PUSHING
+    @MessageMapping("/send-message")
     public void sendMessage(@Payload MessageDTO messageDTO, @Header("Authorization") String token) {
         try {
             User sender = userService.getUserByToken(token.substring(7));

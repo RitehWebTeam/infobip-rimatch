@@ -35,12 +35,8 @@ public class MessageController {
     public ResponseEntity<?> uploadImage(@RequestBody MultipartFile photo,String chatId,HttpServletRequest request) throws Exception {
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);
-        System.out.println(chatId);
         Optional<Match> match = matchRepository.findById(chatId);
         if(match.isPresent()){
-            System.out.println(match.get().getFirstUserId());
-            System.out.println(match.get().getSecondUserId());
-            System.out.println(authToken);
             if(!userHasAccessToChat(match.get(),user.getId())){
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
