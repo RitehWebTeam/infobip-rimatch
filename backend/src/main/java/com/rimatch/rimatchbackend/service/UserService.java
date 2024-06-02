@@ -1,5 +1,6 @@
 package com.rimatch.rimatchbackend.service;
 import com.rimatch.rimatchbackend.dto.*;
+import com.rimatch.rimatchbackend.util.DisplayUserConverter;
 import com.rimatch.rimatchbackend.util.JWTUtils;
 import com.rimatch.rimatchbackend.util.JWTUtils.TokenType;
 import com.rimatch.rimatchbackend.model.User;
@@ -177,6 +178,11 @@ public class UserService {
             System.out.println("Match not found");
         }
 
+    }
+
+    public List<DisplayUserDto> listAllBlockedUsers(User user) {
+        List<DisplayUserDto> users =  DisplayUserConverter.convertToDtoList(userRepository.findAllById(user.getBlockedUsersIds()));
+        return users;
     }
 
     // add more methods as per your requirements

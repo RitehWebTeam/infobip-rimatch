@@ -16,6 +16,7 @@ import java.util.List;
 
 @Document(collection = "users")
 @Data
+@NoArgsConstructor
 public class User {
 
     @Valid
