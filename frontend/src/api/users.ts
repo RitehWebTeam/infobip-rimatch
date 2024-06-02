@@ -3,6 +3,7 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import type {
   MatchedUser,
   PreferencesInitData,
+  ProjectedUser,
   User,
   UserUpdateData,
 } from "@/types/User";
@@ -190,7 +191,22 @@ export const UsersService = {
           queryKey: ["MatchesService.getMatches"],
         });
       },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["UsersService.getAllBlockedUsers"],
+        });
+      },
       ...mutationOptions,
+    });
+  },
+
+  useGetAllBlockedUsers() {
+    const axios = useAxiosPrivate();
+    return useQuery<Array<ProjectedUser>, Error>({
+      queryKey: ["UsersService.getAllBlockedUsers"],
+      queryFn: () =>
+        axios.get("/users/block/all").then((response) => response.data),
+      staleTime: 60e3,
     });
   },
 };

@@ -1,12 +1,12 @@
 import * as SettingsCard from "@/components/GenericCard";
 
-import { MatchesService } from "@/api/matches";
 import MatchedUser from "@/components/MatchedUser";
 import { CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
+import { UsersService } from "@/api/users";
 
 const BlockedUsers = () => {
-  const query = MatchesService.useGetMatches(); //-------------------------needs adjustment
+  const query = UsersService.useGetAllBlockedUsers();
 
   if (query.isLoading) {
     return (
