@@ -27,10 +27,12 @@ const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
   };
 
   const reportReasons = [
-    "Bullying or harassment",
-    "Pretending to be someone else",
-    "Spam",
-    "Hate speech or symbols",
+    " Bullying or harassment",
+    " Hate speech or symbols",
+    " Malicious content",
+    " Pretending to be someone else",
+    " Fraud or scam",
+    " Spam",
   ];
 
   return (
@@ -94,7 +96,12 @@ const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
                   {reportReasons.map((reason, index) => (
                     <div className="px-4 py-2" key={index}>
                       <label>
-                        <Field type="radio" name="checked" value={reason} />
+                        <Field
+                          type="radio"
+                          name="checked"
+                          value={reason}
+                          className="accent-red-700"
+                        />
                         {reason}
                       </label>
                     </div>
@@ -216,7 +223,7 @@ const ReportItem = React.forwardRef<HTMLDivElement, DialogItemProps>(
                   className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-500"
                   onClick={action}
                 >
-                  Confirm
+                  Submit
                 </button>
               </Dialog.Close>
             </div>
