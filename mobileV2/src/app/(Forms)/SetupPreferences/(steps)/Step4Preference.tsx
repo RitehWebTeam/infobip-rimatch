@@ -1,20 +1,20 @@
 import { NavigationProp, useIsFocused } from "@react-navigation/native";
 import React, { useEffect } from "react";
-import { View, Text, Image } from "react-native";
-import { launchImageLibrary } from "react-native-image-picker"; // Import MediaType
+import { View, Text, Image, ScrollView } from "react-native";
+import { launchImageLibrary } from "react-native-image-picker";
 import { WizardStore } from "../store";
 import { useForm } from "react-hook-form";
-import { Button, MD3Colors, ProgressBar } from "react-native-paper";
+import { Button, ProgressBar } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { Asset } from "@/types/User";
 import { useTheme } from "@/context/ThemeProvider";
+
 type Step1PreferencesProps = {
   navigation: NavigationProp<object>;
 };
 
 const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
   const [profileImageUrl, setProfileImageUrl] = React.useState<Asset | null>();
-  const [photoUri, setPhotoUri] = React.useState<string | null>(null);
   const { theme } = useTheme();
   const { handleSubmit } = useForm({
     defaultValues: WizardStore.useState((s) => s),
@@ -28,12 +28,11 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
       });
   }, [isFocused]);
 
-  const onSubmit = (data: { profileImageUrl: Asset | null }) => {
+  const onSubmit = () => {
     WizardStore.update((s) => {
       s.progress = 100;
       s.profileImageUrl = profileImageUrl!;
     });
-    console.log(data);
     navigation.navigate("Confirmation" as never);
   };
   //Ovo je ružan library ali za pocetak je okej
@@ -48,20 +47,17 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
 
     if (response && response.assets) {
       setProfileImageUrl(response.assets[0]);
-      setPhotoUri(response.assets[0].uri as string);
-      console.log(response);
     } else {
       setProfileImageUrl(null);
     }
   };
 
   return (
-    <View
+    <ScrollView
       style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: theme.colors.primary,
+        display: "flex",
+        backgroundColor: theme.colors.background,
+        marginBottom: 16,
       }}
     >
       <ProgressBar
@@ -69,39 +65,40 @@ const Step4Preferences = ({ navigation }: Step1PreferencesProps) => {
         progress={WizardStore.useState().progress / 100}
         color={theme.colors.accent}
       />
-      <Text style={{ color: theme.colors.secondary }}>
-        Choose your profile picture
-      </Text>
-      <Text style={{ fontSize: 12, color: "gray", marginBottom: 8 }}>
-        Max size: 500 KB
-      </Text>
-      <Button onPress={showCameraRoll}>
-        <Text style={{ color: theme.colors.accent }}>Choose Image</Text>
-      </Button>
-      {profileImageUrl && (
-        <View style={{ marginTop: 20 }}>
-          <Text>Selected Image:</Text>
-          <Image
-            source={{ uri: profileImageUrl.uri || "" }}
-            style={{ width: 200, height: 200, marginTop: 10 }}
-          />
+      <View style={{ paddingHorizontal: 16, display: "flex", gap: 16 }}>
+        <View>
+          <Text style={{ color: theme.colors.secondary }}>
+            Choose your profile picture
+          </Text>
+          <Text style={{ fontSize: 12, color: "gray", marginBottom: 8 }}>
+            Max size: 500 KB
+          </Text>
+          <Button onPress={showCameraRoll}>
+            <Text style={{ color: theme.colors.accent }}>Choose Image</Text>
+          </Button>
+          {profileImageUrl && (
+            <View
+              style={{ marginTop: 20, display: "flex", alignItems: "center" }}
+            >
+              <Text>Selected Image:</Text>
+              <Image
+                source={{ uri: profileImageUrl.uri || "" }}
+                style={{ width: 200, height: 200, marginTop: 10 }}
+              />
+            </View>
+          )}
         </View>
-      )}
-
-      <Button
-        onPress={handleSubmit(onSubmit)}
-        mode="outlined"
-        style={{
-          margin: 8,
-          backgroundColor: theme.colors.accent,
-          borderWidth: 2,
-        }}
-      >
-        <Text style={{ color: "white", borderColor: theme.colors.accent }}>
+        <Button
+          onPress={handleSubmit(onSubmit)}
+          mode="contained"
+          style={{
+            backgroundColor: theme.colors.accent,
+          }}
+        >
           NEXT
-        </Text>
-      </Button>
-    </View>
+        </Button>
+      </View>
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({

@@ -84,7 +84,6 @@ const AuthService = {
           "/auth/signup",
           registerData
         );
-        console.log("response", response.data);
         return response.data;
       },
       ...mutationOptions,

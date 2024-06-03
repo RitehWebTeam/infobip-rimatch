@@ -13,8 +13,6 @@ const _layout = () => {
   const { auth } = useAuth();
   const Stack = createStackNavigator();
   const { theme } = useTheme();
-  console.log("Loading setup preferences");
-  console.log(auth?.accessToken);
   useEffect(() => {
     // Hacky solution should change
     // If the user is active we redirect him to / which is ok

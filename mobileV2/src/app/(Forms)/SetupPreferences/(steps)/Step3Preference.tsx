@@ -1,21 +1,32 @@
 import { useEffect } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { NavigationProp, useIsFocused } from "@react-navigation/native";
 import { WizardStore } from "../store";
 import { Controller, useForm } from "react-hook-form";
-import { TextInput, Button, ProgressBar, MD3Colors } from "react-native-paper";
+import { TextInput, Button, ProgressBar, HelperText } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { useTheme } from "@/context/ThemeProvider";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 type PreferencesProps = {
   navigation: NavigationProp<object>;
 };
+
+const Step3ValidationSchema = Yup.object({
+  favouriteSong: Yup.string().required("Required"),
+  tags: Yup.array()
+    .of(Yup.string())
+    .required("At least one tag is required")
+    .min(1, "At least one tag is required"),
+});
 const Step3Preferences = ({ navigation }: PreferencesProps) => {
-  //const [tags, setTags] = React.useState("");
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm({ defaultValues: WizardStore.useState((s) => s) });
+  const { handleSubmit, control } = useForm({
+    defaultValues: WizardStore.useState((s) => s),
+    mode: "onTouched",
+    reValidateMode: "onChange",
+    resolver: yupResolver(Step3ValidationSchema),
+  });
   const isFocused = useIsFocused();
   const { theme } = useTheme();
   useEffect(() => {
@@ -25,22 +36,23 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
       });
   }, [isFocused]);
 
-  const onSubmit = (data: { favouriteSong: string; tags: string[] }) => {
+  const onSubmit = (data: {
+    favouriteSong: string;
+    tags: Array<string | undefined>;
+  }) => {
     WizardStore.update((s) => {
       s.progress = 75;
       s.favouriteSong = data.favouriteSong;
-      s.tags = data.tags;
+      s.tags = data.tags.filter(Boolean) as string[];
     });
     navigation.navigate("Step 4" as never);
-    console.log(data);
   };
   return (
-    <View
+    <ScrollView
       style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: theme.colors.primary,
+        display: "flex",
+        backgroundColor: theme.colors.background,
+        marginBottom: 16,
       }}
     >
       <ProgressBar
@@ -48,87 +60,86 @@ const Step3Preferences = ({ navigation }: PreferencesProps) => {
         progress={WizardStore.useState().progress / 100}
         color={theme.colors.accent}
       />
-      <View style={styles.formEntry}>
-        <Text style={{ color: theme.colors.secondary }}>
-          What is your favourite song?
-        </Text>
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value = "" } }) => (
-            <TextInput
-              mode="outlined"
-              placeholder="Enter song name"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              activeOutlineColor="#EE5253"
-            />
-          )}
-          name="favouriteSong"
-        />
-        {errors.favouriteSong && (
-          <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
-            This is a required field.
+      <View style={{ paddingHorizontal: 16 }}>
+        <View style={styles.formEntry}>
+          <Text style={{ color: theme.colors.secondary }}>
+            What is your favourite song?
           </Text>
-        )}
-      </View>
-      <View style={styles.formEntry}>
-        <Text style={{ color: theme.colors.secondary }}>Enter Some Tags</Text>
-        <Controller
-          control={control}
-          rules={{
-            required: true,
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value }, fieldState }) => (
+              <>
+                <TextInput
+                  mode="outlined"
+                  placeholder="Enter song name"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  activeOutlineColor="#EE5253"
+                  label="Favourite Song"
+                  error={!!fieldState.error?.message}
+                />
+                <HelperText
+                  type="error"
+                  visible={!!fieldState.error?.message}
+                  style={{ color: theme.colors.error }}
+                >
+                  {fieldState.error?.message}
+                </HelperText>
+              </>
+            )}
+            name="favouriteSong"
+          />
+        </View>
+        <View style={styles.formEntry}>
+          <Text style={{ color: theme.colors.secondary }}>Enter Some Tags</Text>
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value }, fieldState }) => (
+              <>
+                <TextInput
+                  mode="outlined"
+                  placeholder="(separate with spaces)"
+                  onBlur={onBlur}
+                  onChangeText={(text) => onChange(text.split(/[, ]/))}
+                  value={Array.isArray(value) ? value.join(" ") : value}
+                  activeOutlineColor="#EE5253"
+                  error={!!fieldState.error?.message}
+                  label="Tags"
+                />
+                <HelperText
+                  type="error"
+                  visible={!!fieldState.error?.message}
+                  style={{ color: theme.colors.error }}
+                >
+                  {fieldState.error?.message}
+                </HelperText>
+              </>
+            )}
+            name="tags"
+          />
+        </View>
+        <Button
+          onPress={handleSubmit(onSubmit)}
+          mode="contained"
+          style={{
+            backgroundColor: theme.colors.accent,
           }}
-          render={({ field: { onChange, onBlur, value = "" } }) => (
-            <TextInput
-              mode="outlined"
-              placeholder="(separate with spaces)"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={Array.isArray(value) ? value.join(" ") : value}
-              activeOutlineColor="#EE5253"
-            />
-          )}
-          name="tags"
-        />
-        {errors.tags && (
-          <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
-            This is a required field.
-          </Text>
-        )}
-      </View>
-
-      <Button
-        onPress={handleSubmit(onSubmit)}
-        mode="outlined"
-        style={{
-          margin: 8,
-          backgroundColor: theme.colors.accent,
-          borderWidth: 2,
-        }}
-      >
-        <Text style={{ color: "white", borderColor: theme.colors.accent }}>
+        >
           NEXT
-        </Text>
-      </Button>
-    </View>
+        </Button>
+      </View>
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
   button: {
     margin: 8,
   },
-  // eslint-disable-next-line react-native/no-unused-styles
-  container: {
-    flex: 1,
-  },
   formEntry: {
-    margin: 8,
+    display: "flex",
+    gap: 8,
   },
-  // eslint-disable-next-line react-native/no-unused-styles
   progressBar: {
     marginBottom: 16,
     paddingHorizontal: 0,

@@ -1,23 +1,58 @@
 import { useEffect } from "react";
-import { View, Text } from "react-native";
+import { View, ScrollView } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
 import { WizardStore } from "../store";
 import { NavigationProp, useIsFocused } from "@react-navigation/native";
-import { TextInput, MD3Colors, ProgressBar, Button } from "react-native-paper";
+import {
+  TextInput,
+  ProgressBar,
+  Button,
+  HelperText,
+  Text,
+} from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { useTheme } from "@/context/ThemeProvider";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 type Step1PreferencesProps = {
   navigation: NavigationProp<object>;
 };
 
+const Step2ValidationSchema = Yup.object({
+  preferences: Yup.object({
+    ageGroupMin: Yup.number()
+      .typeError("Age must be a number")
+      .required("Required")
+      .max(99, "Age must be between 18 and 99")
+      .min(18, "Age must be between 18 and 99"),
+    ageGroupMax: Yup.number()
+      .when("ageGroupMin", ([ageGroupMin], schema) =>
+        ageGroupMin
+          ? schema.min(ageGroupMin, "Max age must be greater than min age")
+          : schema
+      )
+      .required("Required")
+      .max(99, "Age must be between 18 and 99")
+      .min(18, "Age must be between 18 and 99"),
+    partnerGender: Yup.string().required("Required"),
+  }),
+});
+
 const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm({
-    defaultValues: WizardStore.useState((s) => s),
+  const defaultValues = WizardStore.useState((s) => s, []);
+  const { handleSubmit, control, formState } = useForm({
+    defaultValues: {
+      preferences: {
+        ageGroupMin: defaultValues.preferences.ageGroupMin,
+        ageGroupMax: defaultValues.preferences.ageGroupMax,
+        partnerGender: defaultValues.preferences.partnerGender ?? "",
+      },
+    },
+    resolver: yupResolver(Step2ValidationSchema),
+    mode: "onTouched",
+    reValidateMode: "onChange",
   });
   const isFocused = useIsFocused();
   const { theme } = useTheme();
@@ -30,27 +65,29 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
 
   const onSubmit = (data: {
     preferences: {
-      ageGroupMax: string;
-      ageGroupMin: string;
+      ageGroupMin: string | number;
+      ageGroupMax: string | number;
       partnerGender: string;
     };
   }) => {
     WizardStore.update((s) => {
       s.progress = 50;
-      s.preferences.ageGroupMax = data.preferences.ageGroupMax;
-      s.preferences.ageGroupMin = data.preferences.ageGroupMin;
+      s.preferences.ageGroupMin = parseInt(
+        data.preferences.ageGroupMin as string
+      );
+      s.preferences.ageGroupMax = parseInt(
+        data.preferences.ageGroupMax as string
+      );
       s.preferences.partnerGender = data.preferences.partnerGender;
     });
     navigation.navigate("Step 3" as never);
-    console.log(data);
   };
   return (
-    <View
+    <ScrollView
       style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: theme.colors.primary,
+        display: "flex",
+        backgroundColor: theme.colors.background,
+        marginBottom: 16,
       }}
     >
       <ProgressBar
@@ -58,110 +95,122 @@ const Step2Preferences = ({ navigation }: Step1PreferencesProps) => {
         progress={WizardStore.useState().progress / 100}
         color={theme.colors.accent}
       />
-      <View style={styles.formEntry}>
-        <Text style={{ color: theme.colors.secondary }}>Preferred gender</Text>
-        <Controller
-          control={control}
-          rules={{ required: true }}
-          render={({ field: { onChange, value } }) => (
-            <Picker selectedValue={value} onValueChange={onChange}>
-              <Picker.Item label="Choose a Gender" value="" />
-              <Picker.Item label="Male" value="M" />
-              <Picker.Item label="Female" value="F" />
-            </Picker>
-          )}
-          name="preferences.partnerGender"
-        />
-      </View>
-      {/* Similarly integrate Controller for other fields */}
-
-      {/* //TODO Change this to sliders  */}
-      <View style={styles.formEntry}>
-        <Text style={{ color: theme.colors.secondary }}>
-          Maximal Partner Age
-        </Text>
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value = "" } }) => (
-            <TextInput
-              mode="outlined"
-              placeholder="Enter Partner Age"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              keyboardType="numeric"
-              activeOutlineColor="#EE5253"
-            />
-          )}
-          name="preferences.ageGroupMax"
-        />
-        {errors.preferences?.ageGroupMax && (
-          <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
-            This is a required field.
+      <View style={{ paddingHorizontal: 16 }}>
+        <View style={styles.formEntry}>
+          <Text variant="labelLarge" style={{ color: theme.colors.secondary }}>
+            Preferred gender
           </Text>
-        )}
-      </View>
-      <View style={styles.formEntry}>
-        <Text style={{ color: theme.colors.secondary }}>
-          Minimal Partner Age
-        </Text>
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value = "" } }) => (
-            <TextInput
-              mode="outlined"
-              placeholder="Enter Partner Age"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              keyboardType="numeric"
-              activeOutlineColor="#EE5253"
-            />
-          )}
-          name="preferences.ageGroupMin"
-        />
-        {errors.preferences?.ageGroupMin && (
-          <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
-            This is a required field.
-          </Text>
-        )}
-      </View>
+          <Controller
+            control={control}
+            render={({ field: { onChange, value }, fieldState }) => (
+              <>
+                <View
+                  style={{
+                    borderColor: fieldState.error?.message
+                      ? theme.colors.error
+                      : "gray",
+                    borderWidth: 1,
+                    backgroundColor: theme.colors.surface,
+                    borderRadius: 4,
+                  }}
+                >
+                  <Picker selectedValue={value} onValueChange={onChange}>
+                    <Picker.Item label="Choose a Gender" value="" />
+                    <Picker.Item label="Male" value="M" />
+                    <Picker.Item label="Female" value="F" />
+                  </Picker>
+                </View>
+                <HelperText
+                  type="error"
+                  visible={!!fieldState.error?.message}
+                  style={{ color: theme.colors.error }}
+                >
+                  {fieldState.error?.message}
+                </HelperText>
+              </>
+            )}
+            name="preferences.partnerGender"
+          />
+        </View>
+        <View style={styles.formEntry}>
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value }, fieldState }) => (
+              <>
+                <TextInput
+                  mode="outlined"
+                  placeholder="Enter Partner Age"
+                  label={"Minimum Age"}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  error={!!fieldState.error?.message}
+                  value={value?.toString() ?? ""}
+                  keyboardType="numeric"
+                  activeOutlineColor="#EE5253"
+                />
+                <HelperText
+                  type="error"
+                  visible={!!fieldState.error?.message}
+                  style={{ color: theme.colors.error }}
+                >
+                  {fieldState.error?.message}
+                </HelperText>
+              </>
+            )}
+            name="preferences.ageGroupMin"
+          />
+        </View>
+        <View style={styles.formEntry}>
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value }, fieldState }) => (
+              <>
+                <TextInput
+                  mode="outlined"
+                  placeholder="Enter Partner Age"
+                  label="Maximum Age"
+                  onBlur={onBlur}
+                  error={!!fieldState.error?.message}
+                  onChangeText={onChange}
+                  value={value?.toString() ?? ""}
+                  keyboardType="numeric"
+                  activeOutlineColor="#EE5253"
+                />
+                <HelperText
+                  type="error"
+                  visible={!!fieldState.error?.message}
+                  style={{ color: theme.colors.error }}
+                >
+                  {fieldState.error?.message}
+                </HelperText>
+              </>
+            )}
+            name="preferences.ageGroupMax"
+          />
+        </View>
 
-      <Button
-        onPress={handleSubmit(onSubmit)}
-        mode="outlined"
-        style={{
-          margin: 8,
-          backgroundColor: theme.colors.accent,
-          borderWidth: 2,
-        }}
-      >
-        <Text style={{ color: "white", borderColor: theme.colors.accent }}>
+        <Button
+          onPress={handleSubmit(onSubmit)}
+          mode="contained"
+          loading={formState.isSubmitting}
+          style={{
+            backgroundColor: theme.colors.accent,
+          }}
+        >
           NEXT
-        </Text>
-      </Button>
-    </View>
+        </Button>
+      </View>
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
-  // eslint-disable-next-line react-native/no-unused-styles
   button: {
     margin: 8,
   },
-  // eslint-disable-next-line react-native/no-unused-styles
   container: {
     flex: 1,
   },
-  formEntry: {
-    margin: 8,
-  },
-  // eslint-disable-next-line react-native/no-unused-styles
+  formEntry: {},
   progressBar: {
     marginBottom: 16,
     paddingHorizontal: 0,

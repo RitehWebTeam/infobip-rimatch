@@ -1,35 +1,15 @@
-import React from "react";
-import { Text } from "react-native-paper";
+import React, { useMemo, useState } from "react";
+import { HelperText, Text } from "react-native-paper";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { storeTypes, WizardStore } from "../store";
-import {
-  Button,
-  ProgressBar,
-  Divider,
-  Portal,
-  Dialog,
-} from "react-native-paper";
+import { Button, ProgressBar, Divider } from "react-native-paper";
 import { NavigationProp } from "@react-navigation/native";
 import { PreferencesInitData } from "../../../../types/User";
-//import { toBase64 } from "../../../../utils";
 import useAuth from "../../../../hooks/useAuth";
 import { UsersService } from "../../../../api/users";
 import { router } from "expo-router";
 
 import { useTheme } from "@/context/ThemeProvider";
-const initialValues = {
-  description: "",
-  phoneNumber: "",
-  location: "",
-  favouriteSong: "",
-  profileImageUrl: null,
-  tags: [] as Array<string>,
-  preferences: {
-    ageGroupMin: "",
-    ageGroupMax: "",
-    partnerGender: "",
-  },
-};
 
 type PreferencesProps = {
   navigation: NavigationProp<object>;
@@ -42,12 +22,10 @@ const mapPreferenceValues = (values: storeTypes): PreferencesInitData => ({
     phoneNumber: values.phoneNumber,
     location: values.location,
     favouriteSong: values.favouriteSong,
-    // @ts-ignore
-    tags:
-      typeof values.tags === "string" ? values.tags.split(" ") : values.tags,
+    tags: values.tags,
     preferences: {
-      ageGroupMin: parseInt(values.preferences.ageGroupMin, 10),
-      ageGroupMax: parseInt(values.preferences.ageGroupMax, 10),
+      ageGroupMin: values.preferences.ageGroupMin,
+      ageGroupMax: values.preferences.ageGroupMax,
       partnerGender: values.preferences.partnerGender,
     },
   },
@@ -55,6 +33,7 @@ const mapPreferenceValues = (values: storeTypes): PreferencesInitData => ({
 });
 
 export default function Confirmation({ navigation }: PreferencesProps) {
+  const [error, setError] = useState<string | null>(null);
   const { setAuth } = useAuth();
   const { mutateAsync: initPreferences } = UsersService.useInitPreferences();
   const { theme } = useTheme();
@@ -65,12 +44,14 @@ export default function Confirmation({ navigation }: PreferencesProps) {
   }, [navigation]);
 
   const handleSubmit = async (values: storeTypes) => {
-    // TODO: Error handling
-
+    setError(null);
     const mappedValues = mapPreferenceValues(values);
-
-    console.log(mappedValues);
-    await initPreferences(mappedValues);
+    try {
+      await initPreferences(mappedValues);
+    } catch (error) {
+      setError("Something went wrong");
+      return;
+    }
 
     setAuth((prev) => ({
       ...prev!,
@@ -80,29 +61,6 @@ export default function Confirmation({ navigation }: PreferencesProps) {
   };
 
   const information = WizardStore.useState();
-
-  const [visible, setVisible] = React.useState(false);
-
-  const hideDialog = () => setVisible(false);
-
-  const clearAndReset = () => {
-    WizardStore.replace({
-      description: "",
-      phoneNumber: "",
-      location: "",
-      favouriteSong: "",
-      profileImageUrl: null,
-      tags: [] as Array<string>,
-      preferences: {
-        ageGroupMin: "",
-        ageGroupMax: "",
-        partnerGender: "",
-      },
-      progress: 0,
-    });
-    setVisible(false);
-    navigation.navigate("Step 1" as never);
-  };
 
   return (
     <ScrollView
@@ -114,26 +72,6 @@ export default function Confirmation({ navigation }: PreferencesProps) {
         color={theme.colors.accent}
       />
       <View style={{ paddingHorizontal: 16 }}>
-        {/* <!-- dialog --> */}
-        <Portal>
-          <Dialog visible={visible} onDismiss={hideDialog}>
-            <Dialog.Title>
-              <Text>Alert</Text>
-            </Dialog.Title>
-            <Dialog.Content>
-              <Text variant="bodyMedium">This is simple dialog</Text>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <Button onPress={hideDialog}>
-                <Text>Cancel</Text>
-              </Button>
-              <Button onPress={clearAndReset}>
-                <Text>Done</Text>
-              </Button>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
-
         <SummaryEntry name={information.phoneNumber} label={"Phone Number"} />
 
         <SummaryEntry name={information.description} label={"Description"} />
@@ -155,7 +93,7 @@ export default function Confirmation({ navigation }: PreferencesProps) {
           label={"Your minimal partner age is"}
         />
         <SummaryEntry
-          name={information.preferences.ageGroupMin}
+          name={information.preferences.ageGroupMax}
           label={"Your maximum partner age is"}
         />
         <SummaryEntry
@@ -166,32 +104,29 @@ export default function Confirmation({ navigation }: PreferencesProps) {
           name={information.tags as unknown as string}
           label={"Your tags are"}
         />
-        <Button
-          style={{
-            margin: 8,
-            backgroundColor: theme.colors.accent,
-            borderWidth: 2,
-          }}
-          mode="outlined"
-          onPress={() => navigation.navigate("Step 4" as never)}
-        >
-          <Text style={{ color: "white", borderColor: theme.colors.accent }}>
+        <HelperText type="error" visible={!!error}>
+          {error}
+        </HelperText>
+        <View style={styles.buttonContainer}>
+          <Button
+            mode="contained"
+            style={{
+              backgroundColor: theme.colors.accent,
+            }}
+            onPress={() => handleSubmit(information)}
+          >
+            SUBMIT
+          </Button>
+          <Button
+            mode="contained"
+            style={{
+              backgroundColor: theme.colors.secondary,
+            }}
+            onPress={() => navigation.navigate("Step 4" as never)}
+          >
             GO BACK
-          </Text>
-        </Button>
-        <Button
-          style={{
-            margin: 8,
-            backgroundColor: theme.colors.accent,
-            borderWidth: 2,
-          }}
-          mode="outlined"
-          onPress={() => handleSubmit(information)}
-        >
-          <Text style={{ color: "white", borderColor: theme.colors.accent }}>
-            SaveData
-          </Text>
-        </Button>
+          </Button>
+        </View>
       </View>
     </ScrollView>
   );
@@ -201,10 +136,16 @@ export const SummaryEntry = ({
   name,
   label,
 }: {
-  name: string;
+  name: string | number | Array<string>;
   label: string;
 }) => {
   const { theme } = useTheme();
+  const displayValue = useMemo(() => {
+    if (Array.isArray(name)) {
+      return name.join(", ");
+    }
+    return name;
+  }, []);
   return (
     <View style={{ marginBottom: 16 }}>
       <Text
@@ -217,7 +158,7 @@ export const SummaryEntry = ({
         {label}
       </Text>
       <Text style={{ marginBottom: 8, color: theme.colors.secondary }}>
-        {name}
+        {displayValue}
       </Text>
       <Divider />
     </View>
@@ -231,8 +172,13 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
+    marginBottom: 16,
   },
   progressBar: {
     marginBottom: 16,
+  },
+  buttonContainer: {
+    display: "flex",
+    gap: 8,
   },
 });

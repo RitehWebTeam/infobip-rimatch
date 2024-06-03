@@ -1,24 +1,39 @@
-import { View, Text } from "react-native";
-
+import { ScrollView, View } from "react-native";
 import { NavigationProp, useIsFocused } from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
 import { WizardStore } from "../store";
 import { useEffect } from "react";
-import { Button, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
-
+import {
+  Button,
+  ProgressBar,
+  TextInput,
+  Text,
+  HelperText,
+} from "react-native-paper";
+import * as Yup from "yup";
+import { useTheme } from "@/context/ThemeProvider";
 import { StyleSheet } from "react-native";
 import useLogout from "@/hooks/useLogout";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 type Step1PreferencesProps = {
   navigation: NavigationProp<object>;
 };
-import { useTheme } from "@/context/ThemeProvider";
+
+const Step1Schema = Yup.object().shape({
+  phoneNumber: Yup.string().required("Required"),
+  location: Yup.string().required("Required"),
+  description: Yup.string().required("Required"),
+});
 
 const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm({ defaultValues: WizardStore.useState((s) => s) });
+  const defaultValues = WizardStore.useState((s) => s, []);
+  const { handleSubmit, control } = useForm({
+    defaultValues,
+    resolver: yupResolver(Step1Schema),
+    mode: "onTouched",
+    reValidateMode: "onChange",
+  });
   const logout = useLogout();
   const isFocused = useIsFocused();
   const { theme } = useTheme();
@@ -42,15 +57,13 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
       s.description = data.description;
     });
     navigation.navigate("Step 2" as never);
-    console.log(data);
   };
   return (
-    <View
+    <ScrollView
       style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: theme.colors.primary,
+        display: "flex",
+        backgroundColor: theme.colors.background,
+        marginBottom: 16,
       }}
     >
       <View>
@@ -62,7 +75,7 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
       </View>
       <View style={{ paddingHorizontal: 16 }}>
         <View style={styles.formEntry}>
-          <Text style={{ color: theme.colors.secondary }}>
+          <Text variant="labelLarge" style={{ color: theme.colors.secondary }}>
             Please enter your phone number
           </Text>
           <Controller
@@ -70,129 +83,134 @@ const Step1Preferences = ({ navigation }: Step1PreferencesProps) => {
             rules={{
               required: true,
             }}
-            render={({ field: { onChange, onBlur, value = "" } }) => (
-              <TextInput
-                mode="outlined"
-                label="091 123 4567"
-                placeholder="Enter Phone Number"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                keyboardType="numeric"
-                activeOutlineColor="#EE5253"
-              />
+            render={({ field: { onChange, onBlur, value }, fieldState }) => (
+              <>
+                <TextInput
+                  mode="outlined"
+                  label="Phone number"
+                  placeholder="091 123 4567"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  keyboardType="numeric"
+                  error={!!fieldState.error?.message}
+                  activeOutlineColor={theme.colors.accent}
+                />
+                <HelperText
+                  type="error"
+                  visible={!!fieldState.error?.message}
+                  style={{ color: theme.colors.error }}
+                >
+                  {fieldState.error?.message}
+                </HelperText>
+              </>
             )}
             name="phoneNumber"
           />
-          {errors.phoneNumber && (
-            <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
-              This is a required field.
-            </Text>
-          )}
         </View>
 
         <View style={styles.formEntry}>
-          <Text style={{ color: theme.colors.secondary }}>
+          <Text variant="labelLarge" style={{ color: theme.colors.secondary }}>
             Where are you from?
           </Text>
           <Controller
             control={control}
-            rules={{
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur, value = "" } }) => (
-              <TextInput
-                mode="outlined"
-                placeholder="Enter Location"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                activeOutlineColor="#EE5253"
-              />
+            render={({ field: { onChange, onBlur, value }, fieldState }) => (
+              <>
+                <TextInput
+                  mode="outlined"
+                  placeholder="Enter Location"
+                  label="Location"
+                  error={!!fieldState.error?.message}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  activeOutlineColor={theme.colors.accent}
+                />
+                <HelperText
+                  type="error"
+                  visible={!!fieldState.error?.message}
+                  style={{ color: theme.colors.error }}
+                >
+                  {fieldState.error?.message}
+                </HelperText>
+              </>
             )}
             name="location"
           />
-          {errors.location && (
-            <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
-              This is a required field.
-            </Text>
-          )}
         </View>
         <View style={styles.formEntry}>
-          <Text style={{ color: theme.colors.secondary }}>
+          <Text variant="labelLarge" style={{ color: theme.colors.secondary }}>
             Tell people about yourself
           </Text>
           <Controller
             control={control}
-            rules={{
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur, value = "" } }) => (
-              <TextInput
-                mode="outlined"
-                multiline
-                numberOfLines={4}
-                placeholder="I like bees..."
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                activeOutlineColor="#EE5253"
-              />
+            render={({ field: { onChange, onBlur, value }, fieldState }) => (
+              <>
+                <TextInput
+                  mode="outlined"
+                  multiline
+                  numberOfLines={4}
+                  label="Description"
+                  placeholder="I like bees..."
+                  error={!!fieldState.error?.message}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  activeOutlineColor={theme.colors.accent}
+                />
+                <HelperText
+                  type="error"
+                  visible={!!fieldState.error?.message}
+                  style={{ color: theme.colors.error }}
+                >
+                  {fieldState.error?.message}
+                </HelperText>
+              </>
             )}
             name="description"
           />
-          {errors.description && (
-            <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
-              This is a required field.
-            </Text>
-          )}
         </View>
 
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          mode="outlined"
-          style={{
-            margin: 8,
-            backgroundColor: theme.colors.accent,
-            borderWidth: 2,
-          }}
-        >
-          <Text style={{ color: "white", borderColor: theme.colors.accent }}>
+        <View style={styles.buttonContainer}>
+          <Button
+            onPress={handleSubmit(onSubmit)}
+            mode="contained"
+            style={{
+              backgroundColor: theme.colors.accent,
+            }}
+          >
             NEXT
-          </Text>
-        </Button>
-        <Button
-          onPress={() => logout()}
-          mode="outlined"
-          style={{
-            margin: 8,
-            backgroundColor: theme.colors.accent,
-            borderWidth: 2,
-          }}
-        >
-          <Text style={{ color: "white", borderColor: theme.colors.accent }}>
+          </Button>
+          <Button
+            onPress={() => logout()}
+            mode="contained"
+            style={{
+              backgroundColor: theme.colors.secondary,
+            }}
+          >
             Logout
-          </Text>
-        </Button>
+          </Button>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
-  button: {
-    margin: 8,
-  },
-  // eslint-disable-next-line react-native/no-unused-styles
   container: {
     flex: 1,
   },
   formEntry: {
-    margin: 8,
+    display: "flex",
+    gap: 4,
   },
-  // eslint-disable-next-line react-native/no-unused-styles
   progressBar: {
     marginBottom: 16,
     paddingHorizontal: 0,
+  },
+  buttonContainer: {
+    display: "flex",
+    gap: 8,
   },
 });
 export default Step1Preferences;

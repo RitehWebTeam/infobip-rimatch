@@ -6,7 +6,6 @@ import {
 } from "@tanstack/react-query";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-import RNFetchBlob from "rn-fetch-blob";
 import {
   Asset,
   MatchedUser,
@@ -14,6 +13,7 @@ import {
   User,
   UserUpdateData,
 } from "@/types/User";
+import ReactNativeBlobUtil from "react-native-blob-util";
 
 export const UsersService = {
   useGetCurrentUser() {
@@ -36,50 +36,32 @@ export const UsersService = {
     const { auth } = useAuth();
     return useMutation<T, Error, PreferencesInitData>({
       mutationFn: async (data) => {
-        const formData = new FormData();
-        formData.append("data", JSON.stringify(data.data));
-        const blob = new Blob([data.photo.base64 || ""]);
-        formData.append("photo", blob, data.photo.fileName);
-        const response = await axios.post<T>("/users/me/setup", formData);
-        /* const response = await RNFetchBlob.fetch(
+        const response = await ReactNativeBlobUtil.fetch(
           "POST",
           `${axios.defaults.baseURL}/users/me/setup`,
           {
             Authorization: `Bearer ${auth?.accessToken}`,
-            "Content-Type": "multipart/form-data, application/json ",
+            "Content-Type": "multipart/form-data",
           },
           [
             {
               name: "data",
-              
-              data: JSON.stringify(
-                
-                  {
-                    description: data.data.description,
-                    phoneNumber: data.data.phoneNumber,
-                    location: data.data.location,
-                    favouriteSong: data.data.favouriteSong,
-                    tags: data.data.tags,
-                    preferences: {
-                      ageGroupMin: data.data.preferences.ageGroupMin,
-                      ageGroupMax: data.data.preferences.ageGroupMax,
-                      partnerGender: data.data.preferences.partnerGender,
-                    },
-                  }
-                
-              ),
+              data: JSON.stringify(data.data),
+              type: "application/json",
             },
             {
               name: "photo",
-             
               filename: data.photo.fileName,
               type: data.photo.type,
-              data:data.photo.base64,
+              data: data.photo.base64,
             },
           ]
-        ); */
+        );
 
-        return response.data;
+        if (response.respInfo.status >= 400) {
+          throw new Error(response.data);
+        }
+        return response.json();
       },
       onError: (error) => {
         console.error("Mutation error:", error);
@@ -130,7 +112,7 @@ export const UsersService = {
     const queryClient = useQueryClient();
     return useMutation<T, Error, Asset>({
       mutationFn: async (file) => {
-        const response = await RNFetchBlob.fetch(
+        const response = await ReactNativeBlobUtil.fetch(
           "POST",
           `${axios.defaults.baseURL}/users/me/profilePicture`,
           {
