@@ -11,18 +11,11 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useTheme } from "@/context/ThemeProvider";
 import { Asset } from "@/types/User";
-const validationSchema = Yup.object({
-  profileImageUrl: Yup.mixed<File>()
-    .required("Required")
-    .test("fileSize", "File size must be smaller than 500KB", (value) => {
-      return value && value.size <= 500 * 1024;
-    }),
-});
 
 const SettingsProfilePicture = () => {
   const user = useCurrentUserContext();
-  const [profileImageUrl, setProfileImageUrl] = React.useState<File | null>();
-  const [photoUri, setPhotoUri] = React.useState<string | null>(null);
+  const [photoUri, setPhotoUri] = React.useState<string>(user.profileImageUrl);
+  const [photo, setPhoto] = React.useState<Asset | null>(null);
   const { theme } = useTheme();
   const { mutateAsync: updateProfilePicture } =
     UsersService.useUpdateProfilePicture();
@@ -33,14 +26,13 @@ const SettingsProfilePicture = () => {
 
   type UserProfileUpdateData = { profileImageUrl: Asset | string };
 
-  //TODO Submitting images not yet implemented
   const handleSubmit = async (
     values: UserProfileUpdateData,
     helpers: FormikHelpers<UserProfileUpdateData>
   ) => {
+    if (!photo) return;
     helpers.setSubmitting(true);
-    console.log("calles");
-    await updateProfilePicture(values.profileImageUrl as Asset);
+    await updateProfilePicture(photo);
     helpers.resetForm({ values });
   };
 
@@ -54,24 +46,14 @@ const SettingsProfilePicture = () => {
     });
 
     if (response && response.assets) {
-      setProfileImageUrl(response.assets[0] as File | null);
       setPhotoUri(response.assets[0].uri as string);
-    } else {
-      setProfileImageUrl(null);
+      setPhoto(response.assets[0] as Asset);
     }
-  };
-
-  const test = () => {
-    console.log("test");
   };
 
   return (
     <View style={{ backgroundColor: theme.colors.primary }}>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         {({ handleSubmit, isSubmitting }) => (
           <>
             <View className=" relative mt-12">
@@ -79,7 +61,7 @@ const SettingsProfilePicture = () => {
                 <View className=" flex justify-center items-center ">
                   <Image
                     source={{
-                      uri: user.profileImageUrl,
+                      uri: photoUri,
                     }}
                     style={{
                       width: 200,
@@ -108,10 +90,10 @@ const SettingsProfilePicture = () => {
                   mode="contained"
                   onPress={() => handleSubmit()}
                   loading={isSubmitting}
-                  disabled={isSubmitting}
+                  disabled={photoUri === user.profileImageUrl || isSubmitting}
                   style={{ backgroundColor: theme.colors.accent }}
                 >
-                  <Text style={{ color: "white" }}>Login</Text>
+                  Save
                 </Button>
               </View>
             </View>

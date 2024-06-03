@@ -119,14 +119,15 @@ export const UsersService = {
             Authorization: `Bearer ${auth?.accessToken}`,
             "Content-Type": "multipart/form-data",
           },
-          {
-            name: "photo",
-            filename: file.fileName,
-            type: file.type,
-            data: file.base64,
-          }
+          [
+            {
+              name: "photo",
+              filename: file.fileName,
+              type: file.type,
+              data: ReactNativeBlobUtil.wrap(file.uri!),
+            },
+          ]
         );
-
         return response.data;
       },
       onSuccess: () => {
