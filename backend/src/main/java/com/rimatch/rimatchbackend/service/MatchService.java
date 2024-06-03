@@ -1,5 +1,6 @@
 package com.rimatch.rimatchbackend.service;
 
+import com.mongodb.client.model.Indexes;
 import com.rimatch.rimatchbackend.dto.DisplayUserDto;
 import com.rimatch.rimatchbackend.model.Match;
 import com.rimatch.rimatchbackend.model.Message;
@@ -14,6 +15,8 @@ import lombok.Getter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.Metrics;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.ComparisonOperators;
@@ -21,9 +24,12 @@ import org.springframework.data.mongodb.core.aggregation.ConditionalOperators;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,7 +48,14 @@ public class MatchService {
     @Autowired
     public MatchService(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
+        ensureIndexes(); // Ensure the index is created
     }
+
+    private void ensureIndexes() {
+        // Create a 2dsphere index on the location field if it doesn't exist
+        mongoTemplate.getDb().getCollection("users").createIndex(Indexes.geo2dsphere("location"));
+    }
+
 
     public Match saveMatch(String id1, String id2) {
         return matchRepository.save(new Match(id1, id2));
@@ -68,24 +81,33 @@ public class MatchService {
     }
 
     public List<DisplayUserDto> findPotentialMatches(User user, int skip) {
-        List<User> mappedResults = mongoTemplate.aggregate(
-                Aggregation.newAggregation(
+
+        //return if for some reason location is null ( shouldn't happen )
+        if (user.getLocation() == null) {
+            return Collections.emptyList();
+        }
+        // Setting radius for geolocation search and defining parameters
+        NearQuery nearQuery = NearQuery.near(user.getLocation())
+                .maxDistance(new Distance(user.getRadius(), Metrics.KILOMETERS))
+                .spherical(true);
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                        Aggregation.geoNear(nearQuery, "distance"),
                         Aggregation.sort(Direction.DESC, "_id"),
                         Aggregation.match(
                                 Criteria.where("active").is(true)
                                         .and("_id").nin(user.getSeenUserIds())
                                         .and("age").lte(user.getPreferences().getAgeGroupMax())
                                         .and("gender").is(user.getPreferences().getPartnerGender())
-                                        .and("location").is(user.getLocation())
                                         .and("email").ne(user.getEmail())),
                         Aggregation.match(Criteria.where("age").gte(user.getPreferences().getAgeGroupMin())),
                         Aggregation.skip(skip),
-                        Aggregation.limit(5)),
-                "users", User.class).getMappedResults();
+                        Aggregation.limit(5));
+
+        List<User> mappedResults = mongoTemplate.aggregate(aggregation,"users", User.class).getMappedResults();
 
         // Create a new list for the filtered users
         List<User> filteredList = new ArrayList<>();
-
         // Filter the list by preferences
         filterUsersByPreferences(user, mappedResults, filteredList);
 

@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.*;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -58,7 +59,9 @@ public class User {
 
     private String phoneNumber;
 
-    private String location;
+    private GeoJsonPoint location;
+
+    private Double radius;
 
     private Preferences preferences;
 
