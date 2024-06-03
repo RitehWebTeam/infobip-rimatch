@@ -12,11 +12,10 @@ import {
   HelperText,
   Text,
   TextInput,
-  useTheme,
 } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import DropDownPicker from "react-native-dropdown-picker";
-
+import { useTheme } from "../../../context/ThemeProvider";
 const RegisterSchema = Yup.object().shape({
   email: Yup.string()
     .required("Email is required")
@@ -59,7 +58,7 @@ type RegisterValues = typeof initialValues;
 const RegisterForm = () => {
   const [registerError, setRegisterError] = useState("");
   const { mutate: register } = AuthService.useRegister();
-
+  const {theme} = useTheme();
   const handleSubmit = async (
     values: RegisterValues,
     helpers: FormikHelpers<RegisterValues>
@@ -117,7 +116,7 @@ const RegisterForm = () => {
             style={{
               flex: 1,
               paddingHorizontal: 20,
-              backgroundColor: "white",
+              backgroundColor: theme.colors.primary
             }}
           >
             <Text variant="bodyMedium">
@@ -132,6 +131,7 @@ const RegisterForm = () => {
                 onChangeText={handleChange("firstName")}
                 onBlur={handleBlur("firstName")}
                 value={values.firstName}
+                activeOutlineColor="#ee5253"
                 left={
                   <TextInput.Icon
                     icon={({ color }) => (
@@ -155,6 +155,7 @@ const RegisterForm = () => {
                 onChangeText={handleChange("lastName")}
                 onBlur={handleBlur("lastName")}
                 value={values.lastName}
+                activeOutlineColor="#ee5253"
                 left={
                   <TextInput.Icon
                     icon={({ color }) => (
@@ -179,6 +180,7 @@ const RegisterForm = () => {
                 onChangeText={handleChange("age")}
                 onBlur={handleBlur("age")}
                 value={values.age}
+                activeOutlineColor="#ee5253"
                 left={
                   <TextInput.Icon
                     icon={({ color }) => (
@@ -199,6 +201,7 @@ const RegisterForm = () => {
                 onChangeText={handleChange("email")}
                 onBlur={handleBlur("email")}
                 value={values.email}
+                activeOutlineColor="#ee5253"
                 left={
                   <TextInput.Icon
                     icon={({ color }) => (
@@ -222,6 +225,7 @@ const RegisterForm = () => {
                 onChangeText={handleChange("password")}
                 onBlur={handleBlur("password")}
                 value={values.password}
+                activeOutlineColor="#ee5253"
                 secureTextEntry
                 left={
                   <TextInput.Icon
@@ -242,6 +246,7 @@ const RegisterForm = () => {
               <TextInput
                 label="Confirm Password"
                 mode="outlined"
+                activeOutlineColor="#ee5253"
                 error={!!errors.confirmPassword && touched.confirmPassword}
                 onChangeText={handleChange("confirmPassword")}
                 onBlur={handleBlur("confirmPassword")}
@@ -268,8 +273,8 @@ const RegisterForm = () => {
               >
                 {registerError}
               </HelperText>
-            <Button onPress={() => handleSubmit()} mode="contained" loading={isSubmitting} disabled={isSubmitting}>
-              Submit
+            <Button onPress={() => handleSubmit()} mode="contained" loading={isSubmitting} disabled={isSubmitting} style={{backgroundColor:"#ee5253"}}>
+              <Text style ={{color:"white"}}>Submit</Text>
             </Button>
           </ScrollView>
         </View>
@@ -283,7 +288,7 @@ const GenderPicker = () => {
     { label: "Male", value: "M" },
     { label: "Female", value: "F" },
   ];
-  const theme = useTheme();
+  const {theme} = useTheme();
   const [field, meta, helpers] = useField<string>("gender");
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(field.value);
@@ -313,9 +318,10 @@ const GenderPicker = () => {
           left: 10,
           top: -8,
           paddingHorizontal: 3,
-          backgroundColor: "white",
+          backgroundColor: theme.colors.primary,
           zIndex: 11,
-          color: hasError ? theme.colors.error : theme.colors.onSurface,
+          color: hasError ? "red": theme.colors.onSurface,
+
         }}
       >
         Choose your gender
@@ -333,7 +339,8 @@ const GenderPicker = () => {
         style={{    
           borderColor: 'gray',
           borderWidth: hasError ? 2 : 1,
-          backgroundColor: theme.colors.background,
+          backgroundColor: theme.colors.primary,
+          
         }}
       />
       <HelperText type="error" visible={!!meta.error && meta.touched}>

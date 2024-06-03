@@ -25,8 +25,10 @@ interface RootCardProps {
 }
 export const Root = ({ children }: RootCardProps) => {
   return (
-    <div className="bg-white dark:bg-[#343030] flex w-full flex-grow sm:w-[27rem] flex-col items-center p-4 sm:rounded-lg shadow-lg shadow-black">
-      {children}
+    <div className="h-full sm:h-max w-full flex-grow flex-col sm:w-[27rem] items-center sm:rounded-lg">
+      <div className="bg-white dark:bg-[#343030] h-full sm:min-h-[50%] sm:h-max w-full flex-grow flex-col sm:w-[27rem] sm:mb-8 p-4 sm:rounded-lg shadow-[0_14px_15px_-3px] shadow-black">
+        {children}
+      </div>
     </div>
   );
 };

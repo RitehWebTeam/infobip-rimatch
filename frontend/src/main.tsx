@@ -17,6 +17,7 @@ import ListOfMatchesForChatPage from "./views/ListOfMatchesForChatPage.tsx";
 import ProfileDetailed from "./views/Matches/ProfileDetailed.tsx";
 import SettingsList from "./views/settings/SettingsList.tsx";
 import SettingsPreferences from "./views/settings/SettingsPreferences.tsx";
+import SettingsBlockedUsers from "./views/settings/SettingsBlockedUsers.tsx";
 import SettingsLayout from "./views/settings/SettingsLayout.tsx";
 import SettingsProfile from "./views/settings/SettingsProfile.tsx";
 import SettingsProfilePicture from "./views/settings/SettingsProfilePicture.tsx";
@@ -40,7 +41,7 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <MatchesPage /> },
           {
-            path: "profile",
+            path: "profile/:userId",
             element: <ProfileDetailed />,
           },
         ],
@@ -56,6 +57,7 @@ const router = createBrowserRouter([
           { path: "picture", element: <SettingsProfilePicture /> },
           { path: "theme", element: <SettingsTheme /> },
           { path: "gallery", element: <SettingsGallery /> },
+          { path: "blockedusers", element: <SettingsBlockedUsers /> },
         ],
       },
       {
@@ -64,7 +66,7 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
           { index: true, element: <ListOfMatchesForChatPage /> },
-          { path: "chat", element: <ChatPage /> },
+          { path: "chat/:userId", element: <ChatPage /> },
         ],
       },
     ],

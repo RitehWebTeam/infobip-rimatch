@@ -1,18 +1,19 @@
-import useAuth from "../hooks/useAuth";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import type { Match, MatchData } from "../types/Match";
-import type {
-  PreferencesInitData,
-  ProjectedUser,
-  User,
-  UserUpdateData,
-} from "../types/User";
 import {
   UseMutationOptions,
   useMutation,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import useAuth from "@/hooks/useAuth";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import {
+  Asset,
+  MatchedUser,
+  PreferencesInitData,
+  User,
+  UserUpdateData,
+} from "@/types/User";
+import ReactNativeBlobUtil from "react-native-blob-util";
 
 export const UsersService = {
   useGetCurrentUser() {
@@ -32,93 +33,40 @@ export const UsersService = {
     >
   ) => {
     const axios = useAxiosPrivate();
+    const { auth } = useAuth();
     return useMutation<T, Error, PreferencesInitData>({
       mutationFn: async (data) => {
-        const form = new FormData();
-        form.append(
-          "data",
-          new Blob([JSON.stringify(data.data)], { type: "application/json" })
+        const response = await ReactNativeBlobUtil.fetch(
+          "POST",
+          `${axios.defaults.baseURL}/users/me/setup`,
+          {
+            Authorization: `Bearer ${auth?.accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+          [
+            {
+              name: "data",
+              data: JSON.stringify(data.data),
+              type: "application/json",
+            },
+            {
+              name: "photo",
+              filename: data.photo.fileName,
+              type: data.photo.type,
+              data: data.photo.base64,
+            },
+          ]
         );
-        form.append("photo", data.photo);
 
-        const response = await axios.postForm<T>("/users/me/setup", form, {
-          withCredentials: true,
-        });
-        return response.data;
+        if (response.respInfo.status >= 400) {
+          throw new Error(response.data);
+        }
+        return response.json();
+      },
+      onError: (error) => {
+        console.error("Mutation error:", error);
       },
       ...mutationOptions,
-    });
-  },
-
-  useGetPotentailUsers: (page: number) => {
-    const axios = useAxiosPrivate();
-    return useQuery<User[], Error>({
-      queryKey: ["UsersService.getPotentialUsers", page],
-      queryFn: () => axios.get("/match/potential").then((res) => res.data),
-      staleTime: 60e3,
-    });
-  },
-
-  usePrefetchPotentialUsers: (page: number) => {
-    const axios = useAxiosPrivate();
-    const queryClient = useQueryClient();
-
-    const prefetch = () => {
-      queryClient.prefetchQuery({
-        queryKey: ["UsersService.getPotentialUsers", page + 1],
-        queryFn: () =>
-          axios.get(`/match/potential?skip=3`).then((res) => res.data),
-        staleTime: 60e3,
-      });
-    };
-
-    return prefetch;
-  },
-
-  useAcceptMatch: <T = Match>(
-    mutationOptions?: Omit<
-      UseMutationOptions<T, Error, MatchData>,
-      "mutationFn"
-    >
-  ) => {
-    const axios = useAxiosPrivate();
-    const queryClient = useQueryClient();
-    return useMutation<T, Error, MatchData>({
-      mutationFn: async (data) => {
-        const response = await axios.post<T>("/match/accept", data);
-        return response.data;
-      },
-      ...mutationOptions,
-      onSettled: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["UsersService.getMatches"],
-        });
-      },
-    });
-  },
-
-  useRejectMatch: <T = Match>(
-    mutationOptions?: Omit<
-      UseMutationOptions<T, Error, MatchData>,
-      "mutationFn"
-    >
-  ) => {
-    const axios = useAxiosPrivate();
-    return useMutation<T, Error, MatchData>({
-      mutationFn: async (data) => {
-        const response = await axios.post<T>("/match/reject", data);
-        return response.data;
-      },
-      ...mutationOptions,
-    });
-  },
-
-  useGetMatches: () => {
-    const axios = useAxiosPrivate();
-    return useQuery<ProjectedUser[], Error>({
-      queryKey: ["UsersService.getMatches"],
-      queryFn: () => axios.get("/match/all").then((res) => res.data),
-      staleTime: 60e3,
     });
   },
 
@@ -132,7 +80,6 @@ export const UsersService = {
     const queryClient = useQueryClient();
     return useMutation<T, Error, UserUpdateData>({
       mutationFn: async (data) => {
-        // TODO: Please separate this into two different methods, I want to sleep now
         const url = data?.preferences
           ? "/users/me/update/preferences"
           : "/users/me/update/user";
@@ -146,9 +93,145 @@ export const UsersService = {
             queryKey: ["UsersService.getCurrentUser"],
           }),
           queryClient.invalidateQueries({
-            queryKey: ["UsersService.getPotentialUsers"],
+            queryKey: ["MatchesService.getPotentialUsers"],
           }),
         ]);
+      },
+      ...mutationOptions,
+    });
+  },
+
+  useUpdateProfilePicture: <T = void>(
+    mutationOptions?: Omit<
+      UseMutationOptions<T, Error, Asset>,
+      "mutationFn" | "onSuccess"
+    >
+  ) => {
+    const axios = useAxiosPrivate();
+    const { auth } = useAuth();
+    const queryClient = useQueryClient();
+    return useMutation<T, Error, Asset>({
+      mutationFn: async (file) => {
+        const response = await ReactNativeBlobUtil.fetch(
+          "POST",
+          `${axios.defaults.baseURL}/users/me/profilePicture`,
+          {
+            Authorization: `Bearer ${auth?.accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+          [
+            {
+              name: "photo",
+              filename: file.fileName,
+              type: file.type,
+              data: ReactNativeBlobUtil.wrap(file.uri!),
+            },
+          ]
+        );
+        return response.data;
+      },
+      onSuccess: () => {
+        return queryClient.invalidateQueries({
+          queryKey: ["UsersService.getCurrentUser"],
+        });
+      },
+      ...mutationOptions,
+    });
+  },
+
+  useAddUserPhotos: <T = void>(
+    mutationOptions?: Omit<
+      UseMutationOptions<T, Error, Asset[]>,
+      "mutationFn" | "onSuccess"
+    >
+  ) => {
+    const axios = useAxiosPrivate();
+    const queryClient = useQueryClient();
+    const { auth } = useAuth();
+    return useMutation<T, Error, Asset[]>({
+      mutationFn: async (files) => {
+        const response = await ReactNativeBlobUtil.fetch(
+          "POST",
+          `${axios.defaults.baseURL}/users/me/addPhotos`,
+          {
+            Authorization: `Bearer ${auth?.accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+          files.map((file) => ({
+            name: "photos",
+            filename: file.fileName,
+            type: file.type,
+            data: ReactNativeBlobUtil.wrap(file.uri!),
+          }))
+        );
+        return response.data;
+      },
+      onSuccess: () => {
+        return queryClient.invalidateQueries({
+          queryKey: ["UsersService.getCurrentUser"],
+        });
+      },
+      ...mutationOptions,
+    });
+  },
+
+  useRemoveUserPhotos: <T = void>(
+    mutationOptions?: Omit<
+      UseMutationOptions<T, Error, Array<string>>,
+      "mutationFn" | "onSuccess"
+    >
+  ) => {
+    const axios = useAxiosPrivate();
+    const queryClient = useQueryClient();
+    return useMutation<T, Error, Array<string>>({
+      mutationFn: async (urls) => {
+        const response = await axios.post<T>("/users/me/removePhotos", urls);
+        return response.data;
+      },
+      onSuccess: () => {
+        return queryClient.invalidateQueries({
+          queryKey: ["UsersService.getCurrentUser"],
+        });
+      },
+      onMutate: (urls) => {
+        queryClient.setQueryData<User | undefined>(
+          ["UsersService.getCurrentUser"],
+          (oldData) => {
+            if (!oldData) return oldData;
+            return {
+              ...oldData,
+              photos: oldData.photos.filter((photo) => !urls.includes(photo)),
+            };
+          }
+        );
+      },
+      ...mutationOptions,
+    });
+  },
+
+  useBlockUser: <T = void>(
+    mutationOptions?: Omit<UseMutationOptions<T, Error, string>, "mutationFn">
+  ) => {
+    const axios = useAxiosPrivate();
+    const queryClient = useQueryClient();
+    return useMutation<T, Error, string>({
+      mutationFn: async (userId) => {
+        const response = await axios.put<T>(`/users/block/${userId}`);
+        return response.data;
+      },
+      onMutate: (userId) => {
+        queryClient.setQueryData<MatchedUser[] | undefined>(
+          ["MatchesService.getMatches"],
+          (oldData) => {
+            if (!oldData?.length) return oldData;
+            return oldData.filter((user) => user.id !== userId);
+          }
+        );
+      },
+      onSettled: () => {
+        return queryClient.invalidateQueries({
+          queryKey: ["MatchesService.getMatches"],
+        });
       },
       ...mutationOptions,
     });

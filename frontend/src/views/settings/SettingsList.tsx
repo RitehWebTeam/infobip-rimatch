@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import * as SettingsCard from "@/components/GenericCard";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import CollectionsIcon from "@mui/icons-material/Collections";
+import PersonOffIcon from "@mui/icons-material/PersonOff";
 
 const SettingsList = () => {
   return (
@@ -36,6 +37,15 @@ const SettingsList = () => {
           <button type="button" className="flex items-center gap-4">
             <FavoriteBorderIcon />
             <span> Preferences </span>
+          </button>
+        </Link>
+        <Link
+          to="./blockedusers"
+          className="px-2 py-2 text-sm font-medium hover:bg-slate-200  dark:hover:bg-slate-600 focus-visible:outline-1 focus-visible:outline focus-visible:outline-slate-400 rounded-md w-full"
+        >
+          <button type="button" className="flex items-center gap-4">
+            <PersonOffIcon />
+            <span> Blocked Users </span>
           </button>
         </Link>
         <Link

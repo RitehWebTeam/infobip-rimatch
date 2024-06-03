@@ -81,7 +81,9 @@ const SettingsProfile = () => {
                 handleSubmitClick={submitForm}
               />
             </SettingsCard.Header>
-            <Form className="w-full flex flex-col relative gap-3 px-4">
+            <Form className="w-full flex flex-col gap-3 px-4">
+              {" "}
+              {/*relative*/}
               <div className="grid grid-cols-2 w-full gap-x-5 gap-y-2">
                 <div className="flex flex-col gap-1">
                   <SimpleField
@@ -106,7 +108,6 @@ const SettingsProfile = () => {
                   disabled={!editMode}
                 />
               </div>
-
               <div className="flex flex-col gap-1">
                 <SimpleField
                   name="location"

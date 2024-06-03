@@ -1,13 +1,14 @@
 import useCurrentUserContext from "@/hooks/useCurrentUser";
 import { ProjectedUser } from "@/types/User";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Spotify } from "react-spotify-embed";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import cx from "classnames";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import { Link } from "react-router-dom";
 import UserActionsDropdown from "./UserActionsDropdown";
+import ImageModal from "./ImageModal";
 
 interface ProfileCardProps {
   user: ProjectedUser;
@@ -25,6 +26,7 @@ const ProfileCard = ({
   onClose,
   showChatIcon = false,
 }: ProfileCardProps) => {
+  const [openModal, setOpenModal] = useState("");
   const loggedInUser = useCurrentUserContext();
   const isSpotifySong = useMemo(() => {
     if (!user.favouriteSong) return false;
@@ -40,6 +42,14 @@ const ProfileCard = ({
   }, [user.tags, loggedInUser.tags]);
 
   const matchedImages = user.photos;
+
+  function handleImageDisplay(image: string) {
+    setOpenModal(image);
+  }
+
+  function handleCloseImageDisplay() {
+    setOpenModal("");
+  }
 
   return (
     <div className="bg-white dark:bg-[#343030] flex w-full sm:w-[27rem] flex-col h-fit items-center rounded-lg shadow-lg shadow-black border dark:border-[#343030]">
@@ -64,8 +74,7 @@ const ProfileCard = ({
           </h2>
           {showChatIcon && (
             <Link
-              to="/messages/chat"
-              state={{ user }}
+              to={`/messages/chat/${user.id}`}
               className="flex -mr-3 justify-center text-xl items-center px-2 py-2 rounded-lg border border-[#E8E6EA] dark:border-[#494343] font-semibold  text-red-500 max-h-10"
             >
               <TelegramIcon fontSize="inherit" />
@@ -110,7 +119,16 @@ const ProfileCard = ({
                   srcSet={image}
                   className="flex-initial w-46 h-48 rounded-[1rem] object-center object-cover"
                   loading="lazy"
+                  onClick={() => {
+                    handleImageDisplay(image);
+                  }}
                 />
+                {openModal && (
+                  <ImageModal
+                    image={openModal}
+                    handleClose={handleCloseImageDisplay}
+                  />
+                )}
               </div>
             ))}
           </div>

@@ -6,13 +6,8 @@ import { AxiosError } from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import { Link, useNavigation } from "expo-router";
 import { View } from "react-native";
-import {
-  TextInput,
-  Text,
-  HelperText,
-  Button,
-  useTheme,
-} from "react-native-paper";
+import { TextInput, Text, HelperText, Button } from "react-native-paper";
+import { useTheme } from "../../context/ThemeProvider";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().required("Required"),
@@ -24,9 +19,11 @@ const initialValues = {
   email: "",
   password: "",
 };
+
 type LoginValues = typeof initialValues;
+
 const LoginForm = () => {
-  const theme = useTheme();
+  const { theme } = useTheme();
   const [loginError, setLoginError] = useState("");
   const navigation = useNavigation();
   const { mutate: login } = AuthService.useLogin();
@@ -39,7 +36,6 @@ const LoginForm = () => {
     setLoginError("");
     login(values, {
       onSuccess: () => {
-        console.log("Login successful");
         navigation.navigate("(Protected)" as never);
       },
       onError: (error) => {
@@ -82,16 +78,22 @@ const LoginForm = () => {
             paddingHorizontal: 40,
             flexDirection: "column",
             rowGap: 60,
+            backgroundColor: theme.colors.primary,
           }}
         >
           <View>
             <Text
               variant="displayMedium"
-              style={{ color: theme.colors.primary, fontWeight: "700" }}
+              style={{ color: theme.colors.accent, fontWeight: "700" }}
             >
               RiMatch
             </Text>
-            <Text variant="headlineMedium">Welcome back!</Text>
+            <Text
+              variant="headlineMedium"
+              style={{ color: theme.colors.secondary }}
+            >
+              Welcome back!
+            </Text>
           </View>
           <View>
             <View>
@@ -102,6 +104,7 @@ const LoginForm = () => {
                 onChangeText={handleChange("email")}
                 onBlur={handleBlur("email")}
                 value={values.email}
+                activeOutlineColor="#ee5253"
                 left={
                   <TextInput.Icon
                     icon={({ color }) => (
@@ -113,6 +116,7 @@ const LoginForm = () => {
               <HelperText
                 type="error"
                 visible={!!errors.email && touched.email}
+                style={{ color: theme.colors.error }}
               >
                 {touched.email && errors.email}
               </HelperText>
@@ -125,6 +129,7 @@ const LoginForm = () => {
                 onChangeText={handleChange("password")}
                 onBlur={handleBlur("password")}
                 value={values.password}
+                activeOutlineColor="#ee5253"
                 secureTextEntry
                 left={
                   <TextInput.Icon
@@ -137,6 +142,7 @@ const LoginForm = () => {
               <HelperText
                 type="error"
                 visible={!!errors.password && touched.password}
+                style={{ color: theme.colors.error }}
               >
                 {touched.password && errors.password}
               </HelperText>
@@ -150,15 +156,19 @@ const LoginForm = () => {
                 onPress={() => handleSubmit()}
                 loading={isSubmitting}
                 disabled={isSubmitting}
+                style={{ backgroundColor: theme.colors.accent }}
               >
-                Login
+                <Text style={{ color: "white" }}>Login</Text>
               </Button>
-              <Text variant="bodyMedium" style={{ textAlign: "center" }}>
+              <Text
+                variant="bodyMedium"
+                style={{ textAlign: "center", color: theme.colors.secondary }}
+              >
                 Don't have an account?{" "}
                 <Link
                   href={"/RegisterForm"}
                   style={{
-                    color: theme.colors.primary,
+                    color: theme.colors.accent,
                     fontWeight: "700",
                     textDecorationLine: "underline",
                   }}

@@ -9,6 +9,7 @@ export interface User {
   active: boolean;
   description: string;
   profileImageUrl: string;
+  photos: Array<string>;
   phoneNumber: string;
   location: string;
   preferences: UserPreferences;
@@ -16,7 +17,7 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   favouriteSong: string;
-  tags: string[];
+  tags: Array<string>;
 }
 
 export type ProjectedUser = Pick<
@@ -25,13 +26,18 @@ export type ProjectedUser = Pick<
   | "firstName"
   | "lastName"
   | "description"
-  | "profileImageUrl" 
+  | "profileImageUrl"
   | "location"
   | "gender"
   | "age"
   | "favouriteSong"
   | "tags"
+  | "photos"
 >;
+
+export interface MatchedUser extends ProjectedUser {
+  chatId: string;
+}
 
 export type UserUpdateData = Partial<{
   age: number;
@@ -43,15 +49,8 @@ export type UserUpdateData = Partial<{
   lastName: string;
   gender: string;
   favouriteSong: string;
-  profileImageUrl: string;
   tags: string[];
 }>;
-
-interface UserPreferences {
-  ageGroupMin: number;
-  ageGroupMax: number;
-  partnerGender: string;
-}
 
 interface UserPreferences {
   ageGroupMin: number;
@@ -66,8 +65,21 @@ export interface PreferencesInitData {
     location: string;
     preferences: UserPreferences;
     favouriteSong: string;
-    tags: string;
+    tags: string[];
   };
-  photo: string;
+  photo: Asset;
 }
-
+export interface Asset {
+  base64?: string;
+  uri?: string;
+  width?: number;
+  height?: number;
+  originalPath?: string;
+  fileSize?: number;
+  type?: string;
+  fileName?: string;
+  duration?: number;
+  bitrate?: number;
+  timestamp?: string;
+  id?: string;
+}
