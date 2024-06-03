@@ -1,15 +1,16 @@
+import { Asset } from "@/types/User";
 import { registerInDevtools, Store } from "pullstate";
 
-interface storeTypes {
+export interface storeTypes {
   description: string;
   phoneNumber: string;
   location: string;
   favouriteSong: string;
-  profileImageUrl: any;
+  profileImageUrl: Asset | null;
   tags: Array<string>;
   preferences: {
-    ageGroupMin: string;
-    ageGroupMax: string;
+    ageGroupMin: number;
+    ageGroupMax: number;
     partnerGender: string;
   };
   progress: number;
@@ -23,7 +24,9 @@ export const WizardStore = new Store<storeTypes>({
   profileImageUrl: null,
   tags: [], //* PRomijeni nazad u []
   preferences: {
+    // @ts-ignore
     ageGroupMin: "",
+    // @ts-ignore
     ageGroupMax: "",
     partnerGender: "",
   },
