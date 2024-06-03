@@ -141,17 +141,29 @@ export const UsersService = {
 
   useAddUserPhotos: <T = void>(
     mutationOptions?: Omit<
-      UseMutationOptions<T, Error, File[]>,
+      UseMutationOptions<T, Error, Asset[]>,
       "mutationFn" | "onSuccess"
     >
   ) => {
     const axios = useAxiosPrivate();
     const queryClient = useQueryClient();
-    return useMutation<T, Error, File[]>({
+    const { auth } = useAuth();
+    return useMutation<T, Error, Asset[]>({
       mutationFn: async (files) => {
-        const form = new FormData();
-        files.forEach((file) => form.append("photos", file));
-        const response = await axios.postForm<T>("/users/me/addPhotos", form);
+        const response = await ReactNativeBlobUtil.fetch(
+          "POST",
+          `${axios.defaults.baseURL}/users/me/addPhotos`,
+          {
+            Authorization: `Bearer ${auth?.accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+          files.map((file) => ({
+            name: "photos",
+            filename: file.fileName,
+            type: file.type,
+            data: ReactNativeBlobUtil.wrap(file.uri!),
+          }))
+        );
         return response.data;
       },
       onSuccess: () => {

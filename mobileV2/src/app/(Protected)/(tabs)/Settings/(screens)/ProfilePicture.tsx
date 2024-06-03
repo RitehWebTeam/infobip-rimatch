@@ -1,9 +1,7 @@
 import { UsersService } from "./../../../../../api/users";
 import useCurrentUserContext from "../../../../../hooks/useCurrentUser";
 import { Formik, FormikHelpers } from "formik";
-//import { CircularProgress } from "@mui/material";
-import * as Yup from "yup";
-import { View, Text, Image } from "react-native";
+import { View, Image } from "react-native";
 import { Button } from "react-native-paper";
 import { launchImageLibrary } from "react-native-image-picker";
 import React from "react";
