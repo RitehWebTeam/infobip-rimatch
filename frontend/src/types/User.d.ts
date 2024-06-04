@@ -17,6 +17,7 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   favouriteSong: string;
+  radius: number;
   tags: Array<string>;
 }
 
@@ -28,6 +29,7 @@ export type ProjectedUser = Pick<
   | "description"
   | "profileImageUrl"
   | "location"
+  | "radius"
   | "gender"
   | "age"
   | "favouriteSong"
@@ -49,6 +51,7 @@ export type UserUpdateData = Partial<{
   lastName: string;
   gender: string;
   favouriteSong: string;
+  radius: number;
   tags: string[];
 }>;
 
@@ -65,6 +68,7 @@ export interface PreferencesInitData {
     location: string;
     preferences: UserPreferences;
     favouriteSong: string;
+    radius: number;
     tags: string[];
   };
   photo: File;

@@ -17,6 +17,7 @@ const initialValues = {
   location: "",
   favouriteSong: "",
   profileImageUrl: null,
+  radius: 1,
   tags: [] as Array<string>,
   preferences: {
     ageGroupMin: "",
@@ -55,6 +56,7 @@ const Step2ValidationSchema = Yup.object({
 });
 
 const Step3ValidationSchema = Yup.object({
+  radius: Yup.number().required("Required"),
   favouriteSong: Yup.string().required("Required"),
   tags: Yup.array()
     .of(Yup.string().required("This field is required"))
@@ -81,6 +83,7 @@ const mapPreferenceValues = (
     phoneNumber: values.phoneNumber,
     location: values.location,
     favouriteSong: values.favouriteSong,
+    radius: values.radius,
     tags: values.tags,
     preferences: {
       ageGroupMin: parseInt(values.preferences.ageGroupMin, 10),
@@ -139,7 +142,7 @@ const SetupPreferencesPage = () => {
           <Step2Preferences />
         </FormikStep>
 
-        <FormikStep label="Tags, Song" validationSchema={Step3ValidationSchema}>
+        <FormikStep label="Tags, Song,Radius" validationSchema={Step3ValidationSchema}>
           <Step3Preferences />
         </FormikStep>
         <FormikStep

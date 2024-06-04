@@ -7,6 +7,7 @@ import { UsersService } from "@/api/users";
 import SimpleField from "@/components/forms/SimpleField";
 import TagInput from "@/components/forms/TagInput";
 import SaveCancelButtons from "@/components/forms/SaveCancelButtons";
+import FormikSlider from "@/components/forms/FormikSlider";
 
 const updatePreferenceSchema = Yup.object({
   phoneNumber: Yup.number().required("Required"),
@@ -33,6 +34,7 @@ interface UserProfileUpdateData {
   favouriteSong: string;
   location: string;
   tags: string[];
+  radius: number;
 }
 type ResetFormFunction = FormikHelpers<UserProfileUpdateData>["resetForm"];
 
@@ -53,6 +55,7 @@ const SettingsProfile = () => {
     favouriteSong: user.favouriteSong ?? "",
     location: user.location ?? "",
     tags: user.tags ?? [],
+    radius: user.radius ?? 50,
   };
 
   const handleSubmit = async (
@@ -138,6 +141,20 @@ const SettingsProfile = () => {
                     </>
                   }
                 />
+              </div>
+              <div>
+                <h2 className="text-md font-bold">
+                  Set your preferred Matching radius
+                </h2>
+                <FormikSlider
+                  name="radius"
+                  defaultValue={50}
+                  min={1}
+                  aria-label="Default"
+                  valueLabelDisplay="auto"
+                  color="warning"
+                  disabled={!editMode}
+                  />
               </div>
             </Form>
           </>
