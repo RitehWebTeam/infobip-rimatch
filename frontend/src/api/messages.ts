@@ -1,14 +1,10 @@
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-import { Message } from "@/types/Message";
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { useStompClient, useSubscription } from "react-stomp-hooks";
-import { Page } from "@/types/Page";
+import {Message} from "@/types/Message";
+import {useInfiniteQuery, useQuery, useQueryClient,} from "@tanstack/react-query";
+import {useStompClient, useSubscription} from "react-stomp-hooks";
+import {Page} from "@/types/Page";
 import useAuth from "@/hooks/useAuth";
-import { MatchedUser } from "@/types/User";
+import {MatchedUser} from "@/types/User";
 
 export const HISTORY_PAGE_SIZE = 20;
 export const MESSAGE_PAGE_SIZE = 15;
@@ -19,39 +15,38 @@ export const MessagesService = {
     const queryClient = useQueryClient();
     const { auth } = useAuth();
 
-    const sendMessage = (
-      content: string,
-      receiverId: string,
-      chatId: string
+    return (
+        content: string,
+        receiverId: string,
+        chatId: string
     ) => {
       if (!client) {
         throw new Error("Stomp client not initialized");
       }
 
       client.publish({
-        destination: `/app/sendMessage`,
-        body: JSON.stringify({ content, receiverId, chatId }),
+        destination: `/app/send-message`,
+        body: JSON.stringify({content, receiverId, chatId}),
         headers: {
           Authorization: `Bearer ${auth?.accessToken}`,
         },
       });
       queryClient.setQueryData(
-        ["messages", chatId],
-        (oldData: Page<Message>) => {
-          const newContent = [...oldData.content];
-          newContent.unshift({
-            id: new Date().getTime().toString() + content,
-            content,
-            senderId: "",
-            receiverId,
-            chatId,
-            timestamp: new Date().toISOString(),
-          });
-          return { ...oldData, content: newContent };
-        }
+          ["messages", chatId],
+          (oldData: Page<Message>) => {
+            const newContent = [...oldData.content];
+            newContent.unshift({
+              id: new Date().getTime().toString() + content,
+              content,
+              senderId: "",
+              receiverId,
+              chatId,
+              timestamp: new Date().toISOString(),
+            });
+            return {...oldData, content: newContent};
+          }
       );
     };
-    return sendMessage;
   },
 
   useGetMessages: (chatId?: string) => {
