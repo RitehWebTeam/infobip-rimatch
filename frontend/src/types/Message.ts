@@ -6,3 +6,15 @@ export interface Message {
   content: string;
   timestamp: string;
 }
+
+export enum MessageType {
+  TEXT,
+  IMAGE,
+  VOICE,
+  REPLY
+}
+
+export interface MessageImageUploadData {
+  chatId: string;
+  photo: File;
+}
