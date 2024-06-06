@@ -1,5 +1,6 @@
 package com.rimatch.rimatchbackend.controller;
 
+import com.rimatch.rimatchbackend.dto.DisplayUserDto;
 import com.rimatch.rimatchbackend.dto.PreferencesUpdateDTO;
 import com.rimatch.rimatchbackend.dto.SetupDto;
 import com.rimatch.rimatchbackend.dto.UserUpdateDTO;
@@ -67,6 +68,15 @@ public class UserController {
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/block/all")
+    public ResponseEntity<List<DisplayUserDto>> getAllBlockedUsers(HttpServletRequest request,
+                                                              @RequestParam(required = false, defaultValue = "false") Boolean sortByRecentMessages) {
+        String authToken = request.getHeader("Authorization");
+        User user = userService.getUserByToken(authToken);
+        List<DisplayUserDto> list = userService.listAllBlockedUsers(user);
+        return ResponseEntity.ok(list);
     }
 
     @PostMapping("/me/setup")
