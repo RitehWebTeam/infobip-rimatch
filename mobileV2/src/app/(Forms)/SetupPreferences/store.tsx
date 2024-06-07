@@ -1,5 +1,5 @@
-import { Asset } from "@/types/User";
 import { registerInDevtools, Store } from "pullstate";
+import { Asset } from "react-native-image-picker";
 
 export interface storeTypes {
   description: string;

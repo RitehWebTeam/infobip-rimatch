@@ -80,9 +80,10 @@ public class UserController {
     }
 
     @PostMapping("/me/setup")
-    public ResponseEntity<?> setupUser(@Valid @RequestPart("data") SetupDto setupDto, @RequestPart("photo") MultipartFile file, HttpServletRequest request) throws Exception {
+    public ResponseEntity<?> setupUser(@RequestParam("photo") MultipartFile file,@Valid @RequestPart("data") SetupDto setupDto, HttpServletRequest request) throws Exception {
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);
+        System.out.println(file.getContentType());
         if(user.isActive()){
             Map<String,String> map = new HashMap<>();
             map.put("message","Setup was already done!");
@@ -91,7 +92,7 @@ public class UserController {
         if(setupDto.getPreferences().getAgeGroupMax() < setupDto.getPreferences().getAgeGroupMin()){
             return ResponseEntity.badRequest().body(createErrorMap("ageGroupMax must be higher or equal to ageGroupMin"));
         }
-        String url = s3Service.uploadFile(file);
+        String url = s3Service.uploadImage(file,user.getId(),"users");
         setupDto.setProfileImageUrl(url);
         user = userService.finishUserSetup(user,setupDto);
         return ResponseEntity.ok(user);
@@ -117,7 +118,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/me/profilePicture")
+    @PostMapping("/me/profile-picture")
     public ResponseEntity<?> changeProfilePicure(@RequestBody MultipartFile photo,HttpServletRequest request){
         if (!photo.getContentType().startsWith("image/")) {
             return ResponseEntity.badRequest().body(createErrorMap("File "+photo.getOriginalFilename()+" is not an image so it can't be used!"));
@@ -126,21 +127,21 @@ public class UserController {
         User user = userService.getUserByToken(authToken);
         String newProfileImageUrl;
         try {
-            newProfileImageUrl = s3Service.uploadFile(photo);
+            newProfileImageUrl = s3Service.uploadImage(photo,user.getId(),"users");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         String oldProfileImageUrl = user.getProfileImageUrl();
         s3Service.removeImage(oldProfileImageUrl);
-        
+
         UserUpdateDTO update = new UserUpdateDTO();
         update.setProfileImageUrl(newProfileImageUrl);
         userService.updateUser(user,update);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/me/addPhotos")
+    @PostMapping("/me/add-photos")
     public ResponseEntity<?> uploadPhotos(@RequestBody List<MultipartFile> photos,HttpServletRequest request) throws Exception {
         for (MultipartFile photo : photos) {
             if (!photo.getContentType().startsWith("image/")) {
@@ -151,14 +152,14 @@ public class UserController {
         User user = userService.getUserByToken(authToken);
         List<String> urls = new ArrayList<>();
         for (MultipartFile photo : photos) {
-            String url = s3Service.uploadFile(photo);
+            String url = s3Service.uploadImage(photo,user.getId(),"users");
             urls.add(url);
         }
         userService.addPhotos(user,urls);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/me/removePhotos")
+    @PostMapping("/me/remove-photos")
     public ResponseEntity<?> removePhotos(@RequestBody List<String> urls, HttpServletRequest request){
         String authToken = request.getHeader("Authorization");
         User user = userService.getUserByToken(authToken);

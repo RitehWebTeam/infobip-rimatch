@@ -1,14 +1,13 @@
-import { UsersService } from "./../../../../../api/users";
-import useCurrentUserContext from "../../../../../hooks/useCurrentUser";
+import { UsersService } from "@api/users";
 import { Formik, FormikHelpers } from "formik";
 import { View, Image } from "react-native";
 import { Button } from "react-native-paper";
-import { launchImageLibrary } from "react-native-image-picker";
+import { Asset, launchImageLibrary } from "react-native-image-picker";
 import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useTheme } from "@/context/ThemeProvider";
-import { Asset } from "@/types/User";
+import useCurrentUserContext from "@hooks/useCurrentUser";
 
 const SettingsProfilePicture = () => {
   const user = useCurrentUserContext();

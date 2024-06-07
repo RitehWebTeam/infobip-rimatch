@@ -1,12 +1,11 @@
 import { NavigationProp, useIsFocused } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import { View, Text, Image, ScrollView } from "react-native";
-import { launchImageLibrary } from "react-native-image-picker";
+import { Asset, launchImageLibrary } from "react-native-image-picker";
 import { WizardStore } from "../store";
 import { useForm } from "react-hook-form";
 import { Button, ProgressBar } from "react-native-paper";
 import { StyleSheet } from "react-native";
-import { Asset } from "@/types/User";
 import { useTheme } from "@/context/ThemeProvider";
 
 type Step1PreferencesProps = {
