@@ -1,8 +1,9 @@
-import { MessagesService } from "@/api/messages";
+import { MessagesService } from "@api/messages/messages.ts";
 import { MatchedUser } from "@/types/User";
 import { Link } from "react-router-dom";
 import UserAvatar from "./UserAvatar";
 import { useMemo } from "react";
+import { MessageType } from "@/types/Message.ts";
 
 interface ChatListComponentProps {
   matchedUser: MatchedUser;
@@ -10,6 +11,20 @@ interface ChatListComponentProps {
 
 const formatMessage = (message: string) => {
   return message.slice(0, 30) + (message.length > 30 ? "..." : "");
+};
+
+const getMessageContent = (content: string, messageType: MessageType) => {
+  switch (messageType) {
+    case MessageType.TEXT:
+    case MessageType.REPLY:
+      return content;
+    case MessageType.IMAGE:
+      return "Image";
+    case MessageType.VOICE:
+      return "Voice";
+    default:
+      return "";
+  }
 };
 
 const ChatListComponent = ({ matchedUser }: ChatListComponentProps) => {
@@ -25,12 +40,16 @@ const ChatListComponent = ({ matchedUser }: ChatListComponentProps) => {
     const sentByCurrentUser = lastMessage.receiverId === matchedUser.id;
     const prefix = sentByCurrentUser ? "You: " : "";
     const date = new Date(lastMessage.timestamp);
+    const lastMessageContent = getMessageContent(
+      lastMessage.content,
+      lastMessage.messageType
+    );
     return {
       timestamp: date.toLocaleTimeString("de-DE", {
         hour: "2-digit",
         minute: "2-digit",
       }),
-      message: `${prefix}${formatMessage(lastMessage.content)}`,
+      message: `${prefix}${formatMessage(lastMessageContent)}`,
     };
   }, [data?.content]);
   return (

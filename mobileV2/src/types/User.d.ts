@@ -1,3 +1,5 @@
+import { Asset } from "react-native-image-picker";
+
 export interface User {
   id: string;
   email: string;
@@ -68,18 +70,4 @@ export interface PreferencesInitData {
     tags: string[];
   };
   photo: Asset;
-}
-export interface Asset {
-  base64?: string;
-  uri?: string;
-  width?: number;
-  height?: number;
-  originalPath?: string;
-  fileSize?: number;
-  type?: string;
-  fileName?: string;
-  duration?: number;
-  bitrate?: number;
-  timestamp?: string;
-  id?: string;
 }

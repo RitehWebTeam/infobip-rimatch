@@ -64,6 +64,7 @@ const ProfileCard = ({
           srcSet={user.profileImageUrl || "/Default_pfp.svg"}
           className="w-full object-cover md:object-contain max-h-[33rem] md:max-h-[26rem] sm:rounded-t-lg"
           loading="lazy"
+          alt="user profile picture"
         />
       </div>
 

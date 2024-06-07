@@ -1,36 +1,63 @@
-import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-import { Message } from "@/types/Message";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
+import {
+  ChatInputValues,
+  Message,
+  MessageData,
+  MessageImageUploadData,
+  SUPPORTED_MESSAGE_TYPES,
+} from "@/types/Message.ts";
 import {
   useInfiniteQuery,
+  useMutation,
+  UseMutationOptions,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { Page } from "@/types/Page";
-import useAuth from "@/hooks/useAuth";
 import { MatchedUser } from "@/types/User";
+import useAuth from "@/hooks/useAuth.ts";
+import { MessageHandlerProvider } from "@api/messages/strategies/MessageHandler.ts";
 
 export const HISTORY_PAGE_SIZE = 20;
 export const MESSAGE_PAGE_SIZE = 15;
 
 export const MessagesService = {
+  useSendChat: () => {
+    const sendMessage = MessagesService.useSendMessage();
+    const handlers = SUPPORTED_MESSAGE_TYPES.map((type) =>
+      MessageHandlerProvider[type].useProcessMessage()
+    );
+    return async (
+      chatData: ChatInputValues,
+      receiverId: string,
+      chatId: string
+    ) => {
+      for (const handler of handlers) {
+        const { content, messageType } = await handler(
+          chatData,
+          receiverId,
+          chatId
+        );
+        sendMessage({ content, receiverId, chatId, messageType });
+      }
+    };
+  },
+
   useSendMessage: () => {
     const client = useStompClient();
     const queryClient = useQueryClient();
     const { auth } = useAuth();
 
-    const sendMessage = (
-      content: string,
-      receiverId: string,
-      chatId: string
-    ) => {
+    return ({ messageType, receiverId, chatId, content }: MessageData) => {
+      if (!content) return;
       if (!client) {
         throw new Error("Stomp client not initialized");
       }
 
       client.publish({
-        destination: `/app/sendMessage`,
-        body: JSON.stringify({ content, receiverId, chatId }),
+        destination: `/app/send-message`,
+        body: JSON.stringify({ content, receiverId, chatId, messageType }),
         headers: {
           Authorization: `Bearer ${auth?.accessToken}`,
         },
@@ -45,13 +72,13 @@ export const MessagesService = {
             senderId: "",
             receiverId,
             chatId,
+            messageType,
             timestamp: new Date().toISOString(),
           });
           return { ...oldData, content: newContent };
         }
       );
     };
-    return sendMessage;
   },
 
   useGetMessages: (chatId?: string) => {
@@ -116,6 +143,30 @@ export const MessagesService = {
               })
             : oldData
       );
+    });
+  },
+
+  useUploadImage: <
+    Response extends string,
+    Err extends Error,
+    Args extends MessageImageUploadData,
+  >(
+    options?: Omit<UseMutationOptions<Response, Err, Args>, "mutationFn">
+  ) => {
+    const axios = useAxiosPrivate();
+
+    return useMutation<Response, Err, Args>({
+      mutationFn: async ({ chatId, photo }) => {
+        const formData = new FormData();
+        formData.append("photo", photo);
+        formData.append("chatId", chatId);
+        const { data } = await axios.postForm<Response>(
+          "/messages/upload-image",
+          formData
+        );
+        return data;
+      },
+      ...options,
     });
   },
 };

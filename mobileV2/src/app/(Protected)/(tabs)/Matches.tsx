@@ -46,10 +46,7 @@ const Matches = () => {
           </Text>
           <Link href="(Protected)" asChild>
             <Pressable>
-              <Text
-                variant="titleLarge"
-                style={{ color: theme.colors.accent }}
-              >
+              <Text variant="titleLarge" style={{ color: theme.colors.accent }}>
                 Check out some users.
               </Text>
             </Pressable>

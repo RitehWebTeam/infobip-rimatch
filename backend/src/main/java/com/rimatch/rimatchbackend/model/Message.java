@@ -24,8 +24,14 @@ public class Message {
     @NotNull
     private String receiverId;
 
-    @NotBlank
+    @NotNull
+    private MessageType messageType;
+
+    @NotNull
     private String content;
+
+    private String replyId;
 
     private Date timestamp = new Date();
 }
+

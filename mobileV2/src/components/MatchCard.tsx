@@ -4,14 +4,12 @@ import {
   Text,
   Image,
   StyleSheet,
-  
   TouchableOpacity,
   TouchableHighlight,
 } from "react-native";
-import { ProjectedUser } from "../types/User";
+import type { ProjectedUser } from "@/types/User";
 import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
-
 
 interface MatchCardProps {
   user: ProjectedUser;
@@ -21,36 +19,42 @@ interface MatchCardProps {
 }
 const MatchCard = ({
   user,
-  loading,
   handleNextUser,
   openDetailedProfile,
 }: MatchCardProps) => {
   return (
     <View>
       <TouchableHighlight onPress={openDetailedProfile}>
-      <View style={styles.cardContainer} >
-        <Image
-          source={{
-            uri: user.profileImageUrl,
-          }}
-          style={styles.userImage}
-          
-        />
-        <View style={styles.userInfoContainer}>
-          <Text style={styles.userName}>{user.firstName}, {user.age}</Text>
-          <Text style={styles.userCity}>{user.location}</Text>
+        <View style={styles.cardContainer}>
+          <Image
+            source={{
+              uri: user.profileImageUrl,
+            }}
+            style={styles.userImage}
+          />
+          <View style={styles.userInfoContainer}>
+            <Text style={styles.userName}>
+              {user.firstName}, {user.age}
+            </Text>
+            <Text style={styles.userCity}>{user.location}</Text>
+          </View>
         </View>
-      </View>
       </TouchableHighlight>
       <View style={styles.buttonCOntainer}>
-        <TouchableOpacity style={styles.sideButton} onPress={() => handleNextUser(false, user.id)}>
+        <TouchableOpacity
+          style={styles.sideButton}
+          onPress={() => handleNextUser(false, user.id)}
+        >
           <Entypo name="cross" size={40} color="orange" />
         </TouchableOpacity>
-       
-        <TouchableOpacity style={styles.middleButton} onPress={() => handleNextUser(true, user.id)}>
+
+        <TouchableOpacity
+          style={styles.middleButton}
+          onPress={() => handleNextUser(true, user.id)}
+        >
           <AntDesign name="heart" size={50} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.sideButton} onPress={() => {}}> 
+        <TouchableOpacity style={styles.sideButton} onPress={() => {}}>
           <AntDesign name="star" size={40} color="purple" />
         </TouchableOpacity>
       </View>

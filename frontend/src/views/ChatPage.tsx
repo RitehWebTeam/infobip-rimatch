@@ -1,4 +1,4 @@
-import { MessagesService } from "@/api/messages";
+import { MessagesService } from "@api/messages/messages.ts";
 import UserAvatar from "@/components/UserAvatar";
 import { ProjectedUser } from "@/types/User";
 import { FormikHelpers } from "formik";
@@ -15,12 +15,12 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import UserActionsDropdown from "@/components/UserActionsDropdown";
 import { MatchesService } from "@/api/matches";
+import { ChatInputValues } from "@/types/Message.ts";
 
 const initialValues = {
   message: "",
+  image: null,
 };
-
-type ChatValues = typeof initialValues;
 
 const ChatPage = () => {
   const [messagesStartRef, messagesStartInView] = useInView({ delay: 500 });
@@ -31,7 +31,7 @@ const ChatPage = () => {
   const { userId } = useParams() as { userId: string };
   const userQuery = MatchesService.useGetMatchedUserById(userId);
   const recentMessages = MessagesService.useGetMessages(userQuery.data?.chatId);
-  const sendMessage = MessagesService.useSendMessage();
+  const sendChat = MessagesService.useSendChat();
 
   useEffect(() => {
     if (!recentMessages.isSuccess) {
@@ -65,11 +65,11 @@ const ChatPage = () => {
 
   const user = userQuery.data;
 
-  const handleSubmit = (
-    values: ChatValues,
-    helpers: FormikHelpers<ChatValues>
+  const handleSubmit = async (
+    values: ChatInputValues,
+    helpers: FormikHelpers<ChatInputValues>
   ) => {
-    sendMessage(values.message, user.id, user.chatId);
+    await sendChat(values, user.id, user.chatId);
     helpers.resetForm();
   };
 
@@ -103,8 +103,14 @@ const ChatPage = () => {
 
       <div
         ref={parent}
-        className="flex flex-col-reverse overflow-y-scroll min-h-[10rem] sm:h-[60vh] flex-grow w-full px-3 py-2"
+        className="flex flex-col-reverse overflow-y-scroll min-h-[10rem] sm:h-[60vh] flex-grow w-full pt-2"
       >
+        <div className="mt-4">
+          <ChatInput
+            handleSubmit={handleSubmit}
+            initialValues={initialValues}
+          />
+        </div>
         <span ref={messagesStartRef}></span>
         <div ref={startRef}></div>
         {recentMessages.data.content.map((message) => (
@@ -119,10 +125,6 @@ const ChatPage = () => {
           />
         )}
       </div>
-      <ChatInput<ChatValues>
-        handleSubmit={handleSubmit}
-        initialValues={initialValues}
-      />
     </ChatPageHeader>
   );
 };

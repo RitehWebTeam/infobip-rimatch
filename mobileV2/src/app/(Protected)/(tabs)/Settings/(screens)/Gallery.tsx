@@ -9,7 +9,7 @@ import {
   Modal,
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
-import { launchImageLibrary } from "react-native-image-picker";
+import { Asset, launchImageLibrary } from "react-native-image-picker";
 import { Formik, FormikConfig } from "formik";
 import useCurrentUserContext from "../../../../../hooks/useCurrentUser";
 import { FlatList } from "react-native-gesture-handler";
@@ -17,7 +17,6 @@ import { EvilIcons } from "@expo/vector-icons";
 import { Button } from "react-native-paper";
 import { useTheme } from "@/context/ThemeProvider";
 import { UsersService } from "@api/users";
-import { Asset } from "@/types/User";
 const screenWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
