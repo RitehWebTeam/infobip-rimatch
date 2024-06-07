@@ -1,28 +1,24 @@
-import {Field, Form, Formik, FormikHelpers, useField} from "formik";
+import { Field, Form, Formik, FormikHelpers, useField } from "formik";
 import * as Yup from "yup";
 import SendIcon from "@mui/icons-material/Send";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
-import CloseIcon from '@mui/icons-material/Close';
-import {useMemo} from "react";
-
-export interface ChatInputValues {
-  message: string;
-  image: File | null;
-}
+import CloseIcon from "@mui/icons-material/Close";
+import { useMemo } from "react";
+import { ChatInputValues } from "@/types/Message.ts";
 
 const chatValidation = Yup.object({
   message: Yup.string(),
 });
 
 interface ChatInputProps {
-  handleSubmit: (values: ChatInputValues, helpers: FormikHelpers<ChatInputValues>) => void;
+  handleSubmit: (
+    values: ChatInputValues,
+    helpers: FormikHelpers<ChatInputValues>
+  ) => void;
   initialValues: ChatInputValues;
 }
 
-const ChatInput = ({
-                     handleSubmit,
-                     initialValues,
-                   }: ChatInputProps) => {
+const ChatInput = ({ handleSubmit, initialValues }: ChatInputProps) => {
   const submitOnEnter = (
     e: React.KeyboardEvent<HTMLTextAreaElement>,
     submitForm: () => Promise<void>
@@ -38,13 +34,13 @@ const ChatInput = ({
       validationSchema={chatValidation}
       onSubmit={handleSubmit}
     >
-      {({submitForm, setFieldValue}) => (
+      {({ submitForm, setFieldValue }) => (
         <Form
           className="flex w-full items-center p-1 dark:bg-[#242121] gap-4 pr-4 border-t border-[#E8E6EA] dark:border-[#554e4e]"
           autoComplete="off"
         >
           <div className="flex flex-col w-full">
-            <ChatImageDisplay onRemove={() => setFieldValue("image", null)}/>
+            <ChatImageDisplay onRemove={() => setFieldValue("image", null)} />
             <div className="flex items-center gap-4">
               <Field
                 type="text"
@@ -58,13 +54,22 @@ const ChatInput = ({
                 }
               />
               <label className="text-red-500 hover:text-opacity-80 transition-all duration-150 cursor-pointer">
-                <input type="file" accept="image/*" className="hidden"
-                       value={""}
-                       onChange={(e) => setFieldValue("image", e.target.files[0])}/>
-                <PhotoCameraIcon/>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  value={""}
+                  onChange={(e) =>
+                    e.target.files && setFieldValue("image", e.target.files[0])
+                  }
+                />
+                <PhotoCameraIcon />
               </label>
-              <button type="submit" className="text-red-500 hover:text-opacity-80 transition-all duration-150">
-                <SendIcon/>
+              <button
+                type="submit"
+                className="text-red-500 hover:text-opacity-80 transition-all duration-150"
+              >
+                <SendIcon />
               </button>
             </div>
           </div>
@@ -74,7 +79,7 @@ const ChatInput = ({
   );
 };
 
-const ChatImageDisplay = ({onRemove}: { onRemove: () => void }) => {
+const ChatImageDisplay = ({ onRemove }: { onRemove: () => void }) => {
   const [field] = useField<File | null>("image");
   const imageUrl = useMemo(() => {
     if (!field.value) return null;
@@ -90,13 +95,16 @@ const ChatImageDisplay = ({onRemove}: { onRemove: () => void }) => {
           alt="Chat image"
           className="max-w-24 h-24 object-cover rounded-lg"
         />
-        <button type="button" onClick={onRemove}
-                className="flex justify-center items-center absolute -top-2 -right-2 bg-red-800 rounded-full h-6 w-6">
-          <CloseIcon fontSize="small"/>
+        <button
+          type="button"
+          onClick={onRemove}
+          className="flex justify-center items-center absolute -top-2 -right-2 bg-red-800 rounded-full h-6 w-6"
+        >
+          <CloseIcon fontSize="small" />
         </button>
       </div>
     </div>
   );
-}
+};
 
 export default ChatInput;

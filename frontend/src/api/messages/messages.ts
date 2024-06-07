@@ -1,32 +1,63 @@
-import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-import {Message, MessageImageUploadData} from "@/types/Message";
-import {useInfiniteQuery, useMutation, UseMutationOptions, useQuery, useQueryClient,} from "@tanstack/react-query";
-import {useStompClient, useSubscription} from "react-stomp-hooks";
-import {Page} from "@/types/Page";
-import useAuth from "@/hooks/useAuth";
-import {MatchedUser} from "@/types/User";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate.ts";
+import {
+  ChatInputValues,
+  Message,
+  MessageData,
+  MessageImageUploadData,
+  SUPPORTED_MESSAGE_TYPES,
+} from "@/types/Message.ts";
+import {
+  useInfiniteQuery,
+  useMutation,
+  UseMutationOptions,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { useStompClient, useSubscription } from "react-stomp-hooks";
+import { Page } from "@/types/Page";
+import { MatchedUser } from "@/types/User";
+import useAuth from "@/hooks/useAuth.ts";
+import { MessageHandlerProvider } from "@api/messages/strategies/MessageHandler.ts";
 
 export const HISTORY_PAGE_SIZE = 20;
 export const MESSAGE_PAGE_SIZE = 15;
 
 export const MessagesService = {
-  useSendMessage: () => {
-    const client = useStompClient();
-    const queryClient = useQueryClient();
-    const {auth} = useAuth();
-
-    return (
-      content: string,
+  useSendChat: () => {
+    const sendMessage = MessagesService.useSendMessage();
+    const handlers = SUPPORTED_MESSAGE_TYPES.map((type) =>
+      MessageHandlerProvider[type].useProcessMessage()
+    );
+    return async (
+      chatData: ChatInputValues,
       receiverId: string,
       chatId: string
     ) => {
+      for (const handler of handlers) {
+        const { content, messageType } = await handler(
+          chatData,
+          receiverId,
+          chatId
+        );
+        sendMessage({ content, receiverId, chatId, messageType });
+      }
+    };
+  },
+
+  useSendMessage: () => {
+    const client = useStompClient();
+    const queryClient = useQueryClient();
+    const { auth } = useAuth();
+
+    return ({ messageType, receiverId, chatId, content }: MessageData) => {
+      if (!content) return;
       if (!client) {
         throw new Error("Stomp client not initialized");
       }
 
       client.publish({
         destination: `/app/send-message`,
-        body: JSON.stringify({content, receiverId, chatId}),
+        body: JSON.stringify({ content, receiverId, chatId, messageType }),
         headers: {
           Authorization: `Bearer ${auth?.accessToken}`,
         },
@@ -41,9 +72,10 @@ export const MessagesService = {
             senderId: "",
             receiverId,
             chatId,
+            messageType,
             timestamp: new Date().toISOString(),
           });
-          return {...oldData, content: newContent};
+          return { ...oldData, content: newContent };
         }
       );
     };
@@ -67,7 +99,7 @@ export const MessagesService = {
   useGetMessagesHistory: (chatId: string, lastMessageId: string) => {
     const axios = useAxiosPrivate();
 
-    const fetchMessages = async ({pageParam}: { pageParam: unknown }) => {
+    const fetchMessages = async ({ pageParam }: { pageParam: unknown }) => {
       const res = await axios.get<Page<Message>>(
         `/messages/${chatId}?page=${pageParam}&messageId=${lastMessageId}&pageSize=${HISTORY_PAGE_SIZE}`
       );
@@ -93,7 +125,7 @@ export const MessagesService = {
         (oldData: Page<Message>) => {
           const newContent = [...oldData.content];
           newContent.unshift(newMessage);
-          return {...oldData, content: newContent};
+          return { ...oldData, content: newContent };
         }
       );
       queryClient.setQueryData(
@@ -101,33 +133,40 @@ export const MessagesService = {
         (oldData: Array<MatchedUser>) =>
           oldData
             ? [...oldData].sort((a, b) => {
-              if (a.chatId === newMessage.chatId) {
-                return -1;
-              }
-              if (b.chatId === newMessage.chatId) {
-                return 1;
-              }
-              return 0;
-            })
+                if (a.chatId === newMessage.chatId) {
+                  return -1;
+                }
+                if (b.chatId === newMessage.chatId) {
+                  return 1;
+                }
+                return 0;
+              })
             : oldData
       );
     });
   },
 
-  useUploadImage: <Response extends string, Err extends Error, Args extends MessageImageUploadData>(
+  useUploadImage: <
+    Response extends string,
+    Err extends Error,
+    Args extends MessageImageUploadData,
+  >(
     options?: Omit<UseMutationOptions<Response, Err, Args>, "mutationFn">
   ) => {
     const axios = useAxiosPrivate();
 
     return useMutation<Response, Err, Args>({
-      mutationFn: async ({chatId, photo}) => {
+      mutationFn: async ({ chatId, photo }) => {
         const formData = new FormData();
         formData.append("photo", photo);
         formData.append("chatId", chatId);
-        const {data} = await axios.postForm<Response>("/messages/upload-image", formData);
+        const { data } = await axios.postForm<Response>(
+          "/messages/upload-image",
+          formData
+        );
         return data;
       },
       ...options,
     });
-  }
+  },
 };
