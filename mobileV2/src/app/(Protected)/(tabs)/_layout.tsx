@@ -1,12 +1,10 @@
 import { Tabs } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useTheme } from "react-native-paper";
+import { useTheme } from "@/context/ThemeProvider";
 
-// !Layout for the tabs/Main screen
 const _layout = () => {
-  console.log("Loading tabs");
-  const theme = useTheme();
+  const { theme } = useTheme();
   return (
     <Tabs
       screenOptions={{

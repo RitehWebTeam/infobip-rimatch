@@ -143,21 +143,25 @@ const ProfileCard = ({
               {user.firstName} {user.lastName}, {user.age}
             </Text>
 
-            <TouchableOpacity onPress={() => Linking.openURL("/messages/chat")}>
-              <View
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: 5,
-                  borderRadius: 10,
-                  borderWidth: 1,
-                  borderColor: "#E8E6EA",
-                  backgroundColor: "#fff",
-                }}
+            {showChatIcon && (
+              <TouchableOpacity
+                onPress={() => Linking.openURL("/messages/chat")}
               >
-                <EvilIcons name="sc-telegram" size={40} color="red" />
-              </View>
-            </TouchableOpacity>
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 5,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: "#E8E6EA",
+                    backgroundColor: "#fff",
+                  }}
+                >
+                  <EvilIcons name="sc-telegram" size={40} color="red" />
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
           <View>
             <Text

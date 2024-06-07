@@ -4,6 +4,7 @@ import { Link } from "expo-router";
 import { MatchesService } from "@/api/matches";
 import MatchedUserCard from "@/components/MatchedUserCard";
 import { useTheme } from "@/context/ThemeProvider";
+
 const Matches = () => {
   const query = MatchesService.useGetMatches();
 
@@ -43,12 +44,9 @@ const Matches = () => {
           >
             No matches yet?
           </Text>
-          <Link href="/" asChild>
+          <Link href="(Protected)" asChild>
             <Pressable>
-              <Text
-                variant="titleLarge"
-                style={{ color: theme.colors.primary }}
-              >
+              <Text variant="titleLarge" style={{ color: theme.colors.accent }}>
                 Check out some users.
               </Text>
             </Pressable>

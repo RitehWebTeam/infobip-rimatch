@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import lombok.*;
 
 @Data
+@AllArgsConstructor
 public class Preferences {
     @Min(value = 18,message = "This field cannot be less then 18!")
     @Max(value = 99,message = "This field cannot be more then 99! I guess?")

@@ -3,10 +3,7 @@ import { useState, useEffect } from "react";
 import useRefreshToken from "../../hooks/useRefreshToken";
 import useAuth from "../../hooks/useAuth";
 import { View, ActivityIndicator } from "react-native";
-
-import CurrentUserContextProvider, {
-  CurrentUserContext,
-} from "@/context/CurrentUserProvider";
+import CurrentUserContextProvider from "@/context/CurrentUserProvider";
 
 //!Layout used for checking if user is authenticated
 const Layout = () => {
@@ -45,20 +42,13 @@ const Layout = () => {
     );
   }
   if (!auth?.accessToken) {
-    return <Redirect href={"/LoginForm"} />;
+    return <Redirect href="/LoginForm" />;
   }
 
-  return (
-    <CurrentUserContextProvider>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="(tabs)" />
-      </Stack>
-    </CurrentUserContextProvider>
-  );
+  if (!auth?.active) {
+    return <Redirect href="/SetupPreferences" />;
+  }
+
   return (
     <CurrentUserContextProvider>
       <Stack

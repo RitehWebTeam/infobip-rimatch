@@ -1,6 +1,9 @@
 package com.rimatch.rimatchbackend.controller;
 
-import com.rimatch.rimatchbackend.dto.*;
+import com.rimatch.rimatchbackend.dto.DisplayUserDto;
+import com.rimatch.rimatchbackend.dto.PreferencesUpdateDTO;
+import com.rimatch.rimatchbackend.dto.SetupDto;
+import com.rimatch.rimatchbackend.dto.UserUpdateDTO;
 import com.rimatch.rimatchbackend.model.User;
 import com.rimatch.rimatchbackend.service.S3Service;
 import com.rimatch.rimatchbackend.service.UserService;
@@ -67,6 +70,15 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @GetMapping("/block/all")
+    public ResponseEntity<List<DisplayUserDto>> getAllBlockedUsers(HttpServletRequest request,
+                                                              @RequestParam(required = false, defaultValue = "false") Boolean sortByRecentMessages) {
+        String authToken = request.getHeader("Authorization");
+        User user = userService.getUserByToken(authToken);
+        List<DisplayUserDto> list = userService.listAllBlockedUsers(user);
+        return ResponseEntity.ok(list);
+    }
+
     @PostMapping("/me/setup")
     public ResponseEntity<?> setupUser(@RequestParam("photo") MultipartFile file,@Valid @RequestPart("data") SetupDto setupDto, HttpServletRequest request) throws Exception {
         String authToken = request.getHeader("Authorization");
@@ -122,7 +134,7 @@ public class UserController {
 
         String oldProfileImageUrl = user.getProfileImageUrl();
         s3Service.removeImage(oldProfileImageUrl);
-        
+
         UserUpdateDTO update = new UserUpdateDTO();
         update.setProfileImageUrl(newProfileImageUrl);
         userService.updateUser(user,update);
