@@ -7,13 +7,13 @@ import {
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import {
-  Asset,
   MatchedUser,
   PreferencesInitData,
   User,
   UserUpdateData,
 } from "@/types/User";
 import ReactNativeBlobUtil from "react-native-blob-util";
+import { Asset } from "react-native-image-picker";
 
 export const UsersService = {
   useGetCurrentUser() {

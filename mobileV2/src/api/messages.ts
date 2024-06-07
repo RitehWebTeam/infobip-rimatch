@@ -1,11 +1,18 @@
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-import {useInfiniteQuery, useQuery, useQueryClient,} from "@tanstack/react-query";
-import {useStompClient, useSubscription} from "react-stomp-hooks";
+import {
+  useInfiniteQuery,
+  useMutation,
+  UseMutationOptions,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { useStompClient, useSubscription } from "react-stomp-hooks";
 import useAuth from "@/hooks/useAuth";
-import {MatchedUser} from "@/types/User";
-import {Message} from "@/types/Message";
-import {Page} from "@/types/Page";
+import { MatchedUser } from "@/types/User";
+import { Message, MessageImageUploadData, MessageType } from "@/types/Message";
+import { Page } from "@/types/Page";
 import useCurrentUserContext from "@/hooks/useCurrentUser";
+import ReactNativeBlobUtil from "react-native-blob-util";
 
 export const HISTORY_PAGE_SIZE = 15;
 export const MESSAGE_PAGE_SIZE = 15;
@@ -17,36 +24,37 @@ export const MessagesService = {
     const { auth } = useAuth();
     const currentUser = useCurrentUserContext();
 
-    return (
-        content: string,
-        receiverId: string,
-        chatId: string
-    ) => {
+    return (content: string, receiverId: string, chatId: string) => {
       if (!client) {
         throw new Error("Stomp client not initialized");
       }
 
       client.publish({
         destination: `/app/send-message`,
-        body: JSON.stringify({content, receiverId, chatId}),
+        body: JSON.stringify({
+          content,
+          receiverId,
+          chatId,
+          messageType: MessageType.TEXT,
+        }),
         headers: {
           Authorization: `Bearer ${auth?.accessToken}`,
         },
       });
       queryClient.setQueryData(
-          ["messages", chatId],
-          (oldData: Page<Message>) => {
-            const newContent = [...oldData.content];
-            newContent.unshift({
-              id: new Date().getTime().toString() + content,
-              content,
-              senderId: currentUser.id,
-              receiverId,
-              chatId,
-              timestamp: new Date().toISOString(),
-            });
-            return {...oldData, content: newContent};
-          }
+        ["messages", chatId],
+        (oldData: Page<Message>) => {
+          const newContent = [...oldData.content];
+          newContent.unshift({
+            id: new Date().getTime().toString() + content,
+            content,
+            senderId: currentUser.id,
+            receiverId,
+            chatId,
+            timestamp: new Date().toISOString(),
+          });
+          return { ...oldData, content: newContent };
+        }
       );
     };
   },
@@ -118,6 +126,51 @@ export const MessagesService = {
               })
             : oldData
       );
+    });
+  },
+
+  useUploadImage: <
+    Response extends string,
+    Err extends Error,
+    Args extends MessageImageUploadData,
+  >(
+    options?: Omit<UseMutationOptions<Response, Err, Args>, "mutationFn">
+  ) => {
+    const axios = useAxiosPrivate();
+    const { auth } = useAuth();
+
+    return useMutation<Response, Err, Args>({
+      mutationFn: async (data) => {
+        const response = await ReactNativeBlobUtil.fetch(
+          "POST",
+          `${axios.defaults.baseURL}/messages/upload-image`,
+          {
+            Authorization: `Bearer ${auth?.accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+          [
+            {
+              name: "chatId",
+              data: data.chatId,
+            },
+            {
+              name: "photo",
+              filename: data.photo.fileName,
+              type: data.photo.type,
+              data: data.photo.base64,
+            },
+          ]
+        );
+
+        if (response.respInfo.status >= 400) {
+          throw new Error(response.data);
+        }
+        return response.json();
+      },
+      onError: (error) => {
+        console.error("Mutation error:", error);
+      },
+      ...options,
     });
   },
 };
