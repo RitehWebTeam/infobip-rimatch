@@ -1,14 +1,12 @@
 import { useState } from "react";
-import useCurrentUserContext from "../../../../../hooks/useCurrentUser";
 import { Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { UsersService } from "@api/users";
-
-/* import TagInput from "@/components/forms/TagInput"; */
-import SaveCancelButtons from "../../../../../components/SaveCancelButtons";
 import { View, Text, ScrollView } from "react-native";
 import { HelperText, TextInput } from "react-native-paper";
 import { useTheme } from "@/context/ThemeProvider";
+import useCurrentUserContext from "@hooks/useCurrentUser";
+import SaveCancelButtons from "@components/SaveCancelButtons";
 
 const updatePreferenceSchema = Yup.object({
   phoneNumber: Yup.number().required("Required"),
@@ -39,7 +37,7 @@ interface UserProfileUpdateData {
 
 type ResetFormFunction = FormikHelpers<UserProfileUpdateData>["resetForm"];
 
-const UserSettings = ({ navigation }: { navigation: any }) => {
+const UserSettings = () => {
   const user = useCurrentUserContext();
   const [editMode, setEditMode] = useState(false);
   const { mutateAsync: updateUser } = UsersService.useUpdateUser();
@@ -79,7 +77,6 @@ const UserSettings = ({ navigation }: { navigation: any }) => {
           {({
             handleChange,
             handleBlur,
-            handleSubmit,
             isSubmitting,
             values,
             errors,

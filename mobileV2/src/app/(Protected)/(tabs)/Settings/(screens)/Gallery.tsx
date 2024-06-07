@@ -9,12 +9,11 @@ import {
   Modal,
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
-import { launchImageLibrary } from "react-native-image-picker";
+import { Asset, launchImageLibrary } from "react-native-image-picker";
 import { Formik, FormikConfig } from "formik";
 import useCurrentUserContext from "../../../../../hooks/useCurrentUser";
 import { FlatList } from "react-native-gesture-handler";
 import { EvilIcons } from "@expo/vector-icons";
-import * as Yup from "yup";
 import { Button } from "react-native-paper";
 import { useTheme } from "@/context/ThemeProvider";
 import { UsersService } from "@api/users";
@@ -61,13 +60,6 @@ const styles = StyleSheet.create({
 interface NewImageValues {
   galleryImage?: File;
 }
-const newImageValidationSchema = Yup.object({
-  galleryImage: Yup.mixed<File>()
-    .required("Required")
-    .test("fileSize", "File size must be smaller than 2 MB", (value) => {
-      return value && value.size <= 2 * 1024 * 1024;
-    }),
-});
 
 type NewImageOnSubmit = FormikConfig<NewImageValues>["onSubmit"];
 const Gallery = () => {
@@ -76,7 +68,7 @@ const Gallery = () => {
   const currentUser = useCurrentUserContext();
   let userImages = currentUser.photos;
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [selectedImage, setSelectedImage] = useState<Asset | null>(null);
   const [imageUri, setImageUri] = useState<string>("");
   const { theme } = useTheme();
   const showCameraRoll = async () => {
@@ -89,16 +81,15 @@ const Gallery = () => {
     });
 
     if (response && response.assets && response.assets.length > 0) {
-      setSelectedImage(response.assets[0] as File);
+      setSelectedImage(response.assets[0] as Asset);
       setImageUri(response.assets[0].uri as string);
       setIsDialogOpen(true);
     }
   };
 
-  const handleSubmit: NewImageOnSubmit = async (values, helpers) => {
-    const newImage = selectedImage as File;
-
-    addPhotos([newImage], {
+  const handleSubmit: NewImageOnSubmit = async (_values, helpers) => {
+    if (!selectedImage) return;
+    addPhotos([selectedImage], {
       onSuccess: () => {
         setIsDialogOpen(false);
         helpers.resetForm({ values: { galleryImage: undefined } });
@@ -123,55 +114,54 @@ const Gallery = () => {
       <Formik<NewImageValues>
         initialValues={{ galleryImage: undefined }}
         onSubmit={handleSubmit}
-        validationSchema={newImageValidationSchema}
       >
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={isDialogOpen}
-          onRequestClose={() => setIsDialogOpen(false)}
-        >
-          <TouchableOpacity
-            style={styles.modalBackground}
-            activeOpacity={1}
-            onPress={closeModal}
+        {({ handleSubmit }) => (
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={isDialogOpen}
+            onRequestClose={() => setIsDialogOpen(false)}
           >
-            <View style={styles.dialogContainer}>
-              {selectedImage && (
-                <Image
-                  source={{ uri: imageUri }}
-                  style={styles.modalImage}
-                  resizeMode="contain"
-                />
-              )}
-              <Button
-                style={{
-                  backgroundColor: "#ee5253",
-                  width: 120,
-                  height: 40,
-                  borderRadius: 20,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: 10,
-                }}
-                /* onPress={() => {
-                   handleSubmit();
-                 }} TODO handaling submit for images  */
-              >
-                <Text style={{ color: "white" }}>Upload Image</Text>
-              </Button>
-              <TouchableOpacity onPress={showCameraRoll}>
-                <Text style={{ color: "#ee5253" }}>Choose from Gallery</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        </Modal>
+            <TouchableOpacity
+              style={styles.modalBackground}
+              activeOpacity={1}
+              onPress={closeModal}
+            >
+              <View style={styles.dialogContainer}>
+                {selectedImage && (
+                  <Image
+                    source={{ uri: imageUri }}
+                    style={styles.modalImage}
+                    resizeMode="contain"
+                  />
+                )}
+                <Button
+                  style={{
+                    backgroundColor: "#ee5253",
+                    width: 120,
+                    height: 40,
+                    borderRadius: 20,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: 10,
+                  }}
+                  onPress={() => handleSubmit()}
+                >
+                  <Text style={{ color: "white" }}>Upload Image</Text>
+                </Button>
+                <TouchableOpacity onPress={showCameraRoll}>
+                  <Text style={{ color: "#ee5253" }}>Choose from Gallery</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </Modal>
+        )}
       </Formik>
 
       <View className=" flex justify-between items-center gap-4">
         <FlatList
           data={userImages}
-          keyExtractor={(image: string, index: any) => {
+          keyExtractor={(image: string) => {
             return userImages.indexOf(image).toString();
           }}
           numColumns={2}

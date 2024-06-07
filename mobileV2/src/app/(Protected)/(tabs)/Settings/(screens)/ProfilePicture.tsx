@@ -1,27 +1,18 @@
-import { UsersService } from "./../../../../../api/users";
-import useCurrentUserContext from "../../../../../hooks/useCurrentUser";
+import { UsersService } from "@api/users";
 import { Formik, FormikHelpers } from "formik";
-//import { CircularProgress } from "@mui/material";
-import * as Yup from "yup";
-import { View, Text, Image } from "react-native";
+import { View, Image } from "react-native";
 import { Button } from "react-native-paper";
-import { launchImageLibrary } from "react-native-image-picker";
+import { Asset, launchImageLibrary } from "react-native-image-picker";
 import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useTheme } from "@/context/ThemeProvider";
-const validationSchema = Yup.object({
-  profileImageUrl: Yup.mixed<File>()
-    .required("Required")
-    .test("fileSize", "File size must be smaller than 500KB", (value) => {
-      return value && value.size <= 500 * 1024;
-    }),
-});
+import useCurrentUserContext from "@hooks/useCurrentUser";
 
 const SettingsProfilePicture = () => {
   const user = useCurrentUserContext();
-  const [profileImageUrl, setProfileImageUrl] = React.useState<File | null>();
-  const [photoUri, setPhotoUri] = React.useState<string | null>(null);
+  const [photoUri, setPhotoUri] = React.useState<string>(user.profileImageUrl);
+  const [photo, setPhoto] = React.useState<Asset | null>(null);
   const { theme } = useTheme();
   const { mutateAsync: updateProfilePicture } =
     UsersService.useUpdateProfilePicture();
@@ -30,14 +21,15 @@ const SettingsProfilePicture = () => {
     profileImageUrl: user.profileImageUrl,
   };
 
-  type UserProfileUpdateData = { profileImageUrl: File | string };
+  type UserProfileUpdateData = { profileImageUrl: Asset | string };
 
-  //TODO Submitting images not yet implemented
   const handleSubmit = async (
     values: UserProfileUpdateData,
     helpers: FormikHelpers<UserProfileUpdateData>
   ) => {
-    await updateProfilePicture(values.profileImageUrl as File);
+    if (!photo) return;
+    helpers.setSubmitting(true);
+    await updateProfilePicture(photo);
     helpers.resetForm({ values });
   };
 
@@ -51,29 +43,22 @@ const SettingsProfilePicture = () => {
     });
 
     if (response && response.assets) {
-      setProfileImageUrl(response.assets[0] as File | null);
       setPhotoUri(response.assets[0].uri as string);
-      console.log(profileImageUrl);
-    } else {
-      setProfileImageUrl(null);
+      setPhoto(response.assets[0] as Asset);
     }
   };
 
   return (
     <View style={{ backgroundColor: theme.colors.primary }}>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ submitForm, isSubmitting }) => (
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        {({ handleSubmit, isSubmitting }) => (
           <>
             <View className=" relative mt-12">
               <TouchableOpacity onPress={showCameraRoll}>
                 <View className=" flex justify-center items-center ">
                   <Image
                     source={{
-                      uri: user.profileImageUrl,
+                      uri: photoUri,
                     }}
                     style={{
                       width: 200,
@@ -98,12 +83,14 @@ const SettingsProfilePicture = () => {
                 </View>
               </TouchableOpacity>
               <View className="flex justify-center items-center mt-24 mb-56">
-                <Button onPress={submitForm} className=" w-4/5 bg-[#ee5253] ">
-                  {isSubmitting ? (
-                    <Text>Loading</Text>
-                  ) : (
-                    <Text className="text-white align-middle">Save</Text>
-                  )}
+                <Button
+                  mode="contained"
+                  onPress={() => handleSubmit()}
+                  loading={isSubmitting}
+                  disabled={photoUri === user.profileImageUrl || isSubmitting}
+                  style={{ backgroundColor: theme.colors.accent }}
+                >
+                  Save
                 </Button>
               </View>
             </View>

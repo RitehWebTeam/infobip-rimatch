@@ -1,3 +1,5 @@
+import { Asset } from "react-native-image-picker";
+
 export interface User {
   id: string;
   email: string;
@@ -67,5 +69,5 @@ export interface PreferencesInitData {
     favouriteSong: string;
     tags: string[];
   };
-  photo: File;
+  photo: Asset;
 }

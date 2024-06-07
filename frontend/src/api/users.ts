@@ -3,6 +3,7 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import type {
   MatchedUser,
   PreferencesInitData,
+  ProjectedUser,
   User,
   UserUpdateData,
 } from "@/types/User";
@@ -94,7 +95,7 @@ export const UsersService = {
         const form = new FormData();
         form.append("photo", file);
         const response = await axios.postForm<T>(
-          "/users/me/profilePicture",
+          "/users/me/profile-picture",
           form
         );
         return response.data;
@@ -120,7 +121,7 @@ export const UsersService = {
       mutationFn: async (files) => {
         const form = new FormData();
         files.forEach((file) => form.append("photos", file));
-        const response = await axios.postForm<T>("/users/me/addPhotos", form);
+        const response = await axios.postForm<T>("/users/me/add-photos", form);
         return response.data;
       },
       onSuccess: () => {
@@ -142,7 +143,7 @@ export const UsersService = {
     const queryClient = useQueryClient();
     return useMutation<T, Error, Array<string>>({
       mutationFn: async (urls) => {
-        const response = await axios.post<T>("/users/me/removePhotos", urls);
+        const response = await axios.post<T>("/users/me/remove-photos", urls);
         return response.data;
       },
       onSuccess: () => {
@@ -190,7 +191,22 @@ export const UsersService = {
           queryKey: ["MatchesService.getMatches"],
         });
       },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["UsersService.getAllBlockedUsers"],
+        });
+      },
       ...mutationOptions,
+    });
+  },
+
+  useGetAllBlockedUsers() {
+    const axios = useAxiosPrivate();
+    return useQuery<Array<ProjectedUser>, Error>({
+      queryKey: ["UsersService.getAllBlockedUsers"],
+      queryFn: () =>
+        axios.get("/users/block/all").then((response) => response.data),
+      staleTime: 60e3,
     });
   },
 };

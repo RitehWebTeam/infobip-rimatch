@@ -26,7 +26,7 @@ class MyController {
 	@GetMapping("/")
 	public Map<String, String> getMessage() {
 		Map<String, String> response = new HashMap<>();
-		response.put("message", "Different message");
+		response.put("message", "Rimatch backend running!");
 		return response;
 	}
 }

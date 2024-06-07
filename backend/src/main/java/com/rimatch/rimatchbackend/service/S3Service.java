@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Date;
 
 @Service
@@ -31,13 +32,31 @@ public class S3Service {
         this.s3Client = s3Client;
     }
 
-    public String uploadFile(MultipartFile file) throws Exception {
+    public String uploadImage(MultipartFile file,String chatOrUserId,String folder) throws Exception {
+        String extension = file.getContentType();
+        if (Arrays.asList("image/jpg", "image/jpeg", "image/png").contains(extension)) {
+            return uploadFile(file,"/images/",folder+'/'+chatOrUserId);
+        }else{
+            throw new Exception("File must be jpg, jpeg or png");
+        }
+    }
+
+    public String uploadAudioFile(MultipartFile file,String chatId,String folder) throws Exception {
+        String extension = file.getContentType();
+        if (Arrays.asList("audio/wav", "audio/mpeg").contains(extension)) {
+            return uploadFile(file,"/audio/",folder+'/'+chatId);
+        }else{
+            throw new Exception("File must be jpg,jpeg or png");
+        }
+    }
+
+    public String uploadFile(MultipartFile file,String folder,String chatorUserId) throws Exception {
         String fileName = generateFileName(file);
         try {
 
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
-                    .key(fileName)
+                    .key(chatorUserId+folder+fileName)
                     .acl(ObjectCannedACL.PUBLIC_READ)
                     .build();
 
@@ -47,7 +66,7 @@ public class S3Service {
         }
         GetUrlRequest getUrlRequest = GetUrlRequest.builder()
                 .bucket(bucketName)
-                .key(fileName)
+                .key(chatorUserId+folder+fileName)
                 .build();
 
         return s3Client.utilities().getUrl(getUrlRequest).toString();
