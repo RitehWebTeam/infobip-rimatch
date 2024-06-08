@@ -123,7 +123,7 @@ const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
                   ))}
                 </div>
 
-                <div className="flex justify-end w-full gap-4 mt-4">
+                <div className="flex float-right ml-4 mt-4">
                   <button
                     type="submit"
                     className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-500"
@@ -225,10 +225,11 @@ const ReportItem = React.forwardRef<HTMLDivElement, ReportItemProps>(
           <Dialog.Overlay className="fixed inset-0 bg-black/60 z-10" />
           <Dialog.Content className="w-[90vw] max-w-[450px] max-h-[90vh] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-[#1e1e1e] rounded-md p-6 z-20">
             {children}
-            <div className="flex justify-end w-full gap-4 mt-2">
+
+            <div className="flex float-right mt-4">
               <Dialog.Close asChild>
                 <button
-                  className="bg-slate-200 px-2 py-1 rounded-md text-gray-700 focus:outline-none hover:bg-gray-300"
+                  className="bg-slate-200 px-2 py-1 rounded-md text-gray-700 focus:outline-none hover:bg-gray-300 justify-end"
                   onClick={() => dropdownSetOpen(false)}
                 >
                   Cancel
