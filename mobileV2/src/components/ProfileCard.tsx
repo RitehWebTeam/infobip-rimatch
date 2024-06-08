@@ -7,8 +7,8 @@ import {
   SafeAreaView,
   ScrollView,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler"; // Assuming you have TouchableOpacity from react-native-gesture-handler
-import { ProjectedUser } from "../types/User";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { ProjectedUser } from "@/types/User";
 import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { StyleSheet } from "react-native";
@@ -20,10 +20,6 @@ interface ProfileCardProps {
   onClose: () => void;
   showChatIcon?: boolean;
   handleNextUser: (matchAccept: boolean, userId: string) => void;
-}
-interface MatchedTag {
-  value: string;
-  matched: boolean;
 }
 
 const ProfileCard = ({
@@ -296,25 +292,5 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 });
-const Tag = ({ tag }: { tag: any }) => {
-  const tagStyle = {
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 10,
-    minWidth: 80,
-    borderWidth: 1,
-    borderColor: tag.matched ? "#FF0000" : "#ccc",
-    backgroundColor: tag.matched ? "#FF0000" : "#fff",
-    flexDirection: "row",
-    alignItems: "center",
-  };
-
-  return (
-    <View>
-      {tag.matched}
-      <Text>{tag.value}</Text>
-    </View>
-  );
-};
 
 export default ProfileCard;

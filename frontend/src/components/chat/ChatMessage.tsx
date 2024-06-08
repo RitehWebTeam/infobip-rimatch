@@ -1,4 +1,4 @@
-import { Message } from "@/types/Message";
+import { Message, MessageType } from "@/types/Message";
 import { useMemo } from "react";
 import UserAvatar from "../UserAvatar";
 import { ProjectedUser } from "@/types/User";
@@ -26,7 +26,7 @@ const ChatMessage = ({ message, matchedUser }: ChatMessageProps) => {
   );
 };
 
-const ChatMessageSent = ({ message }: ChatMessageProps): JSX.Element => {
+const ChatMessageSent = ({ message }: ChatMessageProps) => {
   // const timestamp = useMemo(() => {
   //   const date = new Date(message.timestamp);
   //   return `${date.getHours()}:${date.getMinutes()}`;
@@ -34,7 +34,7 @@ const ChatMessageSent = ({ message }: ChatMessageProps): JSX.Element => {
   return (
     <div className="flex flex-col items-end mr-2 mt-2 ml-12">
       <p className="text-white text-sm bg-red-500 py-2 px-4 rounded-xl">
-        {message.content}
+        <ChatMessageContent message={message} />
       </p>
     </div>
   );
@@ -49,11 +49,26 @@ const ChatMessageReceived = ({ matchedUser, message }: ChatMessageProps) => {
       <div className="flex flex-col mr-12">
         <h3 className="text-sm font-medium ">{matchedUser.firstName}</h3>
         <p className="text-sm border border-[#E8E6EA] dark:border-[#3f3d3d] dark:bg-[#3f3d3d] dark:text-white p-2 px-4 rounded-xl">
-          {message.content}
+          <ChatMessageContent message={message} />
         </p>
       </div>
     </div>
   );
+};
+
+const ChatMessageContent = ({
+  message,
+}: Omit<ChatMessageProps, "matchedUser">) => {
+  switch (message.messageType) {
+    case MessageType.TEXT:
+      return <>{message.content}</>;
+    case MessageType.IMAGE:
+      return (
+        <img src={message.content} alt="chat image" className="rounded-md" />
+      );
+    default:
+      return null;
+  }
 };
 
 export default ChatMessage;

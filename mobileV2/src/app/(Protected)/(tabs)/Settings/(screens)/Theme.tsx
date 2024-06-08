@@ -1,4 +1,4 @@
-import { Theme } from "@/context/ThemeProvider";
+import { ThemeType } from "@/context/ThemeProvider";
 import useTheme from "../../../../../hooks/useTheme";
 import { RadioButton } from "react-native-paper";
 import { View } from "react-native";
@@ -6,11 +6,11 @@ import { useState } from "react";
 import { Text } from "react-native";
 
 const SettingsTheme = () => {
-  const { theme, setThemeMode } = useTheme();
+  const { setThemeType } = useTheme();
 
   const [checked, setChecked] = useState("light");
-  const handleChange = (value: Theme) => {
-    setThemeMode(value);
+  const handleChange = (value: ThemeType) => {
+    setThemeType(value);
     console.log("Radio button value", value);
   };
 

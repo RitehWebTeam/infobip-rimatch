@@ -4,7 +4,7 @@ import * as MessagesCard from "@/components/GenericCard";
 
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import useCurrentUserContext from "@/hooks/useCurrentUser";
-import { MessagesService } from "@/api/messages";
+import { MessagesService } from "@api/messages/messages.ts";
 import { MatchesService } from "@/api/matches";
 
 const ListOfMatchesForChatPage = () => {

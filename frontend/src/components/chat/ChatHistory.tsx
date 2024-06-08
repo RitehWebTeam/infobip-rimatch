@@ -1,4 +1,4 @@
-import { MessagesService } from "@/api/messages";
+import { MessagesService } from "@api/messages/messages.ts";
 import React, { useEffect } from "react";
 import ChatMessage from "./ChatMessage";
 import { MatchedUser } from "@/types/User";

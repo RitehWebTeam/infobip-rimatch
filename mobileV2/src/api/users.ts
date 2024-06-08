@@ -7,13 +7,13 @@ import {
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import {
-  Asset,
   MatchedUser,
   PreferencesInitData,
   User,
   UserUpdateData,
 } from "@/types/User";
 import ReactNativeBlobUtil from "react-native-blob-util";
+import { Asset } from "react-native-image-picker";
 
 export const UsersService = {
   useGetCurrentUser() {
@@ -114,7 +114,7 @@ export const UsersService = {
       mutationFn: async (file) => {
         const response = await ReactNativeBlobUtil.fetch(
           "POST",
-          `${axios.defaults.baseURL}/users/me/profilePicture`,
+          `${axios.defaults.baseURL}/users/me/profile-picture`,
           {
             Authorization: `Bearer ${auth?.accessToken}`,
             "Content-Type": "multipart/form-data",
@@ -152,7 +152,7 @@ export const UsersService = {
       mutationFn: async (files) => {
         const response = await ReactNativeBlobUtil.fetch(
           "POST",
-          `${axios.defaults.baseURL}/users/me/addPhotos`,
+          `${axios.defaults.baseURL}/users/me/add-photos`,
           {
             Authorization: `Bearer ${auth?.accessToken}`,
             "Content-Type": "multipart/form-data",
@@ -185,7 +185,7 @@ export const UsersService = {
     const queryClient = useQueryClient();
     return useMutation<T, Error, Array<string>>({
       mutationFn: async (urls) => {
-        const response = await axios.post<T>("/users/me/removePhotos", urls);
+        const response = await axios.post<T>("/users/me/remove-photos", urls);
         return response.data;
       },
       onSuccess: () => {

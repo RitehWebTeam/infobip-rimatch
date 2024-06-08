@@ -13,7 +13,10 @@ const Navbar: React.FunctionComponent = () => {
   const user = useCurrentUserContext();
 
   return (
-    <nav className="flex items-center justify-between sticky top-0 sm:mb-4 px-5 py-6 w-full border-b border-gray-300 dark:border-gray-700  sm:mb-8d dark:bg-[#1e1e1e] bg-white">
+    <nav
+      style={{ zIndex: 1000 }}
+      className="flex items-center justify-between sticky top-0 sm:mb-4 px-5 py-6 w-full border-b border-gray-300 dark:border-gray-700  sm:mb-8d dark:bg-[#1e1e1e] bg-white"
+    >
       <div>
         <RiMatchLogo />
       </div>

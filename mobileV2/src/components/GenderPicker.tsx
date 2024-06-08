@@ -2,9 +2,10 @@ import { useMemo, useState } from "react";
 import { useField } from "formik";
 
 import { View } from "react-native";
-import { HelperText, Text, useTheme } from "react-native-paper";
+import { HelperText, useTheme } from "react-native-paper";
 
 import DropDownPicker from "react-native-dropdown-picker";
+
 const GenderPicker = () => {
   const genderOptions = [
     { label: "Male", value: "M" },
@@ -33,7 +34,6 @@ const GenderPicker = () => {
 
   return (
     <View style={{ position: "relative", marginTop: 4 }}>
-   
       <DropDownPicker
         listMode="SCROLLVIEW"
         open={open}
