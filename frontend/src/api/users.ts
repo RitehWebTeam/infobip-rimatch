@@ -6,6 +6,7 @@ import type {
   ProjectedUser,
   User,
   UserUpdateData,
+  ReportUserData,
 } from "@/types/User";
 import {
   UseMutationOptions,
@@ -207,6 +208,32 @@ export const UsersService = {
       queryFn: () =>
         axios.get("/users/block/all").then((response) => response.data),
       staleTime: 60e3,
+    });
+  },
+
+  useReportUser: <T = void>(
+    mutationOptions?: Omit<
+      UseMutationOptions<T, Error, ReportUserData>,
+      "mutationFn" | "onSuccess"
+    >
+  ) => {
+    const axios = useAxiosPrivate();
+    const queryClient = useQueryClient();
+    return useMutation<T, Error, ReportUserData>({
+      mutationFn: async (data) => {
+        const response = await axios.post<T>(
+          "/reports/add",
+          {},
+          { params: data }
+        );
+        return response.data;
+      },
+      onSuccess: () => {
+        return queryClient.invalidateQueries({
+          queryKey: ["UsersService.getCurrentUser"],
+        });
+      },
+      ...mutationOptions,
     });
   },
 };

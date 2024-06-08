@@ -18,6 +18,7 @@ interface UserActionsDropdownProps {
 const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
   const navigate = useNavigate();
   const { mutate: blockUser } = UsersService.useBlockUser();
+  const { mutate: reportUser } = UsersService.useReportUser();
   const [open, setOpen] = useState(false);
 
   const blockUserAction = () => {
@@ -26,13 +27,24 @@ const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
     navigate("..");
   };
 
+  const handleSubmit = (values: string) => {
+    const checked = values;
+    const data = {
+      reportedUserId: user.id,
+      report: checked,
+    };
+    reportUser(data);
+    setOpen(false);
+    navigate("..");
+  };
+
   const reportReasons = [
-    " Bullying or harassment",
-    " Hate speech or symbols",
-    " Malicious content",
-    " Pretending to be someone else",
-    " Fraud or scam",
-    " Spam",
+    "Bullying or harassment",
+    "Hate speech or symbols",
+    "Malicious content",
+    "Pretending to be someone else",
+    "Fraud or scam",
+    "Spam",
   ];
 
   return (
@@ -70,7 +82,6 @@ const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
           </DialogItem>
 
           <ReportItem
-            action={blockUserAction}
             dropdownSetOpen={setOpen}
             triggerChildren={
               <button
@@ -85,11 +96,15 @@ const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
             <Dialog.Title className="text-lg font-semibold pb-2">
               Select a problem to report
             </Dialog.Title>
+
             <Formik
               initialValues={{
                 checked: "",
               }}
-              onSubmit={(values) => alert(JSON.stringify(values, null, 2))}
+              onSubmit={(values, { setSubmitting }) => {
+                handleSubmit(values.checked);
+                setSubmitting(false);
+              }}
             >
               <Form>
                 <div role="group" aria-labelledby="my-radio-group">
@@ -100,7 +115,7 @@ const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
                           type="radio"
                           name="checked"
                           value={reason}
-                          className="accent-red-700"
+                          className="accent-red-700 me-2"
                         />
                         {reason}
                       </label>
@@ -108,18 +123,14 @@ const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
                   ))}
                 </div>
 
-                {/* <div className="text-md font-semibold pt-6 pb-2">More options</div>
-                    <div className="flex bg-white items-center border-2 py-4 px-4 rounded-2xl">
-                      <Field
-                        className="pl-2 h-[6rem] text-black outline-none border-none bg-white w-full "
-                        type="text"
-                        id="checked"
-                        placeholder=""
-                        name="checked"
-                        as="textarea"
-                      />
-                      <button type="submit">Submit</button>
-                    </div> */}
+                <div className="flex justify-end w-full gap-4 mt-4">
+                  <button
+                    type="submit"
+                    className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-500"
+                  >
+                    Submit
+                  </button>
+                </div>
               </Form>
             </Formik>
           </ReportItem>
@@ -134,6 +145,12 @@ interface DialogItemProps
   dropdownSetOpen: (open: boolean) => void;
   triggerChildren: React.ReactNode;
   action: () => void;
+}
+
+interface ReportItemProps
+  extends React.ComponentPropsWithoutRef<typeof DropdownMenu.Item> {
+  dropdownSetOpen: (open: boolean) => void;
+  triggerChildren: React.ReactNode;
 }
 
 const DialogItem = React.forwardRef<HTMLDivElement, DialogItemProps>(
@@ -186,10 +203,9 @@ const DialogItem = React.forwardRef<HTMLDivElement, DialogItemProps>(
 
 DialogItem.displayName = "DialogItem";
 
-const ReportItem = React.forwardRef<HTMLDivElement, DialogItemProps>(
+const ReportItem = React.forwardRef<HTMLDivElement, ReportItemProps>(
   (props, forwardedRef) => {
-    const { children, dropdownSetOpen, triggerChildren, action, ...itemProps } =
-      props;
+    const { children, dropdownSetOpen, triggerChildren, ...itemProps } = props;
     return (
       <Dialog.Root>
         <Dialog.Trigger asChild>
@@ -216,14 +232,6 @@ const ReportItem = React.forwardRef<HTMLDivElement, DialogItemProps>(
                   onClick={() => dropdownSetOpen(false)}
                 >
                   Cancel
-                </button>
-              </Dialog.Close>
-              <Dialog.Close asChild>
-                <button
-                  className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-500"
-                  onClick={action}
-                >
-                  Submit
                 </button>
               </Dialog.Close>
             </div>
