@@ -49,6 +49,7 @@ const Navbar: React.FunctionComponent = () => {
               sideOffset={5}
               align="end"
               alignOffset={-5}
+              style={{ zIndex: 1000 }}
             >
               <DropdownMenu.Item
                 className="px-3 py-3 text-sm font-medium  hover:bg-slate-200 dark:hover:bg-slate-600  focus-visible:outline-1 focus-visible:outline focus-visible:outline-slate-400 rounded-md"
