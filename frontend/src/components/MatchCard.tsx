@@ -101,9 +101,6 @@ const MatchCard = ({
             <LocationOnIcon color="inherit" fontSize="inherit" />
             <span>{user.location}</span>
           </div>
-          <div className="top-5 right-4 absolute flex items-center justify-center gap-1 bg-gray-500/60 p-2 rounded-lg text-sm text-white">
-            <span>{" km"}</span>
-          </div>
           <div
             className="flex z-10 items-center gap-2 px-5 pb-4 text-white cursor-pointer w-full justify-between"
             onClick={openDetailedProfile}
