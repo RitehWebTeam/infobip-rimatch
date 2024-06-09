@@ -10,10 +10,24 @@ import { UsersService } from "@/api/users";
 import { Field, Form, Formik } from "formik";
 import { red } from "@mui/material/colors";
 import * as Dialog from "@radix-ui/react-dialog";
+import * as Yup from "yup";
 
 interface UserActionsDropdownProps {
   user: ProjectedUser;
 }
+
+const reportValidation = Yup.object({
+  checked: Yup.string().required(),
+});
+
+const reportReasons = [
+  "Bullying or harassment",
+  "Hate speech or symbols",
+  "Malicious content",
+  "Pretending to be someone else",
+  "Fraud or scam",
+  "Spam",
+];
 
 const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
   const navigate = useNavigate();
@@ -37,15 +51,6 @@ const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
     setOpen(false);
     navigate("..");
   };
-
-  const reportReasons = [
-    "Bullying or harassment",
-    "Hate speech or symbols",
-    "Malicious content",
-    "Pretending to be someone else",
-    "Fraud or scam",
-    "Spam",
-  ];
 
   return (
     <DropdownMenu.Root open={open} onOpenChange={setOpen}>
@@ -101,6 +106,7 @@ const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
               initialValues={{
                 checked: "",
               }}
+              validationSchema={reportValidation}
               onSubmit={(values, { setSubmitting }) => {
                 handleSubmit(values.checked);
                 setSubmitting(false);

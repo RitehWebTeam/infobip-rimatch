@@ -230,7 +230,10 @@ export const UsersService = {
       },
       onSuccess: () => {
         return queryClient.invalidateQueries({
-          queryKey: ["UsersService.getCurrentUser"],
+          queryKey: [
+            "UsersService.getCurrentUser",
+            "MatchesService.getMatches",
+          ],
         });
       },
       ...mutationOptions,
