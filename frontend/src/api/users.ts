@@ -228,14 +228,14 @@ export const UsersService = {
         );
         return response.data;
       },
-      onSuccess: () => {
-        return queryClient.invalidateQueries({
-          queryKey: [
-            "UsersService.getCurrentUser",
-            "MatchesService.getMatches",
-          ],
-        });
-      },
+      onSuccess: () => Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["UsersService.getCurrentUser"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["MatchesService.getPotentialUsers"],
+        }),
+      ]),
       ...mutationOptions,
     });
   },
