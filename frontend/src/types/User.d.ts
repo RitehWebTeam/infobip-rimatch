@@ -69,3 +69,8 @@ export interface PreferencesInitData {
   };
   photo: File;
 }
+
+export interface ReportUserData {
+  reportedUserId: string;
+  report: string;
+}
